@@ -27,7 +27,7 @@
                 <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                Kembali ke Beranda
+                Back to Home
             </a>
             <div class="text-2xl font-black tracking-tighter text-slate-900">
                 SURYA<span class="text-blue-600">ANDIKA</span>
@@ -40,7 +40,7 @@
             Project <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Archive.</span>
         </h1>
         <p class="text-lg lg:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Koleksi lengkap perjalanan digital saya, mulai dari arsitektur kode hingga eksplorasi visual yang berkelas.
+            A complete collection of my digital journeys, from code architecture to classy visual explorations.
         </p>
     </header>
 
@@ -48,7 +48,7 @@
         
         <div class="flex flex-wrap justify-center gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200/60 shadow-inner w-fit mx-auto mb-20">
             <button onclick="filterProjects('all')" class="filter-btn active-filter px-6 py-2.5 text-sm font-bold rounded-full transition-all">
-                Semua Karya
+                All Projects
             </button>
             @foreach($categories as $category)
                 <button onclick="filterProjects('{{ $category->slug }}')" class="filter-btn px-6 py-2.5 text-sm font-semibold rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-all">
@@ -81,14 +81,14 @@
                 </div>
             @empty
                 <div class="col-span-full py-20 text-center">
-                    <p class="text-slate-400 font-medium">Belum ada karya untuk kategori ini.</p>
+                    <p class="text-slate-400 font-medium">No projects available at the moment.</p>
                 </div>
             @endforelse
         </div>
     </main>
 
     <footer class="py-12 border-t border-slate-100 text-center bg-white">
-        <p class="text-slate-400 text-sm font-medium italic">&copy; 2026 Surya Andika. Semua Karya Terarsipkan.</p>
+        <p class="text-slate-400 text-sm font-medium italic">&copy; 2026 Surya Andika. All Archived Works.</p>
     </footer>
 
     <script>

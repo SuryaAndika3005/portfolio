@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
-<head>
+<html lang="en" class="scroll-smooth">
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surya Andika | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Sentuhan Halus Estetika Minangkabau pada Background */
         .bg-pattern {
             background-image: url('path/to/subtle-gonjong-pattern.svg'); /* Ganti dengan pattern SVG abstrak nanti */
             background-size: cover;
@@ -16,16 +15,15 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased bg-pattern">
 
-<nav id="main-nav" class="fixed top-0 w-full z-[100] transition-all duration-500 py-6">
-    <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex justify-between items-center">
+<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-lg border-b border-slate-100 transform-gpu">    <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex justify-between items-center">
         <a href="#" class="text-2xl font-black tracking-tighter text-slate-900 group">
             SURYA<span class="text-blue-600 group-hover:text-slate-900 transition-colors">ANDIKA</span>
         </a>
 
         <div class="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md border border-white/20 p-1.5 rounded-full shadow-sm">
-            <a href="#home" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Home</a>
+            <a href="#" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Home</a>
             <a href="#projects" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Projects</a>
-            <a href="#about" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">About</a>
+            <a href="#skills" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Skiils</a>
             <a href="#contact" class="ml-4 px-6 py-2.5 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all">Let's Talk</a>
         </div>
 
@@ -104,19 +102,19 @@
             </h2>
             
             <p class="text-slate-500 mb-12 max-w-xl text-lg lg:text-xl leading-relaxed">
-                Menjembatani estetika desain visual dengan arsitektur kode yang solid. Saya menciptakan pengalaman digital yang tidak hanya fungsional, tetapi juga bercerita.
+                Specializing in UI/UX design, web development, and digital branding. Bringing ideas to life from initial concept to high-performance code.
             </p>
             
             <div class="flex flex-wrap gap-5 items-center">
                 <a href="#work" class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold overflow-hidden shadow-xl shadow-blue-200 hover:shadow-2xl hover:shadow-blue-300 transition-all duration-300 transform hover:-translate-y-1 text-lg">
                     <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                     <span class="relative flex items-center gap-2">
-                        Lihat Karya
+                        See Projects
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </span>
                 </a>
                 <a href="{{ asset('storage/projects/CV.pdf') }}" download class="px-8 py-4 bg-white text-slate-700 rounded-full font-bold border-2 border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-all duration-300 text-lg">
-                    Unduh CV
+                    Resume
                 </a>
             </div>
         </div>
@@ -157,11 +155,11 @@
         </div>
     </header>
 
-<section id="work" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
+<section id="projects" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
         <div>
             <h3 class="text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
-            <p class="text-lg text-slate-500">Kurasi karya visual dan eksplorasi digital terbaik.</p>
+            <p class="text-lg text-slate-500">A curation of my finest visual works and digital explorations.</p>
         </div>
         </div>
 
@@ -183,13 +181,13 @@
                 </div>
             </a>
         @empty
-            <div class="lg:col-span-3 py-20 text-center">Data belum tersedia.</div>
+            <div class="lg:col-span-3 py-20 text-center">No projects available at the moment.</div>
         @endforelse
     </div>
 
     <div class="mt-16 text-center">
         <a href="{{ route('portfolio.projects') }}" class="inline-flex items-center gap-3 px-10 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all duration-300 shadow-xl hover:shadow-blue-500/30 group">
-            Eksplorasi Semua Karya
+            Explore All Works
             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </a>
     </div>
@@ -199,7 +197,7 @@
         <div class="max-w-[1600px] lg:px-20 mx-auto px-6">
             <div class="text-center mb-16">
                 <h3 class="text-3xl font-bold text-white mb-4">Tech & Creative Stack</h3>
-                <p class="text-slate-400">Perpaduan antara keahlian rekayasa perangkat lunak dan desain visual.</p>
+                <p class="text-slate-400">A seamless blend of software engineering expertise and visual design.</p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -210,7 +208,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">Visual Crafting</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Merancang identitas visual, materi branding UMKM, dan desain grafis yang bercerita serta berdampak kuat.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Crafting visual identities, brand materials, and impactful graphic designs that tell a compelling story.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-plain.svg" class="w-7 h-7" title="Adobe Illustrator" alt="Illustrator"></div>
@@ -225,7 +223,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 21h6l-.75-4M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">UI/UX Design</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Membangun alur pengguna yang intuitif melalui wireframing, mockup, dan pembuatan prototipe interaktif.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Building intuitive user flows through comprehensive wireframing, mockups, and interactive prototyping.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" class="w-7 h-7" title="Figma" alt="Figma"></div>
@@ -238,7 +236,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">Dynamic Visuals</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Mengolah elemen visual bergerak, pengeditan video, dan dokumentasi kreatif untuk publikasi media.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Creating motion graphics, video editing, and creative documentation for impactful media publications.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-plain.svg" class="w-7 h-7" title="After Effects" alt="After Effects"></div>
@@ -253,7 +251,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">Web Development</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Mengembangkan fondasi aplikasi dan landing page yang solid, aman, dan responsif menggunakan kerangka kerja modern.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Developing solid, secure, and responsive web applications and landing pages using modern frameworks.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" class="w-7 h-7" title="Laravel" alt="Laravel"></div>
@@ -267,7 +265,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">Mobile Apps</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Merancang dan membangun aplikasi mobile lintas platform dengan performa tinggi dan integrasi antarmuka yang mulus.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Designing and building high-performance, cross-platform mobile applications with seamless interface integration.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" class="w-7 h-7" title="Flutter" alt="Flutter"></div>
@@ -280,7 +278,7 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
                         <h4 class="text-xl font-bold text-white mb-3">Data & AI</h4>
-                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Implementasi algoritma Machine Learning, Predictive Models, pemrosesan citra, dan Big Data Analysis.</p>
+                        <p class="text-sm text-slate-400 mb-8 leading-relaxed">Implementing machine learning algorithms, predictive models, computer vision, and big data analysis.</p>
                     </div>
                     <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" class="w-7 h-7" title="Python" alt="Python"></div>
@@ -291,7 +289,6 @@
                         <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jupyter/jupyter-original.svg" class="w-7 h-7" title="Jupyter" alt="Jupyter"></div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
@@ -334,7 +331,7 @@
     <section id="experience" class="max-w-[1600px] lg:px-20 mx-auto px-6 py-24">
         <div class="text-center mb-16 relative">
             <h3 class="text-4xl font-extrabold text-slate-900 mb-4">The Journey</h3>
-            <p class="text-lg text-slate-500">Jejak langkah profesional, kepemimpinan, dan kontribusi kreatif.</p>
+            <p class="text-lg text-slate-500">Professional milestones, leadership roles, and creative contributions.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -440,7 +437,7 @@
                 <div class="w-full lg:w-5/12 text-center lg:text-left">
                     <div class="inline-flex items-center space-x-2 bg-slate-800/50 backdrop-blur-md px-4 py-2 rounded-full mb-6 border border-slate-700">
                         <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-                        <span class="text-xs font-bold text-blue-300 uppercase tracking-widest">Mari Berkolaborasi</span>
+                        <span class="text-xs font-bold text-blue-300 uppercase tracking-widest">Let's Collaborate</span>
                     </div>
                     
                     <h2 class="text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
@@ -449,7 +446,7 @@
                     </h2>
                     
                     <p class="text-lg text-slate-400 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                        Baik itu perancangan aplikasi, identitas visual, atau proyek web development. Saya selalu terbuka untuk mendiskusikan ide-ide baru.
+                        Whether it's app design, visual identity, or web development projects, I am always open to discussing new ideas
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -489,20 +486,20 @@
                             @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Nama Anda</label>
+                                    <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Your Name</label>
                                     <input type="text" name="name" required placeholder="John Doe" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Email Anda</label>
+                                    <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Your Email</label>
                                     <input type="email" name="email" required placeholder="john@example.com" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Pesan / Ide Proyek</label>
+                                <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Message / Project Idea</label>
                                 <textarea name="message" required rows="4" placeholder="Ceritakan sedikit tentang proyek yang ingin Anda buat..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 transform hover:-translate-y-1">
-                                Kirim Pesan
+                                Send Message
                             </button>
                         </form>
                     </div>
@@ -553,8 +550,6 @@
                 btn.classList.remove('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/50');
             }
         });
-
-        // Sembunyikan/Tampilkan Proyek
         items.forEach(item => {
             const itemCategory = item.getAttribute('data-category');
             if (slug === 'all' || itemCategory === slug) {
@@ -564,6 +559,11 @@
                 item.style.opacity = '0';
                 setTimeout(() => item.style.display = 'none', 400);
             }
+        });
+        const lenis = new Lenis({
+            autoRaf: true,
+            smoothWheel: true,
+            syncTouch: true, // Membuatnya mulus juga saat di-scroll pakai jari di HP
         });
     }
 </script>

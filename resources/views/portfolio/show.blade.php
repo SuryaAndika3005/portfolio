@@ -36,7 +36,7 @@
         
         <div class="grid grid-cols-2 md:grid-cols-4 gap-12 py-10 border-t border-b border-slate-200">
             <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Peran</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Role</p>
                 <p class="text-lg font-bold text-slate-800">
                     @if($project->category->name == 'Graphic Design') Graphic Designer
                     @elseif($project->category->name == 'UI/UX Design') UI/UX Designer
@@ -45,7 +45,7 @@
                 </p>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Klien</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Client</p>
                 <p class="text-lg font-bold text-slate-800">
                     @if(str_contains(strtolower($project->title), 'unand') || str_contains(strtolower($project->title), 'adzkia')) Akademik
                     @elseif(str_contains(strtolower($project->title), 'manufer') || str_contains(strtolower($project->title), 'league')) Sports & Event
@@ -53,7 +53,7 @@
                 </p>
             </div>
             <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Tahun</p>
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Year</p>
                 <p class="text-lg font-bold text-slate-800">
                     @if(str_contains(strtolower($project->title), 'informatika')) 2023
                     @elseif(str_contains(strtolower($project->title), '523')) 2024
@@ -93,12 +93,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             @for ($i = 1; $i <= 6; $i++)
                 @php
-                    // Jalur file untuk berbagai format
                     $pathWebp = 'storage/projects/client-' . $project->id . '-' . $i . '.webp';
                     $pathPng  = 'storage/projects/client-' . $project->id . '-' . $i . '.png';
                     $pathJpg  = 'storage/projects/client-' . $project->id . '-' . $i . '.jpg';
                     
-                    // Prioritaskan WebP untuk performa terbaik
                     if (file_exists(public_path($pathWebp))) {
                         $finalPath = $pathWebp;
                     } elseif (file_exists(public_path($pathPng))) {
@@ -119,7 +117,7 @@
                                 alt="Detail Project View">
                         </div>
                         <div class="mt-4 px-4 pb-2">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Detail Proyek: {{ $project->title }}</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Project Detail: {{ $project->title }}</p>
                         </div>
                     </div>
                 @endif
@@ -152,18 +150,17 @@
             const modal = document.getElementById('imageModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
-            document.body.style.overflow = 'auto'; // Re-enable scroll
+            document.body.style.overflow = 'auto';
         }
 
-        // Close on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
     </script>
 
     <footer class="bg-slate-900 py-20 text-center text-white mt-20">
-        <h4 class="text-3xl font-bold mb-6">Butuh desain seperti ini?</h4>
-        <a href="{{ route('home') }}#contact" class="inline-block bg-blue-600 px-10 py-4 rounded-full font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Hubungi Surya</a>
+        <h4 class="text-3xl font-bold mb-6">Need a design like this?</h4>
+        <a href="{{ route('home') }}#contact" class="inline-block bg-blue-600 px-10 py-4 rounded-full font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-600/20">Contact Surya</a>
     </footer>
 </body>
 </html>
