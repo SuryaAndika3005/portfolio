@@ -30,87 +30,90 @@ class PortfolioSeeder extends Seeder
         $graphicId = Category::where('name', 'Graphic Design')->first()->id;
         $uiUxId = Category::where('name', 'UI/UX Design')->first()->id;
         $itId = Category::where('name', 'IT & Development')->first()->id;
+        $fgId = Category::where('name','Fotografi')->first()->id;
+        $mdlId = Category::where('name','Modeling')->first()->id;
 
         $projects = [
             [
                 'category_id' => $graphicId,
                 'title' => 'LuxSuits',
-                'description' => 'Perancangan visual promosi untuk LuxSuits yang mengomunikasikan citra merek premium dan elegan. Menekankan komposisi minimalis dengan kontras kuat untuk menonjolkan nilai produk pakaian formal.',
+                'description' => 'Visual promotional design for LuxSuits that communicates a premium and elegant brand image. Emphasizing a minimalist composition with strong contrast to highlight the value of formal wear products.',
                 'image_path' => 'projects/Luxsuits/luxsuits.webp',
             ],
             [
                 'category_id' => $graphicId,
                 'title' => 'Manufer Super League',
-                'description' => 'Pengembangan aset visual untuk event kompetitif Manufer Super League. Mencakup desain media sosial hingga elemen fisik di lapangan seperti desain gate, dengan identitas warna berani dan struktur yang kuat.',
+                'description' => 'Visual asset development for the Manufer Super League competitive event. Encompassing social media design to physical on-field elements, maintaining a bold color identity.',
                 'image_path' => 'projects/MSL/manufer.webp',
-            ],
-            [
-                'category_id' => $uiUxId,
-                'title' => 'Money Tracker App',
-                'description' => 'Desain antarmuka aplikasi mobile untuk melacak keuangan pribadi (Money Tracker). Berfokus pada kesederhanaan, kemudahan penggunaan (usability), dan visualisasi data keuangan yang jelas.',
-                'image_path' => 'projects/moneytracker.webp',
-            ],
-            [
-                'category_id' => $itId,
-                'title' => 'SPMB Universitas Adzkia',
-                'description' => 'Membangun front-end sistem pendaftaran mahasiswa menggunakan arsitektur kode yang responsif. Mengimplementasikan validasi input yang dinamis, integrasi desain pixel-perfect dari Figma ke Tailwind CSS, dan memastikan performa loading yang optimal.',
-                'image_path' => 'projects/SPMB/spmbweb.webp',
             ],
             [
                 'category_id' => $graphicId,
                 'title' => 'Top Scorer Arena',
-                'description' => 'Eksplorasi visual berenergi tinggi untuk bisnis minisoccer Top Scorer Arena. Mempertahankan identitas olahraga yang kuat dan dinamis secara konsisten di berbagai platform media sosial.',
+                'description' => 'High-energy visual exploration for the Top Scorer Arena mini-soccer business. Maintaining a strong and dynamic sports identity consistently across social media platforms.',
                 'image_path' => 'projects/TSA/topscorer.webp',
-            ],
-            [
-                'category_id' => $itId,
-                'title' => 'Landing Page Informatika\'23',
-                'description' => 'Implementasi landing page menggunakan framework modern. Berfokus pada animasi yang halus, optimasi gambar (WebP), dan struktur komponen yang re-usable untuk kemudahan pengembangan di masa depan.',
-                'image_path' => 'projects/IF/if23web.webp',
             ],
             [
                 'category_id' => $graphicId,
                 'title' => '523 Studio',
-                'description' => 'Adaptasi berbagai gaya visual untuk kebutuhan klien agensi 523 Studio. Mencakup desain poster rekrutmen dan kampanye media sosial dengan fokus pada komunikasi yang jelas.',
+                'description' => 'Adaptation of various visual styles for the clients of 523 Studio creative agency. Including recruitment poster designs and comprehensive social media campaigns.',
                 'image_path' => 'projects/523/523studio.webp',
             ],
             [
                 'category_id' => $graphicId,
                 'title' => 'FTI UNAND',
-                'description' => 'Merancang materi visual akademik untuk Fakultas Teknologi Informasi Universitas Andalas dengan menyeimbangkan informasi padat melalui tata letak yang bersih dan hierarki visual.',
+                'description' => 'Designing academic visual materials for the Faculty of Information Technology, Andalas University, by balancing dense information through clean and structured layouts.',
                 'image_path' => 'projects/FTI/fti-unand.webp',
             ],
+
             [
-                'category_id' => $graphicId, // Ubah $uiUxId / $graphicId / $itId sesuai kategori proyeknya
-                'title' => 'Metro Software',
-                'description' => 'Developed visual for a digital service brand, aiming to reflect a modern and tech-oriented identity. The challenge was balancing clarity with a contemporary feel. The design uses structured layouts and subtle digital elements.',
-                'image_path' => 'projects/Metro/metro.webp', // Pastikan gambar ini sudah ada di folder storage/app/public/projects/
+                'category_id' => $uiUxId,
+                'title' => 'SPMB Universitas Adzkia (UI/UX Design)',
+                'description' => 'Designing the user experience for the new student admission system. Focusing on the ease of filling out complex registration forms, clear information hierarchy, and a clean interface.',
+                'image_path' => 'projects/SPMB/spmb-adzkia.webp',
             ],
             [
-                'category_id' => $graphicId, // Ubah $uiUxId / $graphicId / $itId sesuai kategori proyeknya
-                'title' => 'Alir Pictures',
-                'description' => 'Developed visual for a digital service brand, aiming to reflect a modern and tech-oriented identity. The challenge was balancing clarity with a contemporary feel. The design uses structured layouts and subtle digital elements.',
-                'image_path' => 'projects/Alir/alir.webp', // Pastikan gambar ini sudah ada di folder storage/app/public/projects/
+                'category_id' => $itId,
+                'title' => 'SPMB Universitas Adzkia (Web Development)',
+                'description' => 'Building the front-end of the student registration system using a responsive code architecture. Implementing pixel-perfect design integration with Tailwind CSS and optimizing load performance.',
+                'image_path' => 'projects/SPMB/spmbweb.webp',
             ],
             [
                 'category_id' => $uiUxId,
-                'title' => 'Landing Page Informatika\'23',
-                'description' => 'Perancangan identitas visual dan tata letak landing page angkatan Informatika 2023. Eksplorasi gaya modern-futuristik dengan navigasi intuitif untuk memudahkan akses informasi bagi mahasiswa dan pengunjung.',
+                'title' => 'Informatika 23 Landing Page (UI/UX Design)',
+                'description' => 'Visual identity and layout design for the Informatics 2023 batch landing page. Exploring a modern-futuristic style with intuitive navigation to facilitate information access.',
                 'image_path' => 'projects/IF/if23.webp',
             ],
             [
+                'category_id' => $itId,
+                'title' => 'Informatika 23 Landing Page (Web Dev)',
+                'description' => 'Landing page implementation using a modern framework. Focusing on smooth animations, image optimization, and reusable component structures for future scalability.',
+                'image_path' => 'projects/IF/if23web.webp',
+            ],
+
+            [
                 'category_id' => $uiUxId,
-                'title' => 'SPMB Universitas Adzkia',
-                'description' => 'Merancang pengalaman pengguna untuk sistem penerimaan mahasiswa baru. Berfokus pada kemudahan pengisian formulir pendaftaran yang kompleks, hierarki informasi yang jelas, dan desain antarmuka yang bersih untuk meningkatkan konversi pendaftar.',
-                'image_path' => 'projects/SPMB/spmb-adzkia.webp',
-            ]
+                'title' => 'Money Tracker App',
+                'description' => 'Designing intuitive user flows and a modern visual interface to facilitate seamless personal financial tracking, data visualization, and daily record-keeping.',
+                'image_path' => 'projects/moneytracker.webp',
+            ],
+            [
+                'category_id' => $graphicId,
+                'title' => 'Metro Software',
+                'description' => 'Designed visual assets and user interface concepts for an urban mobility platform, focusing on clarity, layout, and user-friendly visuals.',
+                'image_path' => 'projects/Metro/metro.webp',
+            ],
+            [
+                'category_id' => $graphicId,
+                'title' => 'Alir Pictures (Intern)',
+                'description' => 'Graphic Designer intern at a production house, responsible for designing visual content, branding elements, and promotional materials.',
+                'image_path' => 'projects/Alir/alir.webp',
+            ],
         ];
 
-        // Mencegah duplikasi saat seeder dijalankan ulang
         foreach ($projects as $project) {
-            Project::firstOrCreate(
-                ['title' => $project['title']], // Cek apakah judul sudah ada
-                $project // Jika belum, buat baru
+            Project::updateOrCreate(
+                ['title' => $project['title']], 
+                $project
             );
         }
     }

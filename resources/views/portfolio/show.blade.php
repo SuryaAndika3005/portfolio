@@ -112,10 +112,10 @@
 
                 @if($finalPath)
                     <div class="bg-white p-4 rounded-[2.5rem] shadow-xl border border-slate-100/50 group cursor-zoom-in" onclick="openModal('{{ asset($finalPath) }}')">
-                        <div class="h-[400px] rounded-[1.8rem] overflow-y-auto scrollbar-hide border border-slate-50 bg-slate-100">
+                        <div class="aspect-[4/5] rounded-[1.8rem] overflow-hidden border border-slate-50 bg-slate-100">
                             <img src="{{ asset($finalPath) }}" 
                                 loading="lazy" 
-                                class="w-full h-auto object-top transition duration-700 group-hover:scale-105"
+                                class="w-full h-auto object-cover object-top transition duration-700 group-hover:scale-105"
                                 alt="Detail Project View">
                         </div>
                         <div class="mt-4 px-4 pb-2">
