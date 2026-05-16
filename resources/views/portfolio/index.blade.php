@@ -16,15 +16,69 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased bg-pattern">
 
-<nav class="flex justify-between items-center py-6 px-8 lg:px-20 max-w-[1600px] mx-auto bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="text-2xl font-bold text-blue-600 tracking-wider">SURDIK.</div>
-        <ul class="flex space-x-8 text-sm font-semibold text-slate-600">
-            <li class="hover:text-blue-600 cursor-pointer transition">Work</li>
-            <li class="hover:text-blue-600 cursor-pointer transition">Experience</li>
-            <li class="hover:text-blue-600 cursor-pointer transition">Contact</li>
-        </ul>
-        <a href="#contact" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">Resume</a>
-    </nav>
+<nav id="main-nav" class="fixed top-0 w-full z-[100] transition-all duration-500 py-6">
+    <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex justify-between items-center">
+        <a href="#" class="text-2xl font-black tracking-tighter text-slate-900 group">
+            SURYA<span class="text-blue-600 group-hover:text-slate-900 transition-colors">ANDIKA</span>
+        </a>
+
+        <div class="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md border border-white/20 p-1.5 rounded-full shadow-sm">
+            <a href="#home" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Home</a>
+            <a href="#projects" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Projects</a>
+            <a href="#about" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">About</a>
+            <a href="#contact" class="ml-4 px-6 py-2.5 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all">Let's Talk</a>
+        </div>
+
+        <button id="menu-btn" class="md:hidden p-3 rounded-2xl bg-white shadow-md text-slate-900">
+            <svg id="menu-icon" class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div id="mobile-menu" class="hidden fixed inset-0 top-[88px] bg-white/95 backdrop-blur-xl z-[90] p-8 flex-col gap-6 items-center text-center">
+        <a href="#home" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">Home</a>
+        <a href="#projects" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">Projects</a>
+        <a href="#about" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">About</a>
+        <a href="#contact" onclick="toggleMenu()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20">Contact Me</a>
+    </div>
+</nav>
+
+<script>
+    const nav = document.getElementById('main-nav');
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+
+    // 1. Efek Scroll Navbar
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.classList.add('bg-white/80', 'backdrop-blur-lg', 'py-4', 'shadow-sm', 'border-b', 'border-slate-100');
+            nav.classList.remove('py-6');
+        } else {
+            nav.classList.remove('bg-white/80', 'backdrop-blur-lg', 'py-4', 'shadow-sm', 'border-b', 'border-slate-100');
+            nav.classList.add('py-6');
+        }
+    });
+
+    // 2. Logika Mobile Menu
+    function toggleMenu() {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('flex');
+        
+        // Animasi icon (putar sedikit saat diklik)
+        menuIcon.classList.toggle('rotate-90');
+        
+        // Stop scroll body saat menu buka
+        if (!mobileMenu.classList.contains('hidden')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+
+    menuBtn.addEventListener('click', toggleMenu);
+</script>
 
     <header class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 pb-24 flex flex-col md:flex-row items-center justify-between min-h-[85vh] overflow-hidden">
         
@@ -73,7 +127,7 @@
                 <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-cyan-400 rounded-[3.5rem] transform rotate-6 scale-105 shadow-2xl opacity-80"></div>
                 
                 <div class="absolute inset-0 bg-slate-200 rounded-[3.5rem] overflow-hidden transform -rotate-3 hover:rotate-0 transition duration-500 border-[6px] border-white shadow-inner">
-                    <img src="{{ asset('storage/projects/dika.png') }}" alt="Surya Andika" class="w-full h-full object-cover filter hover:contrast-110 transition duration-500">
+                    <img src="{{ asset('storage/projects/dika.webp') }}" alt="Surya Andika" loading="lazy" class="w-full h-full object-cover filter hover:contrast-110 transition duration-500">
                 </div>
 
                 <div class="absolute -top-10 -left-10 bg-white/80 backdrop-blur-md p-5 rounded-3xl shadow-xl border border-white/60 animate-bounce" style="animation-duration: 3s;">
@@ -104,51 +158,42 @@
     </header>
 
 <section id="work" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
-        
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-            <div>
-                <h3 class="text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
-                <p class="text-lg text-slate-500">Kurasi karya visual dan eksplorasi digital terbaik.</p>
-            </div>
-            
-            <div class="flex flex-wrap gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200/60 shadow-inner">
-                <button class="px-5 py-2.5 text-sm font-bold rounded-full bg-white shadow-md text-blue-600 transition-all">Semua</button>
-                @foreach($categories as $category)
-                <button class="px-5 py-2.5 text-sm font-semibold rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 transition-all">
-                    {{ $category->name }}
-                </button>
-                @endforeach
-            </div>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+        <div>
+            <h3 class="text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
+            <p class="text-lg text-slate-500">Kurasi karya visual dan eksplorasi digital terbaik.</p>
+        </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[320px]">
-            
-            @forelse($projects as $project)
-                <a href="{{ route('project.show', $project->id) }}" 
-                   class="{{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
-                    
-                    <img src="{{ asset('storage/' . $project->image_path) }}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }}">
-                    
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
-                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                        <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
-                            {{ $project->category->name ?? 'Uncategorized' }}
-                        </span>
-                        <h4 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ $project->title }}</h4>
-                        <p class="text-sm text-slate-300 line-clamp-2">{{ $project->description }}</p>
-                    </div>
-                </a>
-            @empty
-                <div class="lg:col-span-3 py-20 text-center bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
-                    <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    <h4 class="text-xl font-bold text-slate-500">Belum ada karya yang diunggah</h4>
-                    <p class="text-slate-400 mt-2">Silakan jalankan database seeder untuk melihat karya Anda.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[320px]">
+        @forelse($projects as $project)
+            <a href="{{ route('portfolio.show', $project->id) }}" 
+               class="{{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
+                
+                <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }}">
+                
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div class="absolute bottom-0 left-0 w-full p-8 translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                    <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
+                        {{ $project->category->name ?? 'Uncategorized' }}
+                    </span>
+                    <h4 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ $project->title }}</h4>
+                    <p class="text-sm text-slate-300 line-clamp-2">{{ $project->description }}</p>
                 </div>
-            @endforelse
+            </a>
+        @empty
+            <div class="lg:col-span-3 py-20 text-center">Data belum tersedia.</div>
+        @endforelse
+    </div>
 
-        </div>
-    </section>
+    <div class="mt-16 text-center">
+        <a href="{{ route('portfolio.projects') }}" class="inline-flex items-center gap-3 px-10 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all duration-300 shadow-xl hover:shadow-blue-500/30 group">
+            Eksplorasi Semua Karya
+            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
+    </div>
+</section>
 
 <section id="skills" class="bg-slate-900 py-24 mt-10">
         <div class="max-w-[1600px] lg:px-20 mx-auto px-6">
@@ -487,6 +532,36 @@
         <p>&copy; 2026 Surya Andika. Informatics Student & Designer.</p>
     </footer>
 
+    <script>
+    function filterProjects(slug) {
+        const items = document.querySelectorAll('.project-item');
+        const buttons = document.querySelectorAll('.filter-btn');
+
+        // Ubah tampilan tombol aktif
+        buttons.forEach(btn => {
+            btn.classList.remove('bg-white', 'shadow-md', 'text-blue-600', 'active-filter');
+            btn.classList.add('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/50');
+            
+            if(btn.getAttribute('onclick').includes(`'${slug}'`)) {
+                btn.classList.add('bg-white', 'shadow-md', 'text-blue-600', 'active-filter');
+                btn.classList.remove('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/50');
+            }
+        });
+
+        // Sembunyikan/Tampilkan Proyek
+        items.forEach(item => {
+            const itemCategory = item.getAttribute('data-category');
+            if (slug === 'all' || itemCategory === slug) {
+                item.style.display = 'block';
+                setTimeout(() => item.style.opacity = '1', 10);
+            } else {
+                item.style.opacity = '0';
+                setTimeout(() => item.style.display = 'none', 400);
+            }
+        });
+    }
+</script>
 
     </body>
+    
 </html>
