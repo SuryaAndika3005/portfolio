@@ -479,21 +479,27 @@
                     <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-8 lg:p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
                         
                         <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-500/20 to-transparent rounded-bl-full pointer-events-none"></div>
+                        @if(session('success'))
+                            <div class="bg-green-500/10 border border-green-500/50 text-green-400 px-6 py-4 rounded-2xl mb-6 font-medium">
+                                ✅ {{ session('success') }}
+                            </div>
+                        @endif
 
-                        <form action="#" method="POST" class="space-y-6 relative z-10">
+                        <form action="{{ route('contact.send') }}" method="POST" class="space-y-6 relative z-10">
+                            @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Nama Anda</label>
-                                    <input type="text" placeholder="John Doe" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
+                                    <input type="text" name="name" required placeholder="John Doe" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Email Anda</label>
-                                    <input type="email" placeholder="john@example.com" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
+                                    <input type="email" name="email" required placeholder="john@example.com" class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Pesan / Ide Proyek</label>
-                                <textarea rows="4" placeholder="Ceritakan sedikit tentang proyek yang ingin Anda buat..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
+                                <textarea name="message" required rows="4" placeholder="Ceritakan sedikit tentang proyek yang ingin Anda buat..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 transform hover:-translate-y-1">
                                 Kirim Pesan
