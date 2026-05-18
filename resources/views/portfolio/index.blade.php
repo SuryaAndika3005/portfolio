@@ -563,7 +563,7 @@
         const lenis = new Lenis({
             autoRaf: true,
             smoothWheel: true,
-            syncTouch: true, // Membuatnya mulus juga saat di-scroll pakai jari di HP
+            syncTouch: true, 
         });
     }
 </script>

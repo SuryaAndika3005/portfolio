@@ -55,7 +55,7 @@ public function contact(Request $request)
                 ->html("
                     <div style='font-family: sans-serif; padding: 20px; color: #334155; max-width: 600px; border: 1px solid #e2e8f0; rounded: 12px;'>
                         <h2 style='color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;'>New Portfolio Inquiry</h2>
-                        <p style='margin-top: 20px;'><strong>Name:</strong> {$data['name']}</p>
+                 5       <p style='margin-top: 20px;'><strong>Name:</strong> {$data['name']}</p>
                         <p><strong>Email:</strong> <a href='mailto:{$data['email']}'>{$data['email']}</a></p>
                         <div style='margin-top: 20px; padding: 15px; bg-color: #f8fafc; border-left: 4px solid #3b82f6; background: #f8fafc;'>
                             <p style='margin: 0; font-weight: bold; color: #475569; margin-bottom: 5px;'>Message:</p>
