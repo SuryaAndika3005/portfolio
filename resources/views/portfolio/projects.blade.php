@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,6 +66,12 @@
                                  loading="lazy" 
                                  class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" 
                                  alt="{{ $project->title }}">
+
+                            @if ($project->is_highlighted)
+                                <span class="absolute top-4 right-4 bg-white/90 backdrop-blur text-slate-900 text-[10px] font-bold px-2.5 py-1 rounded-full shadow z-10">
+                                    ✦ Highlighted
+                                </span>
+                            @endif
                             
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                                 <div class="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">

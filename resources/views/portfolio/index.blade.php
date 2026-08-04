@@ -23,7 +23,7 @@
         <div class="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md border border-white/20 p-1.5 rounded-full shadow-sm">
             <a href="#" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Home</a>
             <a href="#projects" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Projects</a>
-            <a href="#skills" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Skiils</a>
+            <a href="#skills" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Skills</a>
             <a href="#contact" class="ml-4 px-6 py-2.5 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all">Let's Talk</a>
         </div>
 
@@ -98,23 +98,32 @@
             </h1>
             
             <h2 class="text-2xl lg:text-3xl font-medium text-slate-600 mb-6">
-                Informatics Student & Digital Architect
+                Graphic Designer &mdash; UI/UX &amp; Web Developer
             </h2>
             
             <p class="text-slate-500 mb-12 max-w-xl text-lg lg:text-xl leading-relaxed">
-                Specializing in UI/UX design, web development, and digital branding. Bringing ideas to life from initial concept to high-performance code.
+                I craft bold visual identities and brand materials, backed by the ability to design and build the digital products that carry them &mdash; from concept to high-performance code.
             </p>
             
             <div class="flex flex-wrap gap-5 items-center">
-                <a href="#work" class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold overflow-hidden shadow-xl shadow-blue-200 hover:shadow-2xl hover:shadow-blue-300 transition-all duration-300 transform hover:-translate-y-1 text-lg">
+                <a href="#projects" class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold overflow-hidden shadow-xl shadow-blue-200 hover:shadow-2xl hover:shadow-blue-300 transition-all duration-300 transform hover:-translate-y-1 text-lg">
                     <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                     <span class="relative flex items-center gap-2">
-                        See Projects
+                        View My Work
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </span>
                 </a>
-                <a href="{{ asset('storage/projects/CV.pdf') }}" download class="px-8 py-4 bg-white text-slate-700 rounded-full font-bold border-2 border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-all duration-300 text-lg">
-                    Resume
+                <a href="#contact" class="px-8 py-4 border-2 border-slate-200 text-slate-700 rounded-full font-bold hover:border-blue-600 hover:text-blue-600 transition-all duration-300 text-lg">
+                    Hire Me
+                </a>
+                <a href="{{ asset('storage/projects/CV.pdf') }}" download class="text-slate-400 hover:text-blue-600 font-semibold text-sm underline underline-offset-4 transition-colors">
+                    Download Resume
+                </a>
+                <a href="https://github.com/suryaandika3005" target="_blank" class="p-4 bg-slate-800/40 border border-slate-700 text-slate-300 rounded-2xl hover:bg-slate-800 hover:text-white hover:border-slate-500 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center group shadow-md" title="View GitHub Profile">
+                <span class="sr-only">GitHub</span>
+                <svg class="w-6 h-6 transition-transform duration-300 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                </svg>
                 </a>
             </div>
         </div>
@@ -169,6 +178,10 @@
                class="{{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
                 
                 <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }}">
+                
+                @if ($project->is_highlighted)
+                    <span class="absolute top-4 right-4 z-10 bg-white/90 backdrop-blur text-slate-900 text-[10px] font-bold px-2.5 py-1 rounded-full shadow">✦ Highlighted</span>
+                @endif
                 
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 
@@ -335,88 +348,39 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Professional Work</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-blue-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full mb-3">Jun 2025 - Present</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors">Graphic Designer</h5>
-                        <p class="text-sm text-slate-500 font-medium">523 Studio - Creative Agency</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-blue-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">May - Jul 2024</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors">Graphic Designer Intern</h5>
-                        <p class="text-sm text-slate-500 font-medium">Alir Pictures - Production House</p>
-                    </div>
-                </div>
-            </div>
+            @php
+                $groupStyles = [
+                    'Professional Work' => ['ring' => 'blue', 'icon' => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'],
+                    'Organization' => ['ring' => 'emerald', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
+                    'Events' => ['ring' => 'purple', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                ];
+            @endphp
 
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-emerald-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            @forelse ($experiences as $category => $items)
+                @php $style = $groupStyles[$category] ?? ['ring' => 'blue', 'icon' => $groupStyles['Professional Work']['icon']]; @endphp
+                <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-{{ $style['ring'] }}-300 transition-colors duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-{{ $style['ring'] }}-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div class="flex items-center space-x-4 mb-10">
+                        <div class="p-3 bg-{{ $style['ring'] }}-50 text-{{ $style['ring'] }}-600 rounded-2xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $style['icon'] }}"></path></svg>
+                        </div>
+                        <h4 class="text-xl font-extrabold text-slate-800">{{ $category }}</h4>
                     </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Organization</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-emerald-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-emerald-600 transition-colors">Coordinator of Media & Info</h5>
-                        <p class="text-sm text-slate-500 font-medium">LIMPAKO</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-emerald-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-emerald-600 transition-colors">Coordinator of InfoMed</h5>
-                        <p class="text-sm text-slate-500 font-medium">Himpunan Mahasiswa Informatika</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-purple-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-purple-50 text-purple-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Events</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-8">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-purple-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-purple-50 text-purple-600 text-xs font-bold rounded-full mb-3">2025 - 2026</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Pubdok Coordinator</h5>
-                        <p class="text-sm text-slate-500 font-medium">KKN KAMS</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-purple-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">Apr - Aug 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Chief Executive</h5>
-                        <p class="text-sm text-slate-500 font-medium">Bakti FTI</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-purple-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Pubdok Coordinator</h5>
-                        <p class="text-sm text-slate-500 font-medium">APAN 8 - LIMPAKO</p>
+                    <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
+                        @foreach ($items as $item)
+                            <div class="relative group/item">
+                                <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 {{ $loop->first ? 'border-'.$style['ring'].'-500 group-hover/item:scale-125' : 'border-slate-300 group-hover/item:border-'.$style['ring'].'-400' }} transition-all duration-300"></div>
+                                <span class="inline-block px-3 py-1 {{ $loop->first ? 'bg-'.$style['ring'].'-50 text-'.$style['ring'].'-600' : 'bg-slate-100 text-slate-500' }} text-xs font-bold rounded-full mb-3">{{ $item->duration }}</span>
+                                <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-{{ $style['ring'] }}-600 transition-colors">{{ $item->role }}</h5>
+                                <p class="text-sm text-slate-500 font-medium">{{ $item->company }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-
+            @empty
+                <p class="lg:col-span-3 text-center text-slate-400">No experience added yet.</p>
+            @endforelse
         </div>
     </section>
 
@@ -496,7 +460,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Message / Project Idea</label>
-                                <textarea name="message" required rows="4" placeholder="Ceritakan sedikit tentang proyek yang ingin Anda buat..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
+                                <textarea name="message" required rows="4" placeholder="Tell me a bit about the project you have in mind..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
                             </div>
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 transform hover:-translate-y-1">
                                 Send Message
@@ -513,11 +477,17 @@
                 &copy; 2026 <span class="text-slate-300 font-bold">Surya Andika</span>. All rights reserved.
             </div>
             
-            <div class="flex space-x-5">
+            <div class="flex space-x-5 items-center">
+                <a href="https://github.com/suryaandika3005" target="_blank" class="text-slate-500 hover:text-white transition-colors">
+                    <span class="sr-only">GitHub</span>
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" /></svg>
+                </a>
+                
                 <a href="https://linkedin.com/in/surya-andika" target="_blank" class="text-slate-500 hover:text-blue-400 transition-colors">
                     <span class="sr-only">LinkedIn</span>
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 </a>
+                
                 <a href="https://instagram.com/surdik_28" target="_blank" class="text-slate-500 hover:text-pink-500 transition-colors">
                     <span class="sr-only">Instagram</span>
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
@@ -532,7 +502,7 @@
     </section>
 
     <footer class="text-center py-8 text-slate-400 text-sm border-t border-slate-200">
-        <p>&copy; 2026 Surya Andika. Informatics Student & Designer.</p>
+        <p>&copy; 2026 Surya Andika. Graphic Designer &amp; Developer.</p>
     </footer>
 
     <script>

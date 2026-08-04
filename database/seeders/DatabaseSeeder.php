@@ -10,19 +10,24 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin login for the /admin panel. Set ADMIN_EMAIL / ADMIN_PASSWORD
+        // in your .env before running this, then re-seed to update them.
+        // Plain password here on purpose — the User model's 'password' cast
+        // is 'hashed', so it hashes automatically on save. Hashing it again
+        // here would double-hash it and lock you out.
+        User::updateOrCreate(
+            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
+            [
+                'name' => 'Admin',
+                'password' => env('ADMIN_PASSWORD', 'password'),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
         $this->call([
             PortfolioSeeder::class,
+            ExperienceSeeder::class,
         ]);
     }
 }
