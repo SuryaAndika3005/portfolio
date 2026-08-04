@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,13 +45,13 @@
     </header>
 
     <main class="max-w-[1600px] mx-auto px-8 lg:px-20 pb-32">
-        
-        <div class="flex flex-wrap justify-center gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200/60 shadow-inner w-fit mx-auto mb-20">
-            <button onclick="filterProjects('all')" class="filter-btn active-filter px-6 py-2.5 text-sm font-bold rounded-full transition-all">
+
+        <div class="flex flex-wrap justify-center gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200/60 shadow-inner w-fit mx-auto mb-20" role="group" aria-label="Filter projects by category">
+            <button type="button" data-filter="all" class="filter-btn active-filter px-6 py-2.5 text-sm font-bold rounded-full transition-all" aria-pressed="true">
                 All Projects
             </button>
             @foreach($categories as $category)
-                <button onclick="filterProjects('{{ $category->slug }}')" class="filter-btn px-6 py-2.5 text-sm font-semibold rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-all">
+                <button type="button" data-filter="{{ $category->slug }}" class="filter-btn px-6 py-2.5 text-sm font-semibold rounded-full text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-all" aria-pressed="false">
                     {{ $category->name }}
                 </button>
             @endforeach
@@ -66,17 +66,11 @@
                                  loading="lazy" 
                                  class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" 
                                  alt="{{ $project->title }}">
-
-                            @if ($project->is_highlighted)
-                                <span class="absolute top-4 right-4 bg-white/90 backdrop-blur text-slate-900 text-[10px] font-bold px-2.5 py-1 rounded-full shadow z-10">
-                                    ✦ Highlighted
-                                </span>
-                            @endif
                             
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
                                 <div class="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                                     <span class="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-widest">
-                                        {{ $project->category->name }}
+                                        {{ $project->category->name ?? 'Uncategorized' }}
                                     </span>
                                     <h4 class="text-2xl font-bold text-white mb-2">{{ $project->title }}</h4>
                                     <p class="text-xs text-slate-300 line-clamp-2">{{ $project->description }}</p>
@@ -91,46 +85,14 @@
                 </div>
             @endforelse
         </div>
+
+        <p id="filter-empty-state" class="hidden col-span-full py-20 text-center text-slate-400 font-medium">
+            No projects in this category yet.
+        </p>
     </main>
 
-    <footer class="py-12 border-t border-slate-100 text-center bg-white">
-        <p class="text-slate-400 text-sm font-medium italic">&copy; 2026 Surya Andika. All Archived Works.</p>
-    </footer>
+    @push('scripts')
+        <script src="{{ asset('js/project-filter.js') }}" defer></script>
+    @endpush
 
-    <script>
-        function filterProjects(slug) {
-            const items = document.querySelectorAll('.project-item');
-            const buttons = document.querySelectorAll('.filter-btn');
-
-            // 1. Update UI Tombol
-            buttons.forEach(btn => {
-                btn.classList.remove('active-filter', 'bg-white', 'shadow-md', 'text-blue-600');
-                btn.classList.add('text-slate-500');
-                
-                if(btn.getAttribute('onclick').includes(`'${slug}'`)) {
-                    btn.classList.add('active-filter');
-                    btn.classList.remove('text-slate-500');
-                }
-            });
-
-            // 2. Logika Sembunyi/Tampil dengan Animasi
-            items.forEach(item => {
-                const category = item.getAttribute('data-category');
-                if (slug === 'all' || category === slug) {
-                    item.style.display = 'block';
-                    setTimeout(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'scale(1)';
-                    }, 10);
-                } else {
-                    item.style.opacity = '0';
-                    item.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        item.style.display = 'none';
-                    }, 400);
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+</x-layout>
