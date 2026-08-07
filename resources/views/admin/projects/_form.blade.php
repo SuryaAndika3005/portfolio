@@ -115,7 +115,7 @@
         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Gallery Images</label>
         <p class="text-xs text-slate-400 mb-3">Extra screenshots shown in "Visual Showcase" on the detail page. Select multiple files at once.</p>
 
-        @if (! empty($project) && $project->galleryImages()->isNotEmpty())
+        @if (! empty($project) && ! empty($project->galleryImages()))
             <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-4">
                 @foreach ($project->galleryImages() as $image)
                     <label class="relative block group">

@@ -27,3 +27,25 @@ html {
 .project-item {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Scroll-reveal entrance animation (see reveal-on-scroll.js). Elements start
+   hidden/offset and animate in once they cross into the viewport. */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

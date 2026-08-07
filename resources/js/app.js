@@ -28,4 +28,28 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.style.overflow = isOpen ? 'auto' : 'hidden';
         });
     }
+
+    // Scroll-reveal: elements with class="reveal" fade/slide in once they
+    // enter the viewport. Falls back to showing everything immediately if
+    // IntersectionObserver isn't available.
+    const revealEls = document.querySelectorAll('.reveal');
+    if (revealEls.length) {
+        if (!('IntersectionObserver' in window)) {
+            revealEls.forEach((el) => el.classList.add('is-visible'));
+        } else {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+            );
+
+            revealEls.forEach((el) => observer.observe(el));
+        }
+    }
 });

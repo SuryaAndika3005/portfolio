@@ -1,82 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-    <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surya Andika | Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .bg-pattern {
-            background-image: url('path/to/subtle-gonjong-pattern.svg'); /* Ganti dengan pattern SVG abstrak nanti */
-            background-size: cover;
-            background-blend-mode: overlay;
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased bg-pattern">
-
-<nav class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-lg border-b border-slate-100 transform-gpu">    <div class="max-w-[1600px] mx-auto px-6 md:px-12 lg:px-20 flex justify-between items-center">
-        <a href="#" class="text-2xl font-black tracking-tighter text-slate-900 group">
-            SURYA<span class="text-blue-600 group-hover:text-slate-900 transition-colors">ANDIKA</span>
-        </a>
-
-        <div class="hidden md:flex items-center gap-1 bg-white/50 backdrop-blur-md border border-white/20 p-1.5 rounded-full shadow-sm">
-            <a href="#" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Home</a>
-            <a href="#projects" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Projects</a>
-            <a href="#skills" class="px-6 py-2.5 rounded-full text-sm font-bold text-slate-600 hover:text-blue-600 transition-all">Skiils</a>
-            <a href="#contact" class="ml-4 px-6 py-2.5 bg-slate-900 text-white rounded-full text-sm font-bold hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all">Let's Talk</a>
-        </div>
-
-        <button id="menu-btn" class="md:hidden p-3 rounded-2xl bg-white shadow-md text-slate-900">
-            <svg id="menu-icon" class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
-        </button>
-    </div>
-
-    <div id="mobile-menu" class="hidden fixed inset-0 top-[88px] bg-white/95 backdrop-blur-xl z-[90] p-8 flex-col gap-6 items-center text-center">
-        <a href="#home" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">Home</a>
-        <a href="#projects" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">Projects</a>
-        <a href="#about" onclick="toggleMenu()" class="text-2xl font-bold text-slate-800">About</a>
-        <a href="#contact" onclick="toggleMenu()" class="w-full py-4 bg-blue-600 text-white rounded-2xl font-bold shadow-xl shadow-blue-600/20">Contact Me</a>
-    </div>
-</nav>
-
-<script>
-    const nav = document.getElementById('main-nav');
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-
-    // 1. Efek Scroll Navbar
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            nav.classList.add('bg-white/80', 'backdrop-blur-lg', 'py-4', 'shadow-sm', 'border-b', 'border-slate-100');
-            nav.classList.remove('py-6');
-        } else {
-            nav.classList.remove('bg-white/80', 'backdrop-blur-lg', 'py-4', 'shadow-sm', 'border-b', 'border-slate-100');
-            nav.classList.add('py-6');
-        }
-    });
-
-    // 2. Logika Mobile Menu
-    function toggleMenu() {
-        mobileMenu.classList.toggle('hidden');
-        mobileMenu.classList.toggle('flex');
-        
-        // Animasi icon (putar sedikit saat diklik)
-        menuIcon.classList.toggle('rotate-90');
-        
-        // Stop scroll body saat menu buka
-        if (!mobileMenu.classList.contains('hidden')) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-    }
-
-    menuBtn.addEventListener('click', toggleMenu);
-</script>
+<x-layout>
 
     <header class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 pb-24 flex flex-col md:flex-row items-center justify-between min-h-[85vh] overflow-hidden">
 
@@ -92,16 +14,16 @@
                 <span class="text-xs font-bold text-slate-700 uppercase tracking-widest">Available for New Projects</span>
             </div>
 
-            <h1 class="text-6xl lg:text-7xl font-extrabold leading-tight mb-5 text-slate-900 tracking-tight">
+            <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight mb-5 text-slate-900 tracking-tight">
                 Hi, I'm <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Surya Andika.</span>
             </h1>
 
-            <h2 class="text-2xl lg:text-3xl font-medium text-slate-600 mb-6">
-                Informatics Student & Digital Architect
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-medium text-slate-600 mb-6">
+                Informatics Student &amp; Digital Architect
             </h2>
 
-            <p class="text-slate-500 mb-12 max-w-xl text-lg lg:text-xl leading-relaxed">
+            <p class="text-slate-500 mb-12 max-w-xl text-base sm:text-lg lg:text-xl leading-relaxed">
                 I craft bold visual identities and brand materials, backed by the ability to design and build the digital products that carry them &mdash; from concept to high-performance code.
             </p>
 
@@ -110,7 +32,7 @@
                     <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                     <span class="relative flex items-center gap-2">
                         See Projects
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                     </span>
                 </a>
                 <a href="{{ asset('storage/projects/CV.pdf') }}" download class="px-8 py-4 bg-white text-slate-700 rounded-full font-bold border-2 border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-all duration-300 text-lg">
@@ -136,34 +58,35 @@
     </header>
 
     <section id="projects" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+        <div class="reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
             <div>
-                <h3 class="text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
                 <p class="text-lg text-slate-500">A curation of my finest visual works and digital explorations.</p>
             </div>
         </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[320px]">
-        @forelse($projects as $project)
-            <a href="{{ route('portfolio.show', $project->id) }}" 
-               class="{{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
-                
-                <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }}">
-                
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                <div class="absolute bottom-0 left-0 w-full p-8 translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                    <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
-                        {{ $project->category->name ?? 'Uncategorized' }}
-                    </span>
-                    <h4 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ $project->title }}</h4>
-                    <p class="text-sm text-slate-300 line-clamp-2">{{ $project->description }}</p>
-                </div>
-            </a>
-        @empty
-            <div class="lg:col-span-3 py-20 text-center">No projects available at the moment.</div>
-        @endforelse
-    </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[320px]">
+            @forelse($projects as $project)
+                <a href="{{ route('portfolio.show', $project->id) }}"
+                   style="--reveal-delay: {{ $loop->index * 80 }}ms"
+                   class="reveal {{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
+
+                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }} — {{ $project->category->name ?? 'project' }} preview">
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                        <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
+                            {{ $project->category->name ?? 'Uncategorized' }}
+                        </span>
+                        <h4 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ $project->title }}</h4>
+                        <p class="text-sm text-slate-300 line-clamp-2">{{ $project->description }}</p>
+                    </div>
+                </a>
+            @empty
+                <div class="lg:col-span-3 py-20 text-center text-slate-400">No projects available at the moment.</div>
+            @endforelse
+        </div>
 
         <div class="mt-16 text-center">
             <a href="{{ route('portfolio.projects') }}" class="inline-flex items-center gap-3 px-10 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all duration-300 shadow-xl hover:shadow-blue-500/30 group">
@@ -175,14 +98,14 @@
 
     <section id="skills" class="bg-slate-900 py-24 mt-10">
         <div class="max-w-[1600px] lg:px-20 mx-auto px-6">
-            <div class="text-center mb-16">
+            <div class="reveal text-center mb-16">
                 <h3 class="text-3xl font-bold text-white mb-4">Tech &amp; Creative Stack</h3>
                 <p class="text-slate-400">A seamless blend of software engineering expertise and visual design.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach ($skillGroups as $group)
-                    <div class="bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-blue-500 hover:bg-slate-800 transition duration-300 group flex flex-col justify-between shadow-2xl">
+                    <div style="--reveal-delay: {{ $loop->index * 80 }}ms" class="reveal bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-blue-500 hover:bg-slate-800 transition duration-300 group flex flex-col justify-between shadow-2xl">
                         <div>
                             <div class="mb-6 p-3 bg-slate-700/50 w-fit rounded-2xl group-hover:bg-blue-600 group-hover:text-white text-blue-400 transition duration-300">
                                 {!! $group['icon'] !!}
@@ -204,15 +127,15 @@
     </section>
 
     <section id="education" class="max-w-[1600px] lg:px-20 mx-auto px-6 py-20 relative z-10 -mt-10">
-        <div class="relative overflow-hidden bg-white rounded-[3rem] p-10 md:p-14 shadow-2xl shadow-slate-200/50 border border-slate-100 group hover:shadow-blue-200/50 transition-shadow duration-500">
+        <div class="reveal relative overflow-hidden bg-white rounded-[3rem] p-8 sm:p-10 md:p-14 shadow-2xl shadow-slate-200/50 border border-slate-100 group hover:shadow-blue-200/50 transition-shadow duration-500">
             <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
                 <div class="flex items-start gap-6">
-                    <div class="relative bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-5 rounded-3xl shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                    <div class="relative bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-5 rounded-3xl shadow-lg transform group-hover:scale-105 transition-transform duration-300 shrink-0">
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
                     </div>
                     <div>
                         <span class="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 uppercase tracking-widest">2023 - Present</span>
-                        <h4 class="text-3xl font-extrabold text-slate-800 tracking-tight">Bachelor of Informatics</h4>
+                        <h4 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">Bachelor of Informatics</h4>
                         <p class="text-lg text-slate-500 font-medium mt-1">Andalas University</p>
                     </div>
                 </div>
@@ -225,94 +148,30 @@
     </section>
 
     <section id="experience" class="max-w-[1600px] lg:px-20 mx-auto px-6 py-24">
-        <div class="text-center mb-16">
+        <div class="reveal text-center mb-16">
             <h3 class="text-4xl font-extrabold text-slate-900 mb-4">The Journey</h3>
             <p class="text-lg text-slate-500">Professional milestones, leadership roles, and creative contributions.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Professional Work</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-blue-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full mb-3">Jun 2025 - Present</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors">Graphic Designer</h5>
-                        <p class="text-sm text-slate-500 font-medium">523 Studio - Creative Agency</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-blue-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">May - Jul 2024</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors">Graphic Designer Intern</h5>
-                        <p class="text-sm text-slate-500 font-medium">Alir Pictures - Production House</p>
+            @forelse ($experiences->groupBy('category') as $category => $items)
+                <div style="--reveal-delay: {{ $loop->index * 100 }}ms" class="reveal bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <h4 class="text-xl font-extrabold text-slate-800 mb-10">{{ $category }}</h4>
+                    <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
+                        @foreach ($items as $item)
+                            <div class="relative group/item">
+                                <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-blue-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-300"></div>
+                                <span class="inline-block px-3 py-1 bg-blue-50 text-blue-600 text-xs font-bold rounded-full mb-3">{{ $item->duration }}</span>
+                                <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-blue-600 transition-colors">{{ $item->role }}</h5>
+                                <p class="text-sm text-slate-500 font-medium">{{ $item->company }}</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-emerald-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Organization</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-emerald-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-emerald-600 transition-colors">Coordinator of Media & Info</h5>
-                        <p class="text-sm text-slate-500 font-medium">LIMPAKO</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-emerald-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-emerald-600 transition-colors">Coordinator of InfoMed</h5>
-                        <p class="text-sm text-slate-500 font-medium">Himpunan Mahasiswa Informatika</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/30 border border-slate-100 hover:border-purple-300 transition-colors duration-300 relative overflow-hidden group">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-100 rounded-bl-full -z-10 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="flex items-center space-x-4 mb-10">
-                    <div class="p-3 bg-purple-50 text-purple-600 rounded-2xl">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <h4 class="text-xl font-extrabold text-slate-800">Events</h4>
-                </div>
-                
-                <div class="relative pl-8 border-l-2 border-slate-100 space-y-8">
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-purple-500 group-hover/item:scale-125 group-hover/item:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-purple-50 text-purple-600 text-xs font-bold rounded-full mb-3">2025 - 2026</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Pubdok Coordinator</h5>
-                        <p class="text-sm text-slate-500 font-medium">KKN KAMS</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-purple-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">Apr - Aug 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Chief Executive</h5>
-                        <p class="text-sm text-slate-500 font-medium">Bakti FTI</p>
-                    </div>
-                    <div class="relative group/item">
-                        <div class="absolute -left-[2.1rem] top-1 w-4 h-4 bg-white rounded-full border-4 border-slate-300 group-hover/item:border-purple-400 transition-colors duration-300"></div>
-                        <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 text-xs font-bold rounded-full mb-3">2024 - 2025</span>
-                        <h5 class="text-lg font-bold text-slate-800 group-hover/item:text-purple-600 transition-colors">Pubdok Coordinator</h5>
-                        <p class="text-sm text-slate-500 font-medium">APAN 8 - LIMPAKO</p>
-                    </div>
-                </div>
-            </div>
-
+            @empty
+                <p class="text-slate-400 text-center col-span-3">No experience entries yet.</p>
+            @endforelse
         </div>
     </section>
 
@@ -320,8 +179,8 @@
         <div class="max-w-[1600px] mx-auto px-8 lg:px-20 relative z-10">
             <div class="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
 
-                <div class="w-full lg:w-5/12 text-center lg:text-left">
-                    <h2 class="text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+                <div class="reveal w-full lg:w-5/12 text-center lg:text-left">
+                    <h2 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
                         Let's build <br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">something great.</span>
                     </h2>
@@ -344,11 +203,16 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-7/12">
-                    <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-8 lg:p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+                <div class="reveal w-full lg:w-7/12" style="--reveal-delay: 120ms">
+                    <div class="bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 lg:p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
                         @if(session('success'))
                             <div class="bg-green-500/10 border border-green-500/50 text-green-400 px-6 py-4 rounded-2xl mb-6 font-medium" role="status">
-                                ✅ {{ session('success') }}
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-2xl mb-6 font-medium" role="alert">
+                                {{ session('error') }}
                             </div>
                         @endif
 
@@ -367,8 +231,9 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-slate-400 mb-2 ml-2">Message / Project Idea</label>
-                                <textarea name="message" required rows="4" placeholder="Ceritakan sedikit tentang proyek yang ingin Anda buat..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none"></textarea>
+                                <label for="message" class="block text-sm font-medium text-slate-400 mb-2 ml-2">Message / Project Idea</label>
+                                <textarea id="message" name="message" required rows="4" placeholder="Tell me a little about the project you have in mind..." class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none">{{ old('message') }}</textarea>
+                                @error('message')<p class="text-red-400 text-xs mt-2 ml-2">{{ $message }}</p>@enderror
                             </div>
                             <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 transform hover:-translate-y-1">
                                 Send Message
@@ -379,19 +244,17 @@
             </div>
         </div>
 
-        <div class="max-w-[1600px] mx-auto px-8 lg:px-20 mt-32 relative z-10 border-t border-slate-800/50 pt-8 pb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="max-w-[1600px] mx-auto px-8 lg:px-20 mt-32 relative z-10 border-t border-slate-800/50 pt-8 pb-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div class="text-slate-500 text-sm font-medium">
                 &copy; {{ date('Y') }} <span class="text-slate-300 font-bold">Surya Andika</span>. All rights reserved.
             </div>
-            
+
             <div class="flex space-x-5">
-                <a href="https://linkedin.com/in/surya-andika" target="_blank" class="text-slate-500 hover:text-blue-400 transition-colors">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-slate-500 hover:text-blue-400 transition-colors" aria-label="LinkedIn profile">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 </a>
-                <a href="https://instagram.com/surdik_28" target="_blank" class="text-slate-500 hover:text-pink-500 transition-colors">
-                    <span class="sr-only">Instagram</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                <a href="https://instagram.com/surdik_28" target="_blank" rel="noopener" class="text-slate-500 hover:text-pink-500 transition-colors" aria-label="Instagram profile">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0z"/></svg>
                 </a>
             </div>
             <div class="text-slate-500 text-sm flex items-center gap-2">
@@ -401,43 +264,4 @@
         </div>
     </section>
 
-    <footer class="text-center py-8 text-slate-400 text-sm border-t border-slate-200">
-        <p>&copy; 2026 Surya Andika. Informatics Student & Designer.</p>
-    </footer>
-
-    <script>
-    function filterProjects(slug) {
-        const items = document.querySelectorAll('.project-item');
-        const buttons = document.querySelectorAll('.filter-btn');
-
-        // Ubah tampilan tombol aktif
-        buttons.forEach(btn => {
-            btn.classList.remove('bg-white', 'shadow-md', 'text-blue-600', 'active-filter');
-            btn.classList.add('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/50');
-            
-            if(btn.getAttribute('onclick').includes(`'${slug}'`)) {
-                btn.classList.add('bg-white', 'shadow-md', 'text-blue-600', 'active-filter');
-                btn.classList.remove('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/50');
-            }
-        });
-        items.forEach(item => {
-            const itemCategory = item.getAttribute('data-category');
-            if (slug === 'all' || itemCategory === slug) {
-                item.style.display = 'block';
-                setTimeout(() => item.style.opacity = '1', 10);
-            } else {
-                item.style.opacity = '0';
-                setTimeout(() => item.style.display = 'none', 400);
-            }
-        });
-        const lenis = new Lenis({
-            autoRaf: true,
-            smoothWheel: true,
-            syncTouch: true, 
-        });
-    }
-</script>
-
-    </body>
-    
-</html>
+</x-layout>
