@@ -1,11 +1,11 @@
 <x-layout>
 
-    <header class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 pb-24 flex flex-col md:flex-row items-center justify-between min-h-[85vh] overflow-hidden">
+    <header class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 pb-24 flex flex-col lg:flex-row items-center justify-between min-h-[85vh] overflow-hidden gap-16 lg:gap-8">
 
         <div class="absolute top-20 left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-pulse" aria-hidden="true"></div>
         <div class="absolute top-40 right-20 w-96 h-96 bg-cyan-300 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-pulse" style="animation-delay: 2s;" aria-hidden="true"></div>
 
-        <div class="md:w-1/2 relative z-10 pr-0 lg:pr-10">
+        <div class="lg:w-1/2 relative z-10 pr-0 lg:pr-10 text-center lg:text-left">
             <div class="inline-flex items-center space-x-3 bg-white/60 backdrop-blur-sm px-5 py-2.5 rounded-full mb-8 border border-slate-200 shadow-sm">
                 <span class="relative flex h-3.5 w-3.5">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -19,15 +19,15 @@
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Surya Andika.</span>
             </h1>
 
-            <h2 class="text-xl sm:text-2xl lg:text-3xl font-medium text-slate-600 mb-6">
-                Informatics Student &amp; Digital Architect
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 h-9 sm:h-10 lg:h-11 flex items-center justify-center lg:justify-start">
+                <span id="role-rotator" data-roles="Graphic Designer,UI/UX Designer,Web Developer" class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 transition-opacity duration-300">Graphic Designer</span>
             </h2>
 
-            <p class="text-slate-500 mb-12 max-w-xl text-base sm:text-lg lg:text-xl leading-relaxed">
+            <p class="text-slate-500 mb-12 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg lg:text-xl leading-relaxed">
                 I craft bold visual identities and brand materials, backed by the ability to design and build the digital products that carry them &mdash; from concept to high-performance code.
             </p>
 
-            <div class="flex flex-wrap gap-5 items-center">
+            <div class="flex flex-wrap gap-5 items-center justify-center lg:justify-start">
                 <a href="#projects" class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold overflow-hidden shadow-xl shadow-blue-200 hover:shadow-2xl hover:shadow-blue-300 transition-all duration-300 transform hover:-translate-y-1 text-lg">
                     <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></div>
                     <span class="relative flex items-center gap-2">
@@ -41,21 +41,61 @@
             </div>
         </div>
 
-        <div class="md:w-1/2 relative mt-16 md:mt-0 flex justify-center">
-            <div class="relative bg-white/70 backdrop-blur-md p-6 rounded-3xl shadow-xl border border-white/60">
-                <div class="flex items-center gap-4">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg" class="w-10 h-10" alt="Laravel logo">
-                    <div>
-                        <p class="text-sm text-slate-500 font-medium">Web</p>
-                        <p class="text-base font-bold text-slate-800">Developer</p>
-                    </div>
+        <div class="lg:w-1/2 relative flex justify-center items-center min-h-[380px] sm:min-h-[440px] w-full">
+            <div class="relative w-full max-w-sm h-[380px] sm:h-[440px]">
+                @php $heroProjects = $projects->take(3)->values(); @endphp
+                @foreach ($heroProjects as $i => $hp)
+                    <a href="{{ route('portfolio.show', $hp->id) }}"
+                       class="absolute rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white transition-all duration-500 hover:z-30 hover:-translate-y-2 hover:rotate-0
+                              {{ match ($i) {
+                                    0 => 'w-44 sm:w-52 top-0 left-2 sm:left-6 -rotate-6 z-10',
+                                    1 => 'w-44 sm:w-52 bottom-0 right-0 sm:right-4 rotate-6 z-10',
+                                    default => 'w-40 sm:w-44 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-2 z-20',
+                                } }}"
+                       aria-label="View {{ $hp->title }}">
+                        <img src="{{ asset('storage/' . $hp->image_path) }}" decoding="async" class="lazy-fade w-full aspect-[4/5] object-cover" alt="{{ $hp->title }}">
+                    </a>
+                @endforeach
+
+                <div class="absolute -bottom-6 -left-4 sm:-left-10 bg-white/90 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-xl border border-white/60 z-40">
+                    <p class="text-2xl sm:text-3xl font-black text-slate-900">{{ $projectCount }}+</p>
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Projects Shipped</p>
                 </div>
-            </div>
-            <div class="absolute bottom-12 -left-14 bg-white/80 backdrop-blur-md p-4 rounded-full shadow-lg border border-white/60 animate-pulse" style="animation-duration: 5s;">
-                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-plain.svg" class="w-8 h-8" alt="Illustrator logo">
             </div>
         </div>
     </header>
+
+    <section id="about" class="reveal max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+            <div class="lg:col-span-5 relative flex justify-center lg:justify-start">
+                <div class="relative w-full max-w-xs sm:max-w-sm">
+                    <div class="rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 aspect-[4/5]">
+                        <img src="{{ asset('storage/projects/dika.webp') }}" loading="lazy" decoding="async" class="lazy-fade w-full h-full object-cover" alt="Surya Andika">
+                    </div>
+                    <div class="absolute -bottom-6 -right-4 sm:-right-8 bg-white p-4 sm:p-5 rounded-2xl shadow-xl border border-slate-100">
+                        <p class="text-2xl sm:text-3xl font-black text-slate-900">3.57</p>
+                        <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Current GPA</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 text-center lg:text-left">
+                <span class="text-sm font-extrabold text-blue-600 uppercase tracking-widest">About Me</span>
+                <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 mb-6">Design-first thinking, backed by code.</h3>
+                <p class="text-slate-600 text-lg leading-relaxed mb-4">
+                    I'm Surya, an Informatics student at Andalas University and a graphic designer at 523 Studio. My work sits at the intersection of visual design and web development &mdash; I care as much about how something looks as how it's built.
+                </p>
+                <p class="text-slate-600 text-lg leading-relaxed">
+                    From brand identities to full product interfaces, I like owning a project end-to-end: research, design, and &mdash; when the project calls for it &mdash; the code that ships it.
+                </p>
+                <div class="flex flex-wrap gap-3 mt-8 justify-center lg:justify-start">
+                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">Padang, Indonesia</span>
+                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">Informatics @ Unand</span>
+                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">523 Studio</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section id="projects" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
         <div class="reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
@@ -71,7 +111,7 @@
                    style="--reveal-delay: {{ $loop->index * 80 }}ms"
                    class="reveal {{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
 
-                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }} — {{ $project->category->name ?? 'project' }} preview">
+                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async" class="lazy-fade w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }} — {{ $project->category->name ?? 'project' }} preview">
 
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -116,7 +156,7 @@
                         <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                             @foreach ($group['tools'] as $tool)
                                 <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300">
-                                    <img src="{{ $tool['icon'] }}" class="w-7 h-7" title="{{ $tool['name'] }}" alt="{{ $tool['name'] }} logo">
+                                    <img src="{{ $tool['icon'] }}" loading="lazy" decoding="async" class="w-7 h-7" title="{{ $tool['name'] }}" alt="{{ $tool['name'] }} logo">
                                 </div>
                             @endforeach
                         </div>
@@ -250,6 +290,9 @@
             </div>
 
             <div class="flex space-x-5">
+                <a href="https://github.com/SuryaAndika3005" target="_blank" rel="noopener" class="text-slate-500 hover:text-slate-900 transition-colors" aria-label="GitHub profile">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.605-2.665-.303-5.467-1.332-5.467-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                </a>
                 <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-slate-500 hover:text-blue-400 transition-colors" aria-label="LinkedIn profile">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                 </a>

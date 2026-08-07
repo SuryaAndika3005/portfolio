@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Experience;
 use App\Models\Project;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PortfolioSeeder extends Seeder
 {
@@ -20,10 +21,13 @@ class PortfolioSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::firstOrCreate([
-                'name' => $category,
-                'slug' => strtolower(str_replace([' & ', ' '], ['-', '-'], $category))
-            ]);
+            // Matched by name (a stable key) rather than name+slug, so a
+            // fixed/changed slug format updates the existing row instead of
+            // creating a duplicate category with the same name.
+            Category::updateOrCreate(
+                ['name' => $category],
+                ['slug' => Str::slug($category)]
+            );
         }
 
         // Mengambil ID Kategori untuk relasi data
@@ -123,10 +127,28 @@ class PortfolioSeeder extends Seeder
         ];
 
         foreach ($projects as $project) {
-            Project::updateOrCreate(
-                ['title' => $project['title']], 
+            $model = Project::updateOrCreate(
+                ['title' => $project['title']],
                 $project
             );
+
+            $model->update(['gallery_images' => $this->scanGallery($model->id)]);
         }
+    }
+
+    /**
+     * Extra showcase images for a project, resolved once at seed time from
+     * files already sitting in storage/app/public/projects (client-{id}-N.webp)
+     * instead of being probed with file_exists() on every page render.
+     */
+    private function scanGallery(int $projectId): array
+    {
+        $files = glob(storage_path("app/public/projects/client-{$projectId}-*.webp")) ?: [];
+        natsort($files);
+
+        return collect($files)
+            ->map(fn (string $path) => 'storage/projects/'.basename($path))
+            ->values()
+            ->all();
     }
 }

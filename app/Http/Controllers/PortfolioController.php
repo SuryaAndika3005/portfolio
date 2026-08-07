@@ -23,8 +23,9 @@ class PortfolioController extends Controller
         $categories = Category::all();
         $experiences = Experience::latest()->get();
         $skillGroups = config('skills.groups');
+        $projectCount = Project::count();
 
-        return view('portfolio.index', compact('projects', 'categories', 'experiences', 'skillGroups'));
+        return view('portfolio.index', compact('projects', 'categories', 'experiences', 'skillGroups', 'projectCount'));
     }
 
     /**
