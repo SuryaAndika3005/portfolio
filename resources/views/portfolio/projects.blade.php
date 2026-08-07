@@ -91,8 +91,7 @@
         </p>
     </main>
 
-    @push('scripts')
-        <script src="{{ asset('js/project-filter.js') }}" defer></script>
-    @endpush
+    <script src="{{ asset('js/project-filter.js') }}" defer></script>
 
-</x-layout>
+</body>
+</html>
