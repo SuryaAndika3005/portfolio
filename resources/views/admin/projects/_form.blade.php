@@ -80,7 +80,7 @@
 
     <div class="md:col-span-2 border-t border-slate-100 pt-6">
         <p class="text-sm font-bold text-slate-800 mb-1">Case Study (recommended)</p>
-        <p class="text-xs text-slate-400 mb-4">Fill these in to show recruiters and clients how you think, not just what it looks like. Leave blank to skip — the detail page falls back to the short description above.</p>
+        <p class="text-xs text-slate-400 mb-4">Fill these in to show recruiters and clients how you think, not just what it looks like. Leave blank to skip; the detail page falls back to the short description above.</p>
         <div class="space-y-5">
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-1.5">Problem</label>

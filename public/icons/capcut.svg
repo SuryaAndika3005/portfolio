@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#000000"/>
+  <path d="M16 8c-4.418 0-8 3.582-8 8s3.582 8 8 8c2.02 0 3.865-.75 5.27-1.984a1 1 0 10-1.32-1.503A5.978 5.978 0 0116 22a6 6 0 110-12c1.518 0 2.906.55 3.98 1.463a1 1 0 101.29-1.527A7.965 7.965 0 0016 8z" fill="url(#capcut-gradient)"/>
+  <defs>
+    <linearGradient id="capcut-gradient" x1="8" y1="8" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F0FF"/>
+      <stop offset="1" stop-color="#FF3CB5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>

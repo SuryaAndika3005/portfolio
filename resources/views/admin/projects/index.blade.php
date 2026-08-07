@@ -23,14 +23,14 @@
                 @forelse ($projects as $project)
                     <tr>
                         <td class="px-5 py-3 font-semibold text-slate-800">{{ $project->title }}</td>
-                        <td class="px-5 py-3 text-slate-500">{{ $project->category->name ?? '—' }}</td>
+                        <td class="px-5 py-3 text-slate-500">{{ $project->category->name ?? '-' }}</td>
                         <td class="px-5 py-3">
                             @if ($project->is_highlighted)
                                 <span class="inline-flex items-center bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full">
                                     Highlighted @if($project->featured_order !== null) (#{{ $project->featured_order }}) @endif
                                 </span>
                             @else
-                                <span class="text-slate-300">—</span>
+                                <span class="text-slate-300">-</span>
                             @endif
                         </td>
                         <td class="px-5 py-3 text-slate-500">{{ $project->created_at->diffForHumans() }}</td>
@@ -46,7 +46,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-5 py-10 text-center text-slate-400">No projects yet — add your first one.</td>
+                        <td colspan="5" class="px-5 py-10 text-center text-slate-400">No projects yet. Add your first one.</td>
                     </tr>
                 @endforelse
             </tbody>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
-    <meta name="description" content="{{ $metaDescription ?? 'Portfolio of Surya Andika — UI/UX design, graphic design, and web development.' }}">
+    <meta name="description" content="{{ $metaDescription ?? 'Portfolio of Surya Andika: UI/UX design, graphic design, and web development.' }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>

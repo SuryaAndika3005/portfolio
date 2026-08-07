@@ -18,19 +18,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 py-10 border-t border-b border-slate-200">
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Role</p>
-                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->role ?? '—' }}</p>
+                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->role ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Client</p>
-                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->client ?? '—' }}</p>
+                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->client ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Year</p>
-                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->year ?? '—' }}</p>
+                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->year ?? '-' }}</p>
                 </div>
                 <div>
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Tools</p>
-                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->tools ?? '—' }}</p>
+                    <p class="text-base sm:text-lg font-bold text-slate-800">{{ $project->tools ?? '-' }}</p>
                 </div>
             </div>
         </header>
@@ -100,7 +100,7 @@
                                         <img src="{{ asset($image) }}"
                                              loading="lazy"
                                              decoding="async"
-                                             class="lazy-fade w-full h-auto object-cover object-top transition duration-700 group-hover:scale-105"
+                                             class="lazy-fade w-full h-full object-cover object-top transition duration-700 group-hover:scale-105"
                                              alt="{{ $project->title }} detail view {{ $loop->iteration }}">
                                     </div>
                                     <div class="mt-4 px-4 pb-2">

@@ -27,7 +27,7 @@ return [
             'tools' => [
                 ['name' => 'After Effects', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-plain.svg'],
                 ['name' => 'Premiere Pro', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-plain.svg'],
-                ['name' => 'CapCut', 'icon' => 'https://cdn.worldvectorlogo.com/logos/capcut-1.svg'],
+                ['name' => 'CapCut', 'icon' => '/icons/capcut.svg'],
             ],
         ],
         [
