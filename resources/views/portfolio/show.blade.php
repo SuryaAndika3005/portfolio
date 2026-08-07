@@ -82,8 +82,8 @@
                         <div class="max-h-[650px] overflow-y-auto scrollbar-thin">
                             <img src="{{ asset('storage/' . $project->image_path) }}" decoding="async" class="lazy-fade w-full h-auto object-top" alt="{{ $project->title }} main showcase">
                         </div>
-                        <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-all duration-300 flex items-center justify-center">
-                            <span class="bg-white px-6 py-3 rounded-full font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity">Click for Fullscreen</span>
+                        <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors duration-300 ease-out flex items-center justify-center">
+                            <span class="bg-white px-6 py-3 rounded-full font-bold shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out">Click for Fullscreen</span>
                         </div>
                     </button>
 
@@ -100,7 +100,7 @@
                                         <img src="{{ asset($image) }}"
                                              loading="lazy"
                                              decoding="async"
-                                             class="lazy-fade w-full h-full object-cover object-top transition duration-700 group-hover:scale-105"
+                                             class="lazy-fade w-full h-full object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                                              alt="{{ $project->title }} detail view {{ $loop->iteration }}">
                                     </div>
                                     <div class="mt-4 px-4 pb-2">

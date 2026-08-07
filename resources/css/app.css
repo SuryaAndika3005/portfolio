@@ -28,6 +28,22 @@ html {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Thin scrollbar for small internal-scroll containers (e.g. the Journey
+   timeline when a category has many entries). */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
 /* Scroll-reveal entrance animation (see reveal-on-scroll.js). Elements start
    hidden/offset and animate in once they cross into the viewport. */
 .reveal {

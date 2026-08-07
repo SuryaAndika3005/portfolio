@@ -30,11 +30,11 @@
                             <img src="{{ asset('storage/' . $project->image_path) }}"
                                  loading="lazy"
                                  decoding="async"
-                                 class="lazy-fade w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out"
+                                 class="lazy-fade w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
                                  alt="{{ $project->title }}, {{ $project->category->name ?? 'project' }} preview">
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500">
-                                <div class="absolute bottom-0 left-0 w-full p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out">
+                                <div class="absolute bottom-0 left-0 w-full p-8 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 ease-out">
                                     <span class="bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-widest">
                                         {{ $project->category->name ?? 'Uncategorized' }}
                                     </span>

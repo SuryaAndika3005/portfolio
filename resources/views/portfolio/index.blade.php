@@ -40,19 +40,9 @@
                 </a>
             </div>
 
-            <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 mt-16 pt-8 border-t border-slate-200/70">
-                <div>
-                    <p class="text-3xl font-black text-slate-900">{{ $projectCount }}+</p>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Projects Shipped</p>
-                </div>
-                <div>
-                    <p class="text-3xl font-black text-slate-900">3</p>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Disciplines</p>
-                </div>
-                <div>
-                    <p class="text-3xl font-black text-slate-900">523</p>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Studio</p>
-                </div>
+            <div class="flex items-center justify-center gap-3 mt-16 pt-8 border-t border-slate-200/70">
+                <p class="text-3xl font-black text-slate-900">{{ $projectCount }}+</p>
+                <p class="text-sm font-semibold text-slate-500 text-left leading-snug">Projects shipped<br>across design &amp; development</p>
             </div>
         </div>
     </header>
@@ -97,13 +87,13 @@
             @forelse($projects as $project)
                 <a href="{{ route('portfolio.show', $project->id) }}"
                    style="--reveal-delay: {{ $loop->index * 80 }}ms"
-                   class="reveal {{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/50 block">
+                   class="reveal {{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-500 ease-out border border-slate-200/50 block">
 
-                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async" class="lazy-fade w-full h-full object-cover transform group-hover:scale-110 transition duration-700 ease-out" alt="{{ $project->title }}, {{ $project->category->name ?? 'project' }} preview">
+                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async" class="lazy-fade w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out" alt="{{ $project->title }}, {{ $project->category->name ?? 'project' }} preview">
 
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"></div>
 
-                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-6 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
+                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
                         <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
                             {{ $project->category->name ?? 'Uncategorized' }}
                         </span>
@@ -141,11 +131,10 @@
                             <h4 class="text-xl font-bold text-white mb-3">{{ $group['title'] }}</h4>
                             <p class="text-sm text-slate-400 mb-8 leading-relaxed">{{ $group['description'] }}</p>
                         </div>
-                        <div class="flex flex-wrap gap-2 opacity-90 group-hover:opacity-100 transition duration-500">
+                        <div class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
                             @foreach ($group['tools'] as $tool)
-                                <div class="flex items-center gap-2 bg-white/95 pl-1.5 pr-3 py-1.5 rounded-full shadow-lg">
-                                    <img src="{{ $tool['icon'] }}" loading="lazy" decoding="async" class="w-5 h-5 shrink-0" alt="">
-                                    <span class="text-xs font-semibold text-slate-700">{{ $tool['name'] }}</span>
+                                <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300">
+                                    <img src="{{ $tool['icon'] }}" loading="lazy" decoding="async" class="w-7 h-7" title="{{ $tool['name'] }}" alt="{{ $tool['name'] }} logo">
                                 </div>
                             @endforeach
                         </div>
@@ -184,9 +173,9 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             @forelse ($experiences->groupBy('category') as $category => $items)
-                <div style="--reveal-delay: {{ $loop->index * 100 }}ms" class="reveal bg-white rounded-[2rem] p-6 sm:p-7 shadow-lg shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300">
-                    <h4 class="text-lg font-extrabold text-slate-800 mb-6">{{ $category }}</h4>
-                    <div class="relative pl-5 border-l-2 border-slate-100 space-y-5">
+                <div style="--reveal-delay: {{ $loop->index * 100 }}ms" class="reveal bg-white rounded-[2rem] p-6 sm:p-7 shadow-lg shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300 flex flex-col max-h-[26rem]">
+                    <h4 class="text-lg font-extrabold text-slate-800 mb-6 shrink-0">{{ $category }}</h4>
+                    <div class="scrollbar-thin relative pl-5 border-l-2 border-slate-100 space-y-5 overflow-y-auto pr-2 -mr-2">
                         @foreach ($items as $item)
                             <div class="relative">
                                 <div class="absolute -left-[1.4rem] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full ring-4 ring-white"></div>
