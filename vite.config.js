@@ -9,7 +9,7 @@ export default defineConfig({
             input: [
                 "resources/css/app.css",
                 "resources/js/app.js",
-                "resources/js/project-filter.js",
+                "resources/js/project-accordion.js",
                 "resources/js/image-modal.js",
             ],
             refresh: true,

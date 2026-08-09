@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         // is 'hashed', so it hashes automatically on save. Hashing it again
         // here would double-hash it and lock you out.
         User::updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'admin@example.com')],
+            ['email' => env('ADMIN_EMAIL', 'surdik2811@gmail.com')],
             [
                 'name' => 'Admin',
                 'password' => env('ADMIN_PASSWORD', 'password'),

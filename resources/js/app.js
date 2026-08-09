@@ -1,5 +1,5 @@
 // Sticky nav shadow-on-scroll + mobile menu toggle.
-// Shared across all pages via the layout — guarded so it no-ops
+// Shared across all pages via the layout. Guarded so it no-ops
 // safely on pages that don't render the full nav (e.g. show/back-nav variant).
 
 // Top loading bar starts filling immediately, doesn't wait for DOMContentLoaded.

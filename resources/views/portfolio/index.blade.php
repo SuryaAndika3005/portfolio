@@ -79,32 +79,56 @@
         <div class="reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
             <div>
                 <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
-                <p class="text-lg text-slate-500">A curation of my finest visual works and digital explorations.</p>
+                <p class="text-lg text-slate-500">Three disciplines, one practice. Hover a panel to explore it.</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[320px]">
-            @forelse($projects as $project)
-                <a href="{{ route('portfolio.show', $project->id) }}"
-                   style="--reveal-delay: {{ $loop->index * 80 }}ms"
-                   class="reveal {{ $loop->first ? 'lg:col-span-2' : '' }} group relative rounded-[2rem] overflow-hidden bg-slate-100 cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-500 ease-out border border-slate-200/50 block">
+        @php
+            $accordionPanels = [
+                ['slug' => 'graphic-design', 'label' => 'Graphic Design', 'tagline' => 'Visual identities & brand campaigns', 'badge' => 'bg-blue-600/90'],
+                ['slug' => 'uiux-design', 'label' => 'UI/UX Design', 'tagline' => 'Product flows, wireframes & prototypes', 'badge' => 'bg-violet-600/90'],
+                ['slug' => 'it-development', 'label' => 'Web & App Development', 'tagline' => 'Responsive, production-ready builds', 'badge' => 'bg-emerald-600/90'],
+            ];
+            $accordionGrouped = $projects->groupBy(fn ($project) => $project->category->slug ?? 'other')->toBase();
+        @endphp
 
-                    <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async" class="lazy-fade w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out" alt="{{ $project->title }}, {{ $project->category->name ?? 'project' }} preview">
+        @if ($accordionGrouped->isEmpty())
+            <div class="py-20 text-center text-slate-400">No projects available at the moment.</div>
+        @else
+            <div id="works-accordion" class="reveal flex flex-col lg:flex-row gap-4 lg:h-[600px]">
+                @foreach ($accordionPanels as $panel)
+                    @php($items = $accordionGrouped->get($panel['slug'], collect()))
+                    @continue($items->isEmpty())
+                    <a href="{{ route('portfolio.projects') }}#{{ $panel['slug'] }}"
+                       data-accordion-panel
+                       class="accordion-panel group relative block overflow-hidden rounded-[2rem] min-h-[240px] lg:min-h-0 bg-slate-900">
+                        <div class="absolute inset-0">
+                            {{-- Capped at 4 slides: keeping every image in a category stacked
+                                 and painting simultaneously (up to 7 for Graphic Design) was
+                                 part of what made hovering this row feel heavy. --}}
+                            @foreach ($items->take(4) as $i => $project)
+                                <img data-slide
+                                     src="{{ asset('storage/' . $project->image_path) }}"
+                                     loading="lazy"
+                                     decoding="async"
+                                     class="absolute inset-0 w-full h-full object-cover object-top {{ $i === 0 ? 'is-active' : '' }}"
+                                     alt="{{ $project->title }}">
+                            @endforeach
+                        </div>
 
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-slate-900/10"></div>
 
-                    <div class="absolute bottom-0 left-0 w-full p-8 translate-y-3 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out">
-                        <span class="bg-blue-600/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full mb-3 inline-block uppercase tracking-wider">
-                            {{ $project->category->name ?? 'Uncategorized' }}
-                        </span>
-                        <h4 class="text-2xl lg:text-3xl font-bold text-white mb-2">{{ $project->title }}</h4>
-                        <p class="text-sm text-slate-300 line-clamp-2">{{ $project->description }}</p>
-                    </div>
-                </a>
-            @empty
-                <div class="lg:col-span-3 py-20 text-center text-slate-400">No projects available at the moment.</div>
-            @endforelse
-        </div>
+                        <div class="absolute inset-0 p-6 lg:p-8 flex flex-col justify-end">
+                            <span class="accordion-count {{ $panel['badge'] }} backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider w-fit">
+                                {{ $items->count() }} {{ Str::plural('Work', $items->count()) }}
+                            </span>
+                            <h4 class="accordion-title font-black text-white leading-tight">{{ $panel['label'] }}</h4>
+                            <p class="accordion-tagline text-sm text-slate-300 mt-1 max-w-xs">{{ $panel['tagline'] }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        @endif
 
         <div class="mt-16 text-center">
             <a href="{{ route('portfolio.projects') }}" class="inline-flex items-center gap-3 px-10 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all duration-300 shadow-xl hover:shadow-blue-500/30 group">
@@ -157,8 +181,8 @@
                         <p class="text-lg text-slate-500 font-medium mt-1">Andalas University</p>
                     </div>
                 </div>
-                <div class="bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100 shadow-sm text-center min-w-[140px] group-hover:border-blue-200 transition-colors">
-                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Current GPA</p>
+                <div class="w-full md:w-auto flex items-center justify-between md:block gap-4 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100 shadow-sm text-left md:text-center md:min-w-[140px] group-hover:border-blue-200 transition-colors">
+                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-0 md:mb-1">Current GPA</p>
                     <p class="text-3xl font-black text-slate-800">3.57</p>
                 </div>
             </div>
@@ -283,5 +307,9 @@
             </div>
         </div>
     </section>
+
+    @push('scripts')
+        @vite('resources/js/project-accordion.js')
+    @endpush
 
 </x-layout>

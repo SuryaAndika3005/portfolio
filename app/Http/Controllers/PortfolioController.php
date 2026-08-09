@@ -15,11 +15,12 @@ use Illuminate\View\View;
 class PortfolioController extends Controller
 {
     /**
-     * Homepage: top 5 latest projects, all categories, and experience timeline.
+     * Homepage: all projects (grouped by category into the works accordion),
+     * all categories, and experience timeline.
      */
     public function index(): View
     {
-        $projects = Project::with('category')->latest()->take(5)->get();
+        $projects = Project::with('category')->latest()->get();
         $categories = Category::all();
         $experiences = Experience::latest()->get();
         $skillGroups = config('skills.groups');
