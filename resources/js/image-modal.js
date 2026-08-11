@@ -9,18 +9,27 @@ import gsap from 'gsap';
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Peek stack on the detail-page showcase preview ---
-    // The two tucked-behind gallery cards are the card's only hover effect
-    // (no CTA text/dim overlay on the main image), so they need to read as a
-    // deliberate "pop" rather than a plain fade — GSAP's back-out easing
-    // gives that little overshoot instead of CSS's flat ease-out.
+    // The two tucked-behind gallery cards sit visibly fanned out at rest
+    // (a real stacked-cards look, not hidden until hover) — hovering just
+    // spreads the fan further outward, like naturally spreading a hand of
+    // cards, rather than popping in from nothing.
     const peekWrapper = document.querySelector('[data-peek-wrapper]');
     if (peekWrapper) {
         const peeks = Array.from(peekWrapper.querySelectorAll('[data-peek]'));
         if (peeks.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            // Sync GSAP's transform tracking with the Tailwind rest state
+            // (scale-95 -rotate-6/rotate-6) so the first hover tweens from
+            // the right place instead of guessing off the CSS-applied value.
+            peeks.forEach((peek, i) => {
+                gsap.set(peek, { scale: 0.95, rotate: i === 0 ? -6 : 6, x: 0, y: 0 });
+            });
+
             peekWrapper.addEventListener('mouseenter', () => {
                 gsap.to(peeks, {
-                    opacity: 1,
                     scale: 1,
+                    rotate: (i) => (i === 0 ? -12 : 12),
+                    x: (i) => (i === 0 ? -18 : 18),
+                    y: -8,
                     duration: 0.45,
                     ease: 'back.out(1.3)',
                     stagger: 0.06,
@@ -29,10 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             peekWrapper.addEventListener('mouseleave', () => {
                 gsap.to(peeks, {
-                    opacity: 0,
-                    scale: 0.9,
-                    duration: 0.25,
-                    ease: 'power2.in',
+                    scale: 0.95,
+                    rotate: (i) => (i === 0 ? -6 : 6),
+                    x: 0,
+                    y: 0,
+                    duration: 0.3,
+                    ease: 'power2.out',
                     overwrite: 'auto',
                 });
             });
@@ -56,6 +67,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hasMultiple = slides.length > 1;
     let currentIndex = 0;
+
+    // Small fixed-crop "peek" thumbnails of the prev/next image, pinned near
+    // the edges. A first attempt exposed the neighboring *slide* itself at
+    // the edges (narrower slide + overflow), but that only works for images
+    // that already fill their slide edge-to-edge — most of this portfolio is
+    // portrait posters/Figma exports that sit centered with wide empty
+    // margins, so the "peek" showed blank space instead of any photo. A
+    // dedicated object-cover thumbnail sidesteps that entirely.
+    const peekPrevBtn = document.getElementById('modalPeekPrev');
+    const peekPrevImg = document.getElementById('modalPeekPrevImg');
+    const peekNextBtn = document.getElementById('modalPeekNext');
+    const peekNextImg = document.getElementById('modalPeekNextImg');
+
+    if (!hasMultiple) {
+        if (peekPrevBtn) peekPrevBtn.style.display = 'none';
+        if (peekNextBtn) peekNextBtn.style.display = 'none';
+    }
+
+    const updatePeeks = () => {
+        if (!hasMultiple) return;
+        const prevSrc = slides[(currentIndex - 1 + slides.length) % slides.length]
+            .querySelector('[data-zoom-img]')?.src;
+        const nextSrc = slides[(currentIndex + 1) % slides.length]
+            .querySelector('[data-zoom-img]')?.src;
+        if (peekPrevImg && prevSrc) peekPrevImg.src = prevSrc;
+        if (peekNextImg && nextSrc) peekNextImg.src = nextSrc;
+    };
 
     // --- Zoom/pan, scoped per slide ---
     // Listeners are on the whole slide (not just the <img>) because a
@@ -172,11 +210,18 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.addEventListener('pointerup', endDrag);
         slide.addEventListener('pointercancel', endDrag);
 
-        // A single tap/click toggles zoom (in on the tapped point, or back
-        // out if already zoomed) — but only when it wasn't actually a drag.
+        // A single tap/click ON the photo itself toggles zoom (in on the
+        // tapped point, or back out if already zoomed). Clicking anywhere
+        // else in the slide — the empty letterboxed space around a
+        // fit-to-screen image — closes the viewer instead, matching how a
+        // lightbox is expected to behave.
         slide.addEventListener('click', (e) => {
             if (wasDragging) {
                 wasDragging = false;
+                return;
+            }
+            if (e.target !== img) {
+                closeModal();
                 return;
             }
             const state = stateFor(img);
@@ -207,6 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power3.inOut',
         });
         updateChrome();
+        updatePeeks();
     };
 
     const openModal = (index) => {
@@ -231,6 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
     nextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
+    peekPrevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
+    peekNextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
 
     closeBtn?.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {

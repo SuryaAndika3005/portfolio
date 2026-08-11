@@ -106,19 +106,18 @@
                     </div>
 
                     <div data-peek-wrapper class="relative py-3">
-                        {{-- Peek stack: up to 2 gallery shots tucked behind the (now centered,
-                             inset) main preview, one to each side. Positioned/rotated here in
-                             Blade; image-modal.js pops them in with GSAP on hover (a proper
-                             "cards popping out" reveal, not a plain CSS fade) since that's the
-                             only hover effect this card gets. Purely decorative
+                        {{-- Peek stack: up to 2 gallery shots genuinely stacked behind the (now
+                             centered, inset) main preview, one to each side — visible at rest
+                             like a real fanned card stack, not hidden until hover. Hovering just
+                             spreads the fan further (image-modal.js/GSAP). Purely decorative
                              (pointer-events-none) so they never steal the click. --}}
                         @if ($peekImages->count() >= 1)
-                            <div data-peek class="absolute inset-y-3 left-0 w-[78%] rounded-[2rem] overflow-hidden shadow-lg border-4 border-white pointer-events-none opacity-0 scale-90 -rotate-4">
+                            <div data-peek class="absolute inset-y-3 left-0 w-[78%] rounded-[2rem] overflow-hidden shadow-lg border-4 border-white pointer-events-none scale-95 -rotate-6">
                                 <img src="{{ asset($peekImages[0]) }}" class="w-full h-full object-cover object-top brightness-90" alt="">
                             </div>
                         @endif
                         @if ($peekImages->count() >= 2)
-                            <div data-peek class="absolute inset-y-3 right-0 w-[78%] rounded-[2rem] overflow-hidden shadow-lg border-4 border-white pointer-events-none opacity-0 scale-90 rotate-4">
+                            <div data-peek class="absolute inset-y-3 right-0 w-[78%] rounded-[2rem] overflow-hidden shadow-lg border-4 border-white pointer-events-none scale-95 rotate-6">
                                 <img src="{{ asset($peekImages[1]) }}" class="w-full h-full object-cover object-top brightness-90" alt="">
                             </div>
                         @endif
@@ -159,6 +158,17 @@
         </button>
         <button type="button" id="modalNext" class="hidden absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white p-2.5 md:p-3 rounded-full backdrop-blur-sm transition-colors duration-300" aria-label="Next image">
             <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+
+        {{-- Small fixed-crop previews of the prev/next image pinned near the edges
+             (a carousel "there's more this way" cue) — a fixed object-cover thumbnail
+             rather than exposing part of the actual slide, since most images here are
+             portrait posters/Figma exports that wouldn't reach a slide's edge anyway. --}}
+        <button type="button" id="modalPeekPrev" class="hidden md:block absolute left-20 lg:left-28 top-1/2 -translate-y-1/2 z-[5] w-14 lg:w-16 aspect-[3/4] rounded-xl overflow-hidden border-2 border-white/15 shadow-2xl opacity-50 hover:opacity-90 transition-opacity duration-300 -rotate-6" aria-label="Previous image preview">
+            <img id="modalPeekPrevImg" src="" class="w-full h-full object-cover object-top" alt="">
+        </button>
+        <button type="button" id="modalPeekNext" class="hidden md:block absolute right-20 lg:right-28 top-1/2 -translate-y-1/2 z-[5] w-14 lg:w-16 aspect-[3/4] rounded-xl overflow-hidden border-2 border-white/15 shadow-2xl opacity-50 hover:opacity-90 transition-opacity duration-300 rotate-6" aria-label="Next image preview">
+            <img id="modalPeekNextImg" src="" class="w-full h-full object-cover object-top" alt="">
         </button>
 
         {{-- GSAP-driven horizontal slider: every project image is a persistent slide (no

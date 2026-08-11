@@ -40,9 +40,35 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Points directly at public/storage rather than storage/app/public +
+            // a symlink. On this project's production host there's no terminal
+            // access to run `storage:link`, so the seed images were placed
+            // straight into public/storage/projects by hand; pointing the disk
+            // root here too means new admin-panel uploads land in that same
+            // real, already-web-accessible folder instead of the invisible
+            // storage/app/public location the symlink would otherwise bridge.
+            // A real symlink (via storage:link) still works fine locally,
+            // since public/storage transparently resolves through it either way.
+            'root' => public_path('storage'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
+            // Explicit rather than relying on Flysystem's default converter:
+            // on the production host, files uploaded through the admin panel
+            // were coming out with permissions the web server couldn't read
+            // (403 on a freshly-uploaded image) even though this disk is
+            // 'public' — almost certainly the server's PHP-FPM umask. Setting
+            // this here makes every write chmod explicitly instead of
+            // depending on that umask.
+            'permissions' => [
+                'file' => [
+                    'public' => 0644,
+                    'private' => 0600,
+                ],
+                'dir' => [
+                    'public' => 0755,
+                    'private' => 0700,
+                ],
+            ],
             'throw' => false,
             'report' => false,
         ],
