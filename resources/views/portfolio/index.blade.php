@@ -460,7 +460,7 @@
                                 WhatsApp &middot; {{ config('portfolio.whatsapp_display') }}
                             </a>
                         @endif
-                        <a href="https://linkedin.com/in/suryaandika" target="_blank" rel="noopener"
+                        <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener"
                             class="btn btn-secondary btn-secondary--on-dark">
                             LinkedIn
                         </a>
@@ -525,7 +525,7 @@
                 </div>
 
                 <nav aria-label="{{ __('Footer') }}" class="flex items-center gap-6">
-                    <a href="https://linkedin.com/in/suryaandika" target="_blank" rel="noopener" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
+                    <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
                     <a href="https://instagram.com" target="_blank" rel="noopener" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">Instagram</a>
                     <a href="#top" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">{{ __('Back to top') }} &uarr;</a>
                 </nav>

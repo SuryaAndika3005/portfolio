@@ -25,7 +25,7 @@
             <nav aria-label="{{ __('Footer') }}" class="lg:col-span-3 flex flex-row lg:flex-col gap-x-6 gap-y-3 flex-wrap">
                 <a href="{{ route('home') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Home') }}</a>
                 <a href="{{ route('portfolio.projects') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Projects') }}</a>
-                <a href="https://linkedin.com/in/suryaandika" target="_blank" rel="noopener" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
+                <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
                 <a href="mailto:{{ config('portfolio.contact_email') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Email') }}</a>
             </nav>
 
