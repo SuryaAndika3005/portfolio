@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             ['email' => env('ADMIN_EMAIL', 'surdik2811@gmail.com')],
             [
                 'name' => 'Admin',
-                'password' => env('ADMIN_PASSWORD', 'password'),
+                'password' => env('ADMIN_PASSWORD', 'Dikanya1006'),
             ]
         );
 

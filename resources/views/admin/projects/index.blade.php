@@ -1,56 +1,104 @@
 @extends('admin._layout', ['title' => 'Projects'])
 
 @section('content')
-    <div class="flex items-center justify-between mb-8">
-        <h1 class="text-2xl font-black text-slate-900">Projects</h1>
-        <a href="{{ route('admin.projects.create') }}" class="bg-slate-900 text-white text-sm font-bold px-4 py-2.5 rounded-xl hover:bg-slate-800">
-            + Add Project
-        </a>
+    <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <h1 class="text-subheading font-extrabold text-ink">Projects</h1>
+        <a href="{{ route('admin.projects.create') }}" class="btn btn-primary btn--compact">+ New Project</a>
     </div>
 
-    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-        <table class="w-full text-sm">
-            <thead class="bg-slate-50 text-slate-500 text-left">
+    <form method="GET" action="{{ route('admin.projects.index') }}" class="flex flex-wrap items-center gap-3 mb-5">
+        <input type="text" name="q" value="{{ request('q') }}" placeholder="Search by title…"
+               class="admin-input" style="max-width: 240px;">
+        <select id="admin-filter-category" name="category" class="admin-input" style="max-width: 200px;">
+            <option value="">All categories</option>
+            @foreach ($categories as $category)
+                <option value="{{ $category->id }}" @selected(request('category') == $category->id)>{{ $category->name }}</option>
+            @endforeach
+        </select>
+        <button type="submit" class="btn btn-secondary btn--compact">Search</button>
+        @if (request('q') || request('category'))
+            <a href="{{ route('admin.projects.index') }}" class="btn-text btn--compact">Clear</a>
+        @endif
+    </form>
+
+    {{-- Desktop/tablet: compact table. --}}
+    <div class="admin-table-wrap hidden lg:block">
+        <table class="admin-table">
+            <thead>
                 <tr>
-                    <th class="px-5 py-3 font-semibold">Project</th>
-                    <th class="px-5 py-3 font-semibold">Category</th>
-                    <th class="px-5 py-3 font-semibold">Highlighted</th>
-                    <th class="px-5 py-3 font-semibold">Added</th>
-                    <th class="px-5 py-3"></th>
+                    <th style="width: 76px;">Cover</th>
+                    <th>Project</th>
+                    <th>Category</th>
+                    <th>Updated</th>
+                    <th class="text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody>
                 @forelse ($projects as $project)
                     <tr>
-                        <td class="px-5 py-3 font-semibold text-slate-800">{{ $project->title }}</td>
-                        <td class="px-5 py-3 text-slate-500">{{ $project->category->name ?? '-' }}</td>
-                        <td class="px-5 py-3">
-                            @if ($project->is_highlighted)
-                                <span class="inline-flex items-center bg-blue-50 text-blue-600 text-xs font-bold px-2.5 py-1 rounded-full">
-                                    Highlighted @if($project->featured_order !== null) (#{{ $project->featured_order }}) @endif
-                                </span>
-                            @else
-                                <span class="text-slate-300">-</span>
-                            @endif
+                        <td>
+                            <img src="{{ asset('storage/' . $project->coverImagePath()) }}" alt="" class="admin-row-thumb">
                         </td>
-                        <td class="px-5 py-3 text-slate-500">{{ $project->created_at->diffForHumans() }}</td>
-                        <td class="px-5 py-3 text-right space-x-3">
-                            <a href="{{ route('admin.projects.edit', $project) }}" class="text-blue-600 font-semibold hover:underline">Edit</a>
+                        <td>
+                            <p class="font-semibold text-ink">{{ $project->title }}</p>
+                        </td>
+                        <td class="text-muted">{{ $project->category->name ?? '—' }}</td>
+                        <td class="text-muted">{{ $project->updated_at->diffForHumans() }}</td>
+                        <td class="text-right whitespace-nowrap">
+                            <a href="{{ route('admin.projects.edit', $project) }}" class="text-small font-semibold text-primary hover:underline">Edit</a>
+                            <span class="text-border-light mx-1.5">&middot;</span>
+                            <a href="{{ route('portfolio.show', $project->id) }}" target="_blank" rel="noopener" class="text-small font-semibold text-muted hover:text-ink">View ↗</a>
+                            <span class="text-border-light mx-1.5">&middot;</span>
                             <form method="POST" action="{{ route('admin.projects.destroy', $project) }}" class="inline"
-                                  onsubmit="return confirm('Delete this project? This cannot be undone.');">
+                                  data-confirm-delete data-confirm-title="&quot;{{ $project->title }}&quot;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-500 font-semibold hover:underline">Delete</button>
+                                <button type="submit" class="text-small font-semibold" style="color:#DC2626;">Delete</button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-5 py-10 text-center text-slate-400">No projects yet. Add your first one.</td>
+                        <td colspan="5">
+                            <div class="admin-empty">
+                                <p>No projects yet.</p>
+                                <p>Create your first project to get started.</p>
+                            </div>
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+    </div>
+
+    {{-- Mobile: stacked rows instead of a horizontally-scrolling table. --}}
+    <div class="lg:hidden space-y-3">
+        @forelse ($projects as $project)
+            <div class="admin-table-wrap p-4 flex items-center gap-3">
+                <img src="{{ asset('storage/' . $project->coverImagePath()) }}" alt="" class="admin-row-thumb" style="width: 64px; height: 48px;">
+                <div class="min-w-0 flex-1">
+                    <p class="font-semibold text-ink truncate">{{ $project->title }}</p>
+                    <p class="text-meta text-muted">{{ $project->category->name ?? '—' }} &middot; {{ $project->updated_at->diffForHumans() }}</p>
+                    <div class="mt-2 flex items-center gap-3">
+                        <a href="{{ route('admin.projects.edit', $project) }}" class="text-small font-semibold text-primary">Edit</a>
+                        <a href="{{ route('portfolio.show', $project->id) }}" target="_blank" rel="noopener" class="text-small font-semibold text-muted">View ↗</a>
+                        <form method="POST" action="{{ route('admin.projects.destroy', $project) }}"
+                              data-confirm-delete data-confirm-title="&quot;{{ $project->title }}&quot;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-small font-semibold" style="color:#DC2626;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="admin-table-wrap">
+                <div class="admin-empty">
+                    <p>No projects yet.</p>
+                    <p>Create your first project to get started.</p>
+                </div>
+            </div>
+        @endforelse
     </div>
 
     <div class="mt-6">

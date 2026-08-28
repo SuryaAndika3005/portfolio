@@ -1,63 +1,66 @@
 <?php
 
+// Skills remain code-managed (not database-backed) — see the Batch 8B
+// capability matrix: this content changes rarely enough that a CMS layer
+// isn't warranted. Each group renders as one full-width interactive
+// capability band on the homepage (index.blade.php's Skills section).
+// Tool `icon` values are mask-image sources (see .skill-tool-icon in
+// app.css) — every icon renders as a flat, single-color shape regardless
+// of the source SVG's own colors, so mixing devicon brand-color SVGs here
+// is safe and never produces the illegible-icon regression documented in
+// CURRENT_PORTFOLIO_AUDIT.md.
+
 return [
     'groups' => [
         [
-            'title' => 'Visual Crafting',
-            'description' => 'Crafting visual identities, brand materials, and impactful graphic designs that tell a compelling story.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>',
-            'tools' => [
-                ['name' => 'Adobe Illustrator', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-plain.svg'],
-                ['name' => 'Adobe Photoshop', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-plain.svg'],
-                ['name' => 'Canva', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg'],
+            'label' => 'Design',
+            'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2 2 7l10 5 10-5-10-5Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg>',
+            'primary' => [
+                'Visual identity and brand systems',
+                'Layout, composition, and print-ready design',
             ],
-        ],
-        [
-            'title' => 'UI/UX Design',
-            'description' => 'Building intuitive user flows through comprehensive wireframing, mockups, and interactive prototyping.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 21h6l-.75-4M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>',
+            'secondary' => [
+                'Typography-led design systems · Campaign and social collateral',
+            ],
             'tools' => [
+                ['name' => 'Photoshop', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-plain.svg'],
+                ['name' => 'Illustrator', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/illustrator/illustrator-plain.svg'],
                 ['name' => 'Figma', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg'],
             ],
         ],
         [
-            'title' => 'Dynamic Visuals',
-            'description' => 'Creating motion graphics, video editing, and creative documentation for impactful media publications.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>',
-            'tools' => [
-                ['name' => 'After Effects', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/aftereffects/aftereffects-plain.svg'],
-                ['name' => 'Premiere Pro', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/premierepro/premierepro-plain.svg'],
-                ['name' => 'CapCut', 'icon' => '/icons/capcut.svg'],
+            'label' => 'Development',
+            'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m8 9-4 3 4 3m8-6 4 3-4 3M13 5l-2 14"/></svg>',
+            'primary' => [
+                'Web application development',
+                'Responsive interface implementation',
             ],
-        ],
-        [
-            'title' => 'Web Development',
-            'description' => 'Developing solid, secure, and responsive web applications and landing pages using modern frameworks.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>',
+            'secondary' => [
+                'Laravel and PHP backends · Component-driven Tailwind front-ends',
+            ],
             'tools' => [
                 ['name' => 'Laravel', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg'],
-                ['name' => 'Tailwind', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg'],
+                ['name' => 'PHP', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg'],
+                ['name' => 'JavaScript', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg'],
+                ['name' => 'MySQL', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg'],
+                ['name' => 'Tailwind CSS', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg'],
             ],
         ],
         [
-            'title' => 'Mobile Apps',
-            'description' => 'Designing and building high-performance, cross-platform mobile applications with seamless interface integration.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>',
-            'tools' => [
-                ['name' => 'Flutter', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg'],
+            'label' => 'Applied AI & Data',
+            'icon' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/><path stroke-linecap="round" d="m6.5 7 4 4m7-4-4 4m-7 3 4 4m7-4-4 4"/></svg>',
+            'primary' => [
+                'Machine learning fundamentals',
+                'Data analysis and visualization',
             ],
-        ],
-        [
-            'title' => 'Data & AI',
-            'description' => 'Implementing machine learning algorithms, predictive models, computer vision, and big data analysis.',
-            'icon' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>',
+            'secondary' => [
+                'Computer vision experiments · Model training and evaluation',
+            ],
             'tools' => [
                 ['name' => 'Python', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg'],
                 ['name' => 'TensorFlow', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg'],
-                ['name' => 'Scikit-learn', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/scikitlearn/scikitlearn-original.svg'],
                 ['name' => 'OpenCV', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/opencv/opencv-original.svg'],
-                ['name' => 'Pandas', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pandas/pandas-original.svg'],
-                ['name' => 'Jupyter', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jupyter/jupyter-original.svg'],
+                ['name' => 'scikit-learn', 'icon' => 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/scikitlearn/scikitlearn-original.svg'],
             ],
         ],
     ],

@@ -29,14 +29,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenu = document.getElementById('mobile-menu');
     const menuIcon = document.getElementById('menu-icon');
 
+    // The archive topbar and the Project Detail topbar (nav.blade.php's
+    // archiveChapters/showBack branches) both keep their own fixed,
+    // deliberately compact padding (py-3.5, see nav.blade.php) -- toggling
+    // py-4/py-5 on top of that would fight it and make their carefully-
+    // sized height drift on scroll, which the brief explicitly doesn't
+    // want ("do not dramatically animate the topbar layout"). Shadow/
+    // background-opacity-on-scroll still applies there; only the padding
+    // toggle is skipped.
     if (nav) {
+        const isCompactTopbar = nav.hasAttribute('data-compact-topbar');
         const applyNavState = () => {
             const scrolled = window.scrollY > 50;
             nav.classList.toggle('shadow-sm', scrolled);
             nav.classList.toggle('bg-white/95', scrolled);
             nav.classList.toggle('bg-white/90', !scrolled);
-            nav.classList.toggle('py-4', scrolled);
-            nav.classList.toggle('py-5', !scrolled);
+            if (!isCompactTopbar) {
+                nav.classList.toggle('py-4', scrolled);
+                nav.classList.toggle('py-5', !scrolled);
+            }
         };
 
         applyNavState();
@@ -54,27 +65,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Hero role rotator: cycles the text of #role-rotator through the
-    // comma-separated roles in its data-roles attribute. No-ops on pages
-    // without the element.
-    const roleEl = document.getElementById('role-rotator');
-    if (roleEl) {
-        const roles = (roleEl.dataset.roles || '')
-            .split(',')
-            .map((role) => role.trim())
-            .filter(Boolean);
+    // Contact form: Send Message stays a real, always-submittable button
+    // (progressive enhancement -- no `disabled` in the raw HTML, so the
+    // form still works with JS off) but visibly reflects whether the
+    // required fields actually validate, so its enabled/disabled state is
+    // never ambiguous once JS has loaded.
+    const contactForm = document.getElementById('contact-form');
+    const contactSubmit = document.getElementById('contact-submit');
+    if (contactForm && contactSubmit) {
+        const nameField = document.getElementById('contact-name');
+        const emailField = document.getElementById('contact-email');
+        const messageField = document.getElementById('contact-message');
 
-        if (roles.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            let index = 0;
-            setInterval(() => {
-                index = (index + 1) % roles.length;
-                roleEl.style.opacity = '0';
-                setTimeout(() => {
-                    roleEl.textContent = roles[index];
-                    roleEl.style.opacity = '1';
-                }, 300);
-            }, 2600);
-        }
+        const updateSubmitState = () => {
+            const ready = nameField.value.trim() !== ''
+                && emailField.value.trim() !== '' && emailField.checkValidity()
+                && messageField.value.trim() !== '';
+            contactSubmit.disabled = !ready;
+        };
+
+        [nameField, emailField, messageField].forEach((field) => {
+            field.addEventListener('input', updateSubmitState);
+        });
+        updateSubmitState();
     }
 
     // Scroll-reveal: elements with class="reveal" fade/slide in once they

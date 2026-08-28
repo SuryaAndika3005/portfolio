@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Gemini\GeminiClient;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -10,7 +11,17 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(GeminiClient::class, function () {
+            $config = config('services.gemini');
+
+            return new GeminiClient(
+                apiKey: $config['key'],
+                model: $config['default_model'],
+                baseUrl: $config['base_url'],
+                apiRevision: $config['api_revision'],
+                timeout: $config['timeout'],
+            );
+        });
     }
 
     public function boot(): void
@@ -19,6 +30,13 @@ class AppServiceProvider extends ServiceProvider
         // closes the previously unthrottled /contact spam vector.
         RateLimiter::for('contact', function ($request) {
             return Limit::perMinute(3)->by($request->ip());
+        });
+
+        // AI Project Assistant is an Admin-only, single-operator feature —
+        // this limit exists to absorb double-clicks/JS retry loops, not to
+        // manage real multi-tenant traffic (Section 8).
+        RateLimiter::for('ai-assistant', function ($request) {
+            return Limit::perMinute(20)->by($request->user()?->id ?? $request->ip());
         });
     }
 }

@@ -27,10 +27,14 @@ class ProjectRequest extends FormRequest
             'tools.*' => ['string', 'max:255'],
             'tools_custom' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'max:4096'],
+            'cover_image' => ['nullable', 'image', 'max:4096'],
+            'remove_cover_image' => ['sometimes', 'boolean'],
             'gallery' => ['nullable', 'array'],
             'gallery.*' => ['image', 'max:4096'],
             'remove_gallery' => ['nullable', 'array'],
             'remove_gallery.*' => ['string'],
+            'gallery_order' => ['nullable', 'array'],
+            'gallery_order.*' => ['string'],
             'is_highlighted' => ['sometimes', 'boolean'],
             'featured_order' => ['nullable', 'integer', 'min:0'],
         ];
@@ -40,6 +44,7 @@ class ProjectRequest extends FormRequest
     {
         $this->merge([
             'is_highlighted' => $this->boolean('is_highlighted'),
+            'remove_cover_image' => $this->boolean('remove_cover_image'),
         ]);
     }
 

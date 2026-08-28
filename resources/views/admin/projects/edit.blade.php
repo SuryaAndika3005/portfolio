@@ -1,10 +1,16 @@
 @extends('admin._layout', ['title' => 'Edit Project'])
 
 @section('content')
-    <h1 class="text-2xl font-black text-slate-900 mb-8">Edit Project</h1>
+    <div class="flex items-center justify-between gap-2 mb-6 flex-wrap">
+        <div class="flex items-center gap-2 text-small text-muted min-w-0">
+            <a href="{{ route('admin.projects.index') }}" class="hover:text-primary">Projects</a>
+            <span>/</span>
+            <span class="text-ink font-semibold truncate">{{ $project->title }}</span>
+        </div>
+        <x-admin.project-assistant :project="$project" />
+    </div>
 
-    <form method="POST" action="{{ route('admin.projects.update', $project) }}" enctype="multipart/form-data"
-          class="bg-white rounded-2xl border border-slate-200 p-8">
+    <form id="admin-project-form" method="POST" action="{{ route('admin.projects.update', $project) }}" enctype="multipart/form-data">
         @method('PUT')
         @include('admin.projects._form')
     </form>

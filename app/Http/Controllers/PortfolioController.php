@@ -41,13 +41,29 @@ class PortfolioController extends Controller
     }
 
     /**
-     * Single project detail page.
+     * Single project detail page. Previous/next navigation is scoped to
+     * the current project's own category and ordered the same way the
+     * archive/homepage already order everything (->latest()) -- the one
+     * ordering that's consistently used and trustworthy site-wide, unlike
+     * is_highlighted/featured_order (unpopulated/unused, see the audit).
      */
     public function show(Project $project): View
     {
         $project->load('category');
 
-        return view('portfolio.show', compact('project'));
+        $siblingIds = Project::where('category_id', $project->category_id)->latest()->pluck('id');
+        $position = $siblingIds->search($project->id);
+        $siblingCount = $siblingIds->count();
+
+        $previousProject = null;
+        $nextProject = null;
+
+        if ($position !== false && $siblingCount > 1) {
+            $previousProject = Project::find($siblingIds[($position - 1 + $siblingCount) % $siblingCount]);
+            $nextProject = Project::find($siblingIds[($position + 1) % $siblingCount]);
+        }
+
+        return view('portfolio.show', compact('project', 'previousProject', 'nextProject'));
     }
 
     /**

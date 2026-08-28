@@ -14,7 +14,7 @@ class AdminLoginController extends Controller
     public function create(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('admin.projects.index');
+            return redirect()->route('admin.dashboard');
         }
 
         return view('admin.login');
@@ -48,7 +48,7 @@ class AdminLoginController extends Controller
         RateLimiter::clear($throttleKey);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.projects.index'));
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     public function destroy(Request $request): RedirectResponse

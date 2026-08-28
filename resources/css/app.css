@@ -5,10 +5,13 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
+/* Curated Proof design tokens + button system — see PORTFOLIO_ART_DIRECTION.md
+   for the full rationale. Extracted into foundation.css so the Admin
+   workspace (admin.css) can import the exact same tokens/buttons without
+   duplicating them; this import changes nothing about the computed CSS
+   here versus before the extraction. */
+@import './foundation.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,8 +40,8 @@ html {
    hidden/offset and animate in once they cross into the viewport. */
 .reveal {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(16px);
+    transition: opacity var(--motion-reveal) var(--ease-standard), transform var(--motion-reveal) var(--ease-standard);
     transition-delay: var(--reveal-delay, 0ms);
 }
 
@@ -47,8 +50,21 @@ html {
     transform: translateY(0);
 }
 
+/* Hero portrait entrance: scale instead of the standard translateY (no
+   rotation, per the hero's own motion spec) — still driven by the same
+   .reveal/IntersectionObserver system, just a different starting
+   transform. */
+.reveal.reveal-portrait {
+    transform: scale(0.985);
+}
+
+.reveal.reveal-portrait.is-visible {
+    transform: scale(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .reveal {
+    .reveal,
+    .reveal.reveal-portrait {
         opacity: 1;
         transform: none;
         transition: none;
@@ -94,20 +110,34 @@ img.lazy-fade.is-loaded {
    only become a hover-driven expanding row at the lg breakpoint. */
 #works-accordion [data-slide] {
     opacity: 0;
-    transition: opacity 1.1s ease-in-out;
+    transform: scale(1);
+    transition: opacity 0.9s var(--ease-interactive), transform 0.6s var(--ease-interactive);
 }
 
 #works-accordion [data-slide].is-active {
     opacity: 1;
 }
 
-/* Title and count badge stay visible together in every state — only their
-   orientation changes (both flip to vertical when collapsed, see below) so
-   they never read as mismatched. */
+/* A barely-there scale on the active slide of the currently-expanded panel
+   only — just enough life to reward attention, not a Ken Burns loop.
+   Prefixed with #works-accordion to out-specificity the base ID-selector
+   rule above it (a plain .accordion-panel… selector would otherwise lose
+   to that rule's transform: scale(1), regardless of source order). */
+#works-accordion .accordion-panel.is-expanded [data-slide].is-active {
+    transform: scale(1.015);
+}
+
+/* Title and count badge stay visible and bottom-left anchored in every
+   state. Expanded (and mobile/tablet, below the lg breakpoint): both are
+   horizontal. Collapsed at the lg breakpoint (see below): both flip to a
+   vertical label instead of trying to cram a full category name into a
+   narrow column. Neither property is in this transition — orientation
+   switches instantly on state change, not as an animated spin — only
+   font-size (and the panel's own flex-grow, animated separately) eases. */
 .accordion-title {
     font-size: 1.5rem;
     white-space: nowrap;
-    transition: font-size 0.5s ease;
+    transition: font-size 0.5s var(--ease-interactive);
 }
 
 .accordion-count {
@@ -121,7 +151,7 @@ img.lazy-fade.is-loaded {
     opacity: 1;
     max-height: 3rem;
     overflow: hidden;
-    transition: opacity 0.4s ease 0.15s, max-height 0.4s ease;
+    transition: opacity 0.45s var(--ease-interactive) 0.15s, max-height 0.45s var(--ease-interactive);
 }
 
 @media (min-width: 1024px) {
@@ -133,7 +163,7 @@ img.lazy-fade.is-loaded {
            will-change/contain scope the resulting reflow to just this panel
            instead of the whole row repainting on every frame, which is what
            made hovering feel heavy with 3 panels of full-size photos. */
-        transition: flex-grow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: flex-grow 0.5s var(--ease-interactive);
         will-change: flex-grow;
         contain: layout paint;
     }
@@ -152,22 +182,26 @@ img.lazy-fade.is-loaded {
         max-height: 3rem;
     }
 
-    /* Badge rotates together with the title when collapsed so both read as
-       one consistent vertical label instead of a mismatched horizontal +
-       vertical mix. */
-    .accordion-panel.is-collapsed .accordion-title,
-    .accordion-panel.is-collapsed .accordion-count {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
-        white-space: nowrap;
-    }
-
     .accordion-panel.is-expanded {
         flex-grow: 3.2;
     }
 
     .accordion-panel.is-collapsed {
         flex-grow: 0.55;
+    }
+
+    /* Collapsed (desktop only, via this breakpoint): title and count badge
+       turn into one vertical label — rotate(180deg) keeps the reading
+       direction bottom-to-top, matching how the panel is anchored — instead
+       of cramming a full category name like "Web & App Development" into a
+       narrow horizontal column. This property is deliberately absent from
+       both elements' transitions above, so the flip is an instant cut, not
+       a visible spin. */
+    .accordion-panel.is-collapsed .accordion-title,
+    .accordion-panel.is-collapsed .accordion-count {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        white-space: nowrap;
     }
 
     .accordion-panel.is-collapsed .accordion-title {
@@ -179,6 +213,469 @@ img.lazy-fade.is-loaded {
     .accordion-panel,
     .accordion-tagline,
     #works-accordion [data-slide] {
+        transition: none;
+    }
+}
+
+/* Editorial rotating deck inside the fullscreen image modal (see
+   visual-deck.blade.php / visual-deck.js / image-modal.js). Cards are
+   GSAP-driven (transform/opacity/filter only, no layout-affecting
+   properties) — this just hints the browser and keeps vertical touch
+   scroll available alongside the deck's own horizontal drag. */
+.modal-deck-card {
+    will-change: transform, scale, rotate, opacity, filter;
+    touch-action: pan-y;
+}
+
+/* Modal prev/next arrows: subtle by default, brighten on hover/focus —
+   opacity lives here (not a Tailwind utility) so image-modal.js's
+   zoom-focus-mode dimming can tween the same property and hand control
+   back via gsap's clearProps without fighting a utility class. */
+#modalPrev,
+#modalNext {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+#modalPrev:hover,
+#modalNext:hover,
+#modalPrev:focus-visible,
+#modalNext:focus-visible {
+    opacity: 1;
+}
+
+/* Skills section tool icons: the source SVGs are full-color brand logos
+   (devicon) with no shared color language -- some are dark-on-transparent,
+   some are light-on-transparent, so any color *filter* (grayscale,
+   brightness, invert) transforms each icon relative to its own original
+   colors and still lands at a different apparent brightness per icon.
+   That's what made the row look inconsistent even after the destructive
+   brightness(0)+invert(1) combo was removed in an earlier pass (the one
+   that crushed MySQL/Figma to illegible blobs) -- brightness(1.7) alone
+   never actually equalized anything, it just lifted each icon's own
+   already-different luminance.
+   mask-image sidesteps this: every source SVG is used purely as an alpha
+   mask (its shape), painted with one flat background-color, so all 12
+   icons render at the exact same color regardless of their original art.
+   Detail is fully preserved -- nothing is crushed -- because only opacity
+   (not path fills) is discarded. The per-tool URL arrives as the
+   --tool-icon custom property (set inline in Blade) rather than an <img
+   src>, since color/currentColor cannot reach into a loaded <img>. */
+.skill-tool-icon {
+    background-color: #FFFFFF;
+    -webkit-mask-image: var(--tool-icon);
+    mask-image: var(--tool-icon);
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+}
+
+/* Skills capability rows: the signature interaction is a full-band
+   surface reversal -- brand blue at rest, flipping to a white/off-white
+   surface on hover/focus, with dark ink text and a primary-blue accent
+   replacing the light-on-blue resting palette (see the group-hover/
+   group-focus-visible utility classes in the Blade template for the text
+   tiers). Both colors below are fixed, non-flipping hex, deliberately
+   NOT var(--color-primary-derived-per-theme) or var(--color-surface):
+   the interaction's identity (blue -> white) must stay the same in both
+   site themes, only the section it sits in should change -- an earlier
+   version used var(--color-surface) for the hover fill, which is correct
+   in Light mode (resolves to white) but resolves to a dark elevated tone
+   in Dark mode, silently turning "blue -> white" into "dark -> another
+   dark surface" there. Fixed values close that gap for good.
+   :hover is gated to hover-capable, fine-pointer devices so a touch tap
+   can never leave a row stuck white (see the mobile note below);
+   :focus-visible applies unconditionally, since each row is a plain,
+   non-native focusable element (tabindex="0", no interactive child of
+   its own) and keyboard access must not depend on pointer capability. */
+.skill-group {
+    position: relative;
+    background-color: var(--color-primary);
+    border-radius: 14px;
+    transition: background-color var(--motion-fast) var(--ease-interactive),
+        transform var(--motion-fast) var(--ease-interactive);
+}
+
+.skill-group:focus-visible {
+    background-color: #FFFFFF;
+    transform: translateY(-3px);
+    z-index: 1;
+    outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .skill-group:hover {
+        background-color: #FFFFFF;
+        transform: translateY(-3px);
+        z-index: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skill-group {
+        transition: background-color var(--motion-fast) linear;
+    }
+
+    .skill-group:hover,
+    .skill-group:focus-visible {
+        transform: none;
+    }
+}
+
+/* Experience section: a professional entry's short description slides open
+   in place instead of navigating away or opening a modal (see
+   experience-toggle.js). max-height is a generous fixed cap rather than a
+   measured value, since these descriptions are always short. */
+.experience-detail {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height var(--motion-interactive) var(--ease-interactive), opacity 0.3s ease;
+}
+
+.experience-detail.is-expanded {
+    max-height: 12rem;
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .experience-detail {
+        transition: none;
+    }
+}
+
+/* Button system (.btn/.btn-primary/.btn-secondary/.btn-text) now lives in
+   foundation.css, shared with Admin — see the @import near the top of this
+   file. Nothing here changed the classes themselves, only where they're
+   defined. */
+
+/* Desktop nav links: plain text, not individually pilled (see nav.blade.php
+   — only "Let's Talk" keeps real button treatment; the floating container
+   itself keeps the pill). Text-emphasis + a micro active marker, not the
+   generic-hyperlink underline this replaced -- hover is a color shift only
+   (+ a 1px lift), the current section additionally gets one small dot, and
+   neither ever grows/travels the way the old underline bar did. Three
+   separate motions with three different target speeds per the brief
+   (~170ms hover-color, ~150-200ms dot fade, ~100ms press), kept as
+   separate transition declarations rather than forced into one shared
+   duration. .is-active is toggled by home-nav-scrollspy.js (homepage
+   only); the color rule needs !important because Tailwind's utility layer
+   otherwise wins over a plain hand-written class regardless of selector
+   specificity (see the identical !bg-primary pattern already used for
+   .skill-tool-icon's hover fill, for the same underlying reason). */
+.nav-link {
+    position: relative;
+    transition: color 170ms var(--ease-interactive), transform 100ms var(--ease-interactive);
+}
+
+.nav-link:hover {
+    transform: translateY(-1px);
+}
+
+.nav-link:active {
+    transform: translateY(1px);
+}
+
+.nav-link:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+.nav-link.is-active {
+    color: var(--color-primary) !important;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0.25rem;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 180ms var(--ease-interactive);
+}
+
+.nav-link.is-active::after {
+    opacity: 1;
+}
+
+/* Mobile dropdown current-section highlight: color only, no dot -- the
+   panel is a plain left-aligned list (see nav.blade.php), not the
+   desktop's floating pill nav, so the tiny-marker language doesn't apply
+   here (Section 10 of the brief). Same !important reasoning as above. */
+#mobile-menu a.is-active {
+    color: var(--color-primary) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nav-link {
+        transition: color 170ms linear;
+    }
+
+    .nav-link:hover,
+    .nav-link:active {
+        transform: none;
+    }
+
+    .nav-link::after {
+        transition: none;
+    }
+}
+
+/* Floating Preferences control (see preferences-fab.blade.php) -- the
+   single public access point for Language + Theme, replacing the old
+   inline nav switcher. Fixed to the viewport, not the page content
+   container, so it stays put regardless of scroll position or which nav
+   variant (default/showBack/archiveChapters) is rendering. */
+.prefs-fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 40;
+}
+
+@media (max-width: 767px) {
+    .prefs-fab {
+        right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+/* Suppressed (not just visually covered) while the fullscreen image modal
+   or the mobile nav drawer is open -- see preferences-fab.js. visibility
+   (not display) so the layout position never shifts when it reappears,
+   and so it's correctly removed from tab order and screen-reader flow
+   while suppressed. */
+.prefs-fab--suppressed {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.prefs-fab-btn {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border-light);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+    transition: transform var(--motion-fast) var(--ease-interactive),
+        box-shadow var(--motion-fast) var(--ease-interactive);
+}
+
+@media (hover: hover) {
+    .prefs-fab-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+}
+
+.prefs-fab-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .prefs-fab-btn {
+        transition: none;
+    }
+}
+
+.prefs-fab-popover {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 260px;
+    max-width: calc(100vw - 32px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.14);
+}
+
+.prefs-fab-popover[hidden] {
+    display: none;
+}
+
+/* First-visit discovery hint -- a small, calm bubble pointing at the FAB,
+   not a toast/speech-bubble/glow treatment. Same surface/border language
+   as .prefs-fab-popover (deliberately reused, not a new material), just
+   narrower and lighter-weight since it only ever holds two short lines.
+   Occupies the same "above the button" slot the popover uses -- safe
+   because the hint is always dismissed before the popover would need that
+   space (see preferences-fab.js: opening the FAB dismisses the hint). */
+.prefs-fab-hint {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: 0;
+    width: 208px;
+    max-width: calc(100vw - 32px);
+    padding: 10px 28px 10px 12px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.10);
+}
+
+.prefs-fab-hint[hidden] {
+    display: none;
+}
+
+.prefs-fab-hint-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-ink);
+    line-height: 1.3;
+}
+
+.prefs-fab-hint-subtitle {
+    margin-top: 2px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    line-height: 1.3;
+}
+
+.prefs-fab-hint-dismiss {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    color: var(--color-muted);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--motion-fast) var(--ease-interactive),
+        background-color var(--motion-fast) var(--ease-interactive);
+}
+
+.prefs-fab-hint-dismiss:hover {
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+}
+
+.prefs-fab-hint-dismiss:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.prefs-fab-heading {
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+}
+
+.prefs-fab-options {
+    display: flex;
+    gap: 6px;
+}
+
+.prefs-fab-options--stacked {
+    flex-direction: column;
+}
+
+.prefs-fab-options:not(.prefs-fab-options--stacked) .prefs-fab-option {
+    flex: 1;
+    justify-content: center;
+}
+
+.prefs-fab-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--ease-interactive),
+        color var(--motion-fast) var(--ease-interactive),
+        border-color var(--motion-fast) var(--ease-interactive);
+}
+
+.prefs-fab-option:hover {
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+}
+
+.prefs-fab-option[aria-current="true"],
+.prefs-fab-option[aria-pressed="true"] {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    border-color: rgba(37, 99, 235, 0.35);
+}
+
+/* Project Archive: chapter navigation lives inside the ONE archive topbar
+   variant (see nav.blade.php's archiveChapters branch) -- there is no
+   second sticky bar, so this is now just a plain nav-link treatment, not
+   a dual relaxed/compressed state. Resting color reuses --color-muted;
+   active/hover/focus all resolve to the same single primary-blue +
+   underline signal (Simplify: one indicator, not several). */
+.archive-chapter-link {
+    position: relative;
+    color: var(--color-muted);
+    transition: color var(--motion-fast) var(--ease-interactive);
+}
+
+.archive-chapter-link:hover,
+.archive-chapter-link:focus-visible,
+.archive-chapter-link.is-active {
+    color: var(--color-primary);
+}
+
+.archive-chapter-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    background-color: var(--color-primary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--motion-fast) var(--ease-interactive);
+}
+
+.archive-chapter-link:hover::after,
+.archive-chapter-link:focus-visible::after,
+.archive-chapter-link.is-active::after {
+    transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .archive-chapter-link,
+    .archive-chapter-link::after {
         transition: none;
     }
 }

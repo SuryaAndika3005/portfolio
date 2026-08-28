@@ -1,0 +1,1408 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/admin/**/*.blade.php';
+@source '../views/components/admin/**/*.blade.php';
+@source '../js/admin/**/*.js';
+
+/* Same design tokens + button system the public site uses — see
+   foundation.css. This is the one shared foundation both builds import;
+   Admin gets its own compiled bundle (no Tailwind CDN, no network
+   dependency) without duplicating the token values by hand. */
+@import './foundation.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Batch 8A — Admin workspace shell. Calmer, denser composition than the
+   public site: mostly immediate render, no .reveal/entrance motion, no
+   expressive imagery. Reuses the same color/radius/motion tokens and
+   .btn system as the public site (see foundation.css) so the two feel like
+   one product without looking identical (structured/quiet vs.
+   editorial/expressive — see PORTFOLIO_ART_DIRECTION.md). */
+
+html {
+    scroll-behavior: auto;
+}
+
+body.admin-body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+}
+
+/* --- Shell: sidebar + topbar + workspace --- */
+
+.admin-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border-light);
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1.25rem;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+    transform: translateX(0);
+    transition: transform var(--motion-interactive) var(--ease-interactive);
+    z-index: 40;
+}
+
+.admin-workspace {
+    flex: 1 1 auto;
+    margin-left: 256px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-brand {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 1.0625rem;
+    color: var(--color-ink);
+    padding: 0.25rem 0.75rem 1.5rem;
+}
+
+.admin-brand span {
+    color: var(--color-primary);
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    flex: 1 1 auto;
+}
+
+.admin-nav-group-label {
+    font-size: var(--text-meta);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-soft-muted);
+    padding: 0 0.75rem;
+    margin-bottom: 0.375rem;
+    margin-top: 0.25rem;
+}
+
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-small);
+    font-weight: 600;
+    color: var(--color-muted);
+    transition: background-color var(--motion-fast) var(--ease-interactive),
+        color var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-nav-item:hover {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+}
+
+.admin-nav-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.admin-nav-item.is-active {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+.admin-nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.admin-sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border-light);
+    margin-top: 0.75rem;
+}
+
+.admin-sidebar-footer form {
+    display: contents;
+}
+
+.admin-sidebar-footer button {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* Topbar: compact, inside the workspace, not a second nav. */
+.admin-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background-color: color-mix(in srgb, var(--color-canvas) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-topbar-title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--color-ink);
+    letter-spacing: -0.01em;
+}
+
+.admin-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-light);
+    color: var(--color-ink);
+    flex-shrink: 0;
+}
+
+.admin-content {
+    flex: 1 1 auto;
+    padding: 2rem;
+    max-width: 1440px;
+    width: 100%;
+}
+
+/* Mobile: sidebar collapses into an off-canvas drawer (see admin.js). */
+.admin-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.4);
+    z-index: 35;
+}
+
+@media (max-width: 1023px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    body.admin-sidebar-open .admin-sidebar {
+        transform: translateX(0);
+        box-shadow: 8px 0 24px rgba(15, 23, 42, 0.12);
+    }
+
+    body.admin-sidebar-open .admin-sidebar-backdrop {
+        display: block;
+    }
+
+    .admin-workspace {
+        margin-left: 0;
+    }
+
+    .admin-menu-btn {
+        display: inline-flex;
+    }
+
+    .admin-content {
+        padding: 1.5rem 1.25rem;
+    }
+
+    .admin-topbar {
+        padding: 0.875rem 1.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-sidebar,
+    .admin-nav-item {
+        transition: none;
+    }
+}
+
+/* --- Summary cards (Dashboard) --- */
+
+.admin-stat {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+}
+
+.admin-stat-label {
+    font-size: var(--text-meta);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+    margin-bottom: 0.375rem;
+}
+
+.admin-stat-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-ink);
+    letter-spacing: -0.01em;
+}
+
+/* --- Table / list --- */
+
+.admin-table-wrap {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.admin-table {
+    width: 100%;
+    font-size: var(--text-small);
+    border-collapse: collapse;
+}
+
+.admin-table thead th {
+    text-align: left;
+    font-size: var(--text-meta);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    background-color: var(--color-canvas);
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-table tbody tr {
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background-color var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--color-canvas);
+}
+
+.admin-table td {
+    padding: 0.75rem 1.25rem;
+    vertical-align: middle;
+    color: var(--color-ink);
+}
+
+.admin-row-thumb {
+    width: 56px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-light);
+    background-color: var(--color-canvas);
+    flex-shrink: 0;
+}
+
+/* --- Badges --- */
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--text-meta);
+    font-weight: 700;
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+}
+
+/* --- Forms --- */
+
+.admin-field-label {
+    display: block;
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-bottom: 0.375rem;
+}
+
+.admin-field-hint {
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+    margin-bottom: 0.5rem;
+}
+
+.admin-field-error {
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: #DC2626;
+    margin-top: 0.375rem;
+}
+
+.admin-input {
+    display: block;
+    width: 100%;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    padding: 0.625rem 0.875rem;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    transition: border-color var(--motion-fast) var(--ease-interactive),
+        box-shadow var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-input::placeholder {
+    color: var(--color-soft-muted);
+}
+
+.admin-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.admin-input.has-error {
+    border-color: #FCA5A5;
+}
+
+textarea.admin-input {
+    resize: vertical;
+    min-height: 6rem;
+}
+
+.admin-checkbox-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-meta);
+    font-weight: 600;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-pill);
+    padding: 0.375rem 0.75rem;
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--ease-interactive),
+        border-color var(--motion-fast) var(--ease-interactive),
+        color var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-checkbox-tag:has(:checked) {
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary-strong);
+}
+
+.admin-form-section {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+}
+
+.admin-form-section + .admin-form-section {
+    margin-top: 1.5rem;
+}
+
+.admin-form-section-title {
+    font-size: var(--text-meta);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+    margin-bottom: 1.25rem;
+}
+
+/* --- Gallery manager (Admin only — compact operational grid, not the
+   public Visual Deck) --- */
+
+.admin-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .admin-gallery-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+}
+
+.admin-gallery-item {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--color-border-light);
+    cursor: grab;
+}
+
+.admin-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* Manual gallery reorder (V1.2) -- drag-and-drop is the primary path
+   (native HTML5 DnD, see gallery-reorder.js) but the Move up/down buttons
+   are a real, always-visible, keyboard-operable equivalent, not a
+   hover-only fallback (Section 7/61). Order badge and controls stay small
+   and permanently visible rather than hover-revealed, since a
+   hover-dependent control is effectively unusable by keyboard/touch. */
+.admin-gallery-order {
+    position: absolute;
+    top: 0.375rem;
+    left: 0.375rem;
+    z-index: 1;
+    min-width: 1.25rem;
+    height: 1.25rem;
+    padding: 0 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    background-color: rgba(15, 23, 42, 0.72);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.admin-gallery-drag-handle {
+    position: absolute;
+    top: 0.375rem;
+    right: 0.375rem;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: var(--radius-sm);
+    background-color: rgba(15, 23, 42, 0.55);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 10px;
+    line-height: 1;
+    cursor: grab;
+}
+
+.admin-gallery-item.is-dragging {
+    opacity: 0.4;
+}
+
+.admin-gallery-item.is-drag-over {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+.admin-gallery-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.78), rgba(15, 23, 42, 0));
+}
+
+.admin-gallery-move,
+.admin-gallery-remove-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: var(--radius-sm);
+    background-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-gallery-move:hover,
+.admin-gallery-move:focus-visible,
+.admin-gallery-remove-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.32);
+}
+
+.admin-gallery-move:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+}
+
+.admin-gallery-move:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.admin-gallery-remove-toggle {
+    margin-left: auto;
+    position: relative;
+}
+
+.admin-gallery-remove-toggle input[type='checkbox'] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.admin-gallery-remove-toggle:has(:checked) {
+    background-color: rgba(220, 38, 38, 0.75);
+}
+
+.admin-gallery-remove-toggle:has(:focus-visible) {
+    outline: 2px solid #fff;
+    outline-offset: 1px;
+}
+
+.admin-gallery-item:has(.admin-gallery-remove-toggle :checked) {
+    outline: 2px solid #DC2626;
+    outline-offset: -2px;
+}
+
+/* --- Project Completeness (V1.2, Sections 27-32) — deterministic, no AI.
+   Status is never color-only (Section 62): each row pairs an icon with a
+   text label ("Complete"/"Missing" for assistive tech, ✓/○ visually), and
+   the count line is plain text, not a colored badge. --- */
+
+.admin-completeness-score {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
+}
+
+.admin-completeness-count {
+    font-size: var(--text-meta);
+    font-weight: 600;
+    color: var(--color-muted);
+}
+
+.admin-completeness-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+}
+
+.admin-completeness-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-small);
+    color: var(--color-muted);
+}
+
+.admin-completeness-item[data-complete='true'] {
+    color: var(--color-ink);
+}
+
+.admin-completeness-icon {
+    display: inline-flex;
+    width: 1rem;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--color-soft-muted);
+}
+
+.admin-completeness-item[data-complete='true'] .admin-completeness-icon {
+    color: #047857;
+}
+
+/* --- Flash messages --- */
+
+.admin-flash {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    padding: 0.75rem 1rem;
+    font-size: var(--text-small);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* Color is never the only signal (Section 68) — a small glyph pairs with
+   it so success/error read correctly without relying on color alone. */
+.admin-flash::before {
+    flex-shrink: 0;
+    font-weight: 800;
+}
+
+.admin-flash--success {
+    background-color: #ECFDF5;
+    border: 1px solid #A7F3D0;
+    color: #047857;
+}
+
+.admin-flash--success::before {
+    content: '\2713';
+}
+
+.admin-flash--error {
+    background-color: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    color: #B91C1C;
+}
+
+.admin-flash--error::before {
+    content: '\0021';
+}
+
+/* --- Empty state --- */
+
+.admin-empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: var(--color-muted);
+    font-size: var(--text-small);
+}
+
+.admin-empty p:first-child {
+    color: var(--color-ink);
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+/* --- Delete confirmation dialog (native <dialog>, no library) --- */
+
+.admin-dialog {
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 0;
+    max-width: 24rem;
+    width: calc(100% - 2.5rem);
+    box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18);
+}
+
+.admin-dialog::backdrop {
+    background-color: rgba(15, 23, 42, 0.45);
+}
+
+.admin-dialog-body {
+    padding: 1.75rem;
+}
+
+.admin-dialog-title {
+    font-size: var(--text-subheading);
+    font-weight: 800;
+    color: var(--color-ink);
+    margin-bottom: 0.5rem;
+}
+
+.admin-dialog-message {
+    font-size: var(--text-small);
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+}
+
+.admin-dialog-message strong {
+    color: var(--color-ink);
+}
+
+.admin-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.625rem;
+}
+
+/* --- AI Project Assistant (V1.1) — contextual panel, not a floating
+   chatbot. Beside the form on desktop (>=1280px, no backdrop -- the form
+   stays usable); a full-width drawer with a backdrop below that, same
+   open/close pattern as .admin-sidebar above. The breakpoint is 1280px,
+   not 1024px, deliberately: at 1024px the fixed 256px sidebar plus a
+   420px panel leaves .admin-content only ~350-450px, and the Project
+   form's own grid already switches to its 2-column desktop layout at
+   that exact same 1024px width (Tailwind lg:) -- side-by-side would be
+   genuinely too cramped there, so 1024 stays in the full-width-drawer
+   tier along with 768/960 (V1.1 finalization patch, Section 33). Admin
+   has no dark mode (Section 97), so this uses the same light-only
+   tokens as the rest of Admin. --- */
+
+.assistant-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.4);
+    z-index: 55;
+}
+
+.assistant-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 100vw);
+    background-color: var(--color-surface);
+    border-left: 1px solid var(--color-border-light);
+    box-shadow: -8px 0 24px rgba(15, 23, 42, 0.1);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform var(--motion-interactive) var(--ease-interactive);
+    z-index: 60;
+}
+
+body.assistant-open .assistant-panel {
+    transform: translateX(0);
+}
+
+@media (max-width: 1279px) {
+    .assistant-panel {
+        width: 100vw;
+    }
+
+    body.assistant-open .assistant-backdrop {
+        display: block;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .assistant-panel {
+        transition: none;
+    }
+}
+
+.assistant-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--color-border-light);
+    flex-shrink: 0;
+}
+
+.assistant-panel-title {
+    font-size: var(--text-small);
+    font-weight: 800;
+    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.assistant-panel-close {
+    color: var(--color-muted);
+    padding: 0.375rem;
+    border-radius: var(--radius-sm);
+}
+
+.assistant-panel-close:hover {
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+}
+
+.assistant-panel-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 1.25rem 1.5rem;
+}
+
+.assistant-panel-footer {
+    flex-shrink: 0;
+    border-top: 1px solid var(--color-border-light);
+    padding: 1rem 1.5rem;
+}
+
+.assistant-section {
+    margin-bottom: 1.5rem;
+}
+
+.assistant-section-title {
+    font-size: var(--text-meta);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    margin-bottom: 0.75rem;
+}
+
+.assistant-understanding-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.375rem 0;
+    font-size: var(--text-small);
+}
+
+.assistant-understanding-label {
+    color: var(--color-ink);
+    font-weight: 600;
+}
+
+.assistant-status {
+    font-size: var(--text-meta);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.assistant-status[data-status='confirmed'] { color: #047857; }
+.assistant-status[data-status='observed'] { color: var(--color-primary); }
+.assistant-status[data-status='partial'] { color: #B45309; }
+.assistant-status[data-status='needs_context'],
+.assistant-status[data-status='not_available'] { color: var(--color-soft-muted); }
+
+.assistant-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.assistant-list li {
+    font-size: var(--text-small);
+    color: var(--color-muted);
+    padding-left: 1rem;
+    position: relative;
+}
+
+.assistant-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--color-soft-muted);
+}
+
+.assistant-message {
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    background-color: var(--color-canvas);
+    border-radius: var(--radius-sm);
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 0.625rem;
+    white-space: pre-line;
+}
+
+.assistant-message--user {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-strong);
+}
+
+.assistant-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin: 0.625rem 0;
+}
+
+.assistant-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-small);
+    color: var(--color-muted);
+    padding: 0.5rem 0;
+}
+
+.assistant-loading-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    animation: assistant-pulse 1s ease-in-out infinite;
+}
+
+@keyframes assistant-pulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .assistant-loading-dot {
+        animation: none;
+    }
+}
+
+.assistant-error {
+    font-size: var(--text-small);
+    color: #B91C1C;
+    background-color: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    border-radius: var(--radius-sm);
+    padding: 0.625rem 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.assistant-draft-field {
+    margin-bottom: 1.25rem;
+}
+
+.assistant-draft-field-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.375rem;
+}
+
+.assistant-draft-field[data-changed='true'] textarea {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+
+.assistant-image-picker {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.assistant-image-picker label {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.assistant-image-picker label:has(:checked) {
+    border-color: var(--color-primary);
+}
+
+.assistant-image-picker img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.assistant-image-picker input {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+}
+
+/* --- V1.2 Assistant additions: Tool Suggestions / Gallery Order / Quality
+   Review / SEO Assistant. Same restrained language as the rest of the
+   panel (Section 59) -- typography, status labels, subtle borders, no
+   gradients/emoji/gamified scores. --- */
+
+.assistant-suggestion-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.assistant-suggestion-row + .assistant-suggestion-row {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border-light);
+}
+
+.assistant-suggestion-text {
+    min-width: 0;
+}
+
+.assistant-suggestion-name {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+}
+
+.assistant-suggestion-reason {
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+    margin-top: 0.125rem;
+}
+
+.assistant-suggestion-actions {
+    display: flex;
+    gap: 0.375rem;
+    flex-shrink: 0;
+}
+
+.assistant-suggestion-actions button[data-state='confirmed'] {
+    color: #047857;
+    pointer-events: none;
+}
+
+.assistant-suggestion-actions button[data-state='dismissed'] {
+    color: var(--color-soft-muted);
+    pointer-events: none;
+}
+
+.assistant-order-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.assistant-order-thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.assistant-order-thumbs img {
+    width: 2.25rem;
+    height: 2.25rem;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-light);
+}
+
+.assistant-quality-row {
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--color-border-light);
+}
+
+.assistant-quality-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.assistant-quality-field {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    text-transform: capitalize;
+}
+
+/* Severity is never color-only: the badge always pairs a text label with
+   its color (Section 62 applies just as much to V1.2's AI panels as it
+   does to Project Health). */
+.assistant-severity {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius-pill);
+}
+
+.assistant-severity[data-severity='low'] { color: var(--color-soft-muted); background-color: rgba(148, 163, 184, 0.15); }
+.assistant-severity[data-severity='medium'] { color: #B45309; background-color: rgba(180, 83, 9, 0.12); }
+.assistant-severity[data-severity='high'] { color: #B91C1C; background-color: rgba(185, 28, 28, 0.12); }
+
+.assistant-quality-message {
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+    margin-top: 0.25rem;
+}
+
+.assistant-seo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-meta);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.assistant-seo-label:first-child {
+    margin-top: 0;
+}
+
+.assistant-seo-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: normal;
+    padding: 0.0625rem 0.375rem;
+    border-radius: var(--radius-pill);
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
+}
+
+.assistant-seo-preview-title {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: #1A0DAB;
+}
+
+.assistant-seo-preview-description {
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+    line-height: 1.5;
+}
+
+/* --- V1.2 UX Refinement: Project Workspace (Sections 5-6, 35-40, 62-63) ---
+   Workflow nav, Project Status, contextual AI triggers, field-level
+   Refine, and the scroll-highlight helper. Typography/borders/status
+   labels only — no pills, gradients, or gamified progress UI anywhere
+   below (Sections 36, 52). --- */
+
+.admin-workflow-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-workflow-nav-item {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-muted);
+    cursor: pointer;
+    text-decoration: none;
+    transition: color var(--motion-fast) var(--ease-interactive);
+}
+
+.admin-workflow-nav-item:hover,
+.admin-workflow-nav-item:focus-visible {
+    color: var(--color-ink);
+}
+
+.admin-workflow-nav-item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Project Status — a compact orientation card, not a dashboard. Reuses
+   the exact same score/count typography language as
+   .admin-completeness-score below it in the DOM (Project Review) so the
+   two clearly read as "summary" and "detail" of the same idea. */
+.admin-status-count {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-bottom: 0.625rem;
+}
+
+.admin-status-next {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 0.875rem;
+    margin-bottom: 0.875rem;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.admin-status-next-label {
+    font-size: var(--text-meta);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+}
+
+.admin-status-next-value {
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    text-align: right;
+}
+
+/* Contextual AI triggers — the small "Suggest tools"/"Find best
+   cover"/"Suggest sequence" links that replaced the old single Assistant
+   toolbox (Section 13-19). Plain .btn-text already provides the
+   look/hover/focus; this only adds consistent spacing above it. */
+.admin-contextual-trigger {
+    margin-top: 0.625rem;
+}
+
+/* Field-level "Refine with AI" (Sections 22-24, 68) */
+.admin-refine-trigger-row {
+    margin-top: 0.375rem;
+}
+
+.admin-refine-box {
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-canvas);
+}
+
+.admin-refine-box textarea {
+    margin-top: 0.375rem;
+}
+
+.admin-refine-box-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+/* Brief, single (never repeating/flashing) highlight when a review issue
+   or workflow link scrolls a field into view (Section 69: ~900ms). */
+.admin-field-highlight {
+    animation: admin-field-highlight-pulse 900ms var(--ease-interactive);
+}
+
+@keyframes admin-field-highlight-pulse {
+    0% { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.35); }
+    100% { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-field-highlight {
+        animation: none;
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+}
+
+/* Cover ranking thumbnail (Curate → Archive Cover) */
+.assistant-suggestion-thumb-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.assistant-suggestion-thumb {
+    width: 3rem;
+    height: 2rem;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-light);
+    flex-shrink: 0;
+}
+
+/* Content Review issue actions ("Review field" + "Refine with AI" together) */
+.assistant-quality-row-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.375rem;
+}
+
+/* =====================================================================
+   V1.2 UX Pass 2: Interaction, Hierarchy & Feedback System
+
+   Extends the shared .btn / .btn-text / .btn-primary / .btn-secondary /
+   .btn-destructive system from foundation.css with press / loading /
+   success states that system never had. Added here, not to
+   foundation.css, because admin.css imports foundation.css into its own
+   independent Vite bundle (see this file's top import) -- nothing below
+   can ever reach the public site.
+   ===================================================================== */
+
+/* --- Pressed / press feedback: 100ms, no bounce (Section 70). --- */
+.btn:active:not(:disabled):not(.is-loading),
+.btn-text:active:not(:disabled):not(.is-loading) {
+    transform: translateY(1px);
+    transition-duration: 100ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn:active,
+    .btn-text:active {
+        transform: none;
+    }
+}
+
+/* --- Reusable spinner: small, inherits currentColor, reduced-motion-safe
+   (Section 57). Used inside any button's own loading state, never alone. --- */
+.admin-spinner {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    opacity: 0.85;
+    animation: admin-spin 700ms linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes admin-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-spinner {
+        animation-duration: 1600ms;
+    }
+}
+
+.btn.is-loading,
+.btn-text.is-loading {
+    cursor: wait;
+}
+
+/* --- Small inline success state: the button itself confirms briefly --
+   no big green banner (Section 57). --- */
+.btn-text.is-success {
+    color: #047857;
+}
+
+/* --- Unsaved-changes indicator (Sections 29, 36). One shared pill next
+   to Save Changes covers every source of an unsaved edit -- typed
+   fields, applied AI draft text, confirmed tools, manual or
+   AI-suggested gallery reorders -- rather than scattering a different
+   "unsaved" notice next to each one. --- */
+.admin-unsaved-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--text-meta);
+    font-weight: 700;
+    color: #B45309;
+}
+
+.admin-unsaved-indicator::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #F59E0B;
+    flex-shrink: 0;
+}
+
+/* --- Truthful "selected, will upload on save" note (Section 32) --- */
+.admin-file-selected-note {
+    color: var(--color-primary);
+}
+
+/* --- Small confirmation note under an applied AI suggestion, e.g.
+   gallery reorder ("Suggested sequence applied. Save changes to keep
+   this order.") (Section 33). --- */
+.admin-applied-note {
+    font-size: var(--text-meta);
+    color: #047857;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}

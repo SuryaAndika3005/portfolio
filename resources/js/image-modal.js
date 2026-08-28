@@ -1,106 +1,51 @@
-// Fullscreen GSAP slider for the project detail page. Every project image
-// (main showcase + gallery) is pre-rendered as a persistent slide in
-// #modalTrack; opening/navigating just tweens the track's x position instead
-// of swapping a single <img> src, so GSAP drives an actual slide transition.
-// Each image fits the screen by default (no forced scrolling) — scroll, a
-// single tap, or drag zooms in and pans, so tall/small composite exports
-// stay readable without dominating the layout at full size.
+// Fullscreen image viewer for the project detail page. The deck itself
+// (positioning, drag/swipe-to-navigate, side-click navigation, wrap-around
+// recycling) is entirely visual-deck.js's createDeck() — this file only
+// owns modal lifecycle (open/close/trigger/keyboard), per-active-card
+// zoom/pan, and the chrome around the deck (counter, prev/next buttons,
+// zoom hint, focus-mode dimming). Neither file knows the other's internals
+// beyond the small isDragBlocked/onChange contract wired up below.
 import gsap from 'gsap';
+import { createDeck } from './visual-deck.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Peek stack on the detail-page showcase preview ---
+    // --- Peek stack on the detail-page intro visual ---
     // The two tucked-behind gallery cards sit visibly fanned out at rest
     // (a real stacked-cards look, not hidden until hover) — hovering just
-    // spreads the fan further outward, like naturally spreading a hand of
-    // cards, rather than popping in from nothing.
+    // spreads the fan further outward. Purely decorative; CSS (not GSAP)
+    // drives the actual hover response on the current intro composition,
+    // so this only needs to sync GSAP's own transform tracking with the
+    // rest state where GSAP-driven peek behavior is still present.
     const peekWrapper = document.querySelector('[data-peek-wrapper]');
     if (peekWrapper) {
         const peeks = Array.from(peekWrapper.querySelectorAll('[data-peek]'));
-        if (peeks.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            // Sync GSAP's transform tracking with the Tailwind rest state
-            // (scale-95 -rotate-6/rotate-6) so the first hover tweens from
-            // the right place instead of guessing off the CSS-applied value.
+        if (peeks.length) {
             peeks.forEach((peek, i) => {
                 gsap.set(peek, { scale: 0.95, rotate: i === 0 ? -6 : 6, x: 0, y: 0 });
-            });
-
-            peekWrapper.addEventListener('mouseenter', () => {
-                gsap.to(peeks, {
-                    scale: 1,
-                    rotate: (i) => (i === 0 ? -12 : 12),
-                    x: (i) => (i === 0 ? -18 : 18),
-                    y: -8,
-                    duration: 0.45,
-                    ease: 'back.out(1.3)',
-                    stagger: 0.06,
-                    overwrite: 'auto',
-                });
-            });
-            peekWrapper.addEventListener('mouseleave', () => {
-                gsap.to(peeks, {
-                    scale: 0.95,
-                    rotate: (i) => (i === 0 ? -6 : 6),
-                    x: 0,
-                    y: 0,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                    overwrite: 'auto',
-                });
             });
         }
     }
 
-    // --- Fullscreen slider ---
+    // --- Fullscreen modal ---
     const modal = document.getElementById('imageModal');
-    const track = document.getElementById('modalTrack');
+    const deckRoot = document.getElementById('modalDeck');
+    const backdrop = document.getElementById('modalBackdrop');
     const closeBtn = document.getElementById('modalClose');
     const prevBtn = document.getElementById('modalPrev');
     const nextBtn = document.getElementById('modalNext');
     const counter = document.getElementById('modalCounter');
     const zoomHint = document.getElementById('modalZoomHint');
 
-    if (!modal || !track) return;
+    if (!modal || !deckRoot) return;
 
-    const slides = Array.from(track.children);
+    const cards = Array.from(deckRoot.querySelectorAll('[data-deck-card]'));
     const triggers = Array.from(document.querySelectorAll('[data-modal-trigger]'));
-    if (!slides.length || !triggers.length) return;
+    if (!cards.length || !triggers.length) return;
 
-    const hasMultiple = slides.length > 1;
-    let currentIndex = 0;
+    const hasMultiple = cards.length > 1;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Small fixed-crop "peek" thumbnails of the prev/next image, pinned near
-    // the edges. A first attempt exposed the neighboring *slide* itself at
-    // the edges (narrower slide + overflow), but that only works for images
-    // that already fill their slide edge-to-edge — most of this portfolio is
-    // portrait posters/Figma exports that sit centered with wide empty
-    // margins, so the "peek" showed blank space instead of any photo. A
-    // dedicated object-cover thumbnail sidesteps that entirely.
-    const peekPrevBtn = document.getElementById('modalPeekPrev');
-    const peekPrevImg = document.getElementById('modalPeekPrevImg');
-    const peekNextBtn = document.getElementById('modalPeekNext');
-    const peekNextImg = document.getElementById('modalPeekNextImg');
-
-    if (!hasMultiple) {
-        if (peekPrevBtn) peekPrevBtn.style.display = 'none';
-        if (peekNextBtn) peekNextBtn.style.display = 'none';
-    }
-
-    const updatePeeks = () => {
-        if (!hasMultiple) return;
-        const prevSrc = slides[(currentIndex - 1 + slides.length) % slides.length]
-            .querySelector('[data-zoom-img]')?.src;
-        const nextSrc = slides[(currentIndex + 1) % slides.length]
-            .querySelector('[data-zoom-img]')?.src;
-        if (peekPrevImg && prevSrc) peekPrevImg.src = prevSrc;
-        if (peekNextImg && nextSrc) peekNextImg.src = nextSrc;
-    };
-
-    // --- Zoom/pan, scoped per slide ---
-    // Listeners are on the whole slide (not just the <img>) because a
-    // fit-to-screen image — especially a very tall UI/UX composite shrunk
-    // down to a thin vertical strip — can leave most of the slide as empty
-    // space around it; zooming needs to work no matter where in the slide
-    // the mouse is, not just on the handful of pixels the image occupies.
+    // --- Zoom/pan, scoped per active card ---
     const ZOOM_MIN = 1;
     const ZOOM_MAX = 4;
     const zoomState = new WeakMap();
@@ -109,6 +54,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!zoomState.has(img)) zoomState.set(img, { scale: 1, x: 0, y: 0 });
         return zoomState.get(img);
     };
+
+    const isActiveCard = (card) => card.getAttribute('aria-hidden') === 'false';
 
     const clampPan = (img, scale, x, y) => {
         const overflowX = Math.max(0, (img.offsetWidth * scale - img.offsetWidth) / 2);
@@ -134,21 +81,47 @@ document.addEventListener('DOMContentLoaded', () => {
             overwrite: 'auto',
         });
         img.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+        setFocusMode(scale > 1, img.closest('[data-deck-card]'));
     };
 
     const resetZoom = (img) => applyZoom(img, 1, 0, 0, false);
-    const resetAllZoom = () => slides.forEach((slide) => {
-        const img = slide.querySelector('[data-zoom-img]');
+    const resetAllZoom = () => cards.forEach((card) => {
+        const img = card.querySelector('[data-zoom-img]');
         if (img) resetZoom(img);
     });
 
-    slides.forEach((slide) => {
-        const img = slide.querySelector('[data-zoom-img]');
+    // --- Focus mode: while the active card is zoomed, dim everything else
+    // (other deck cards, chrome) so attention stays on the zoomed detail.
+    // Cleared via clearProps so the deck's own opacity control (createDeck)
+    // resumes normal ownership the moment zoom resets. ---
+    let focusModeActive = false;
+    const setFocusMode = (active, activeCard) => {
+        if (active === focusModeActive) return;
+        focusModeActive = active;
+        const dur = reducedMotion ? 0 : 0.3;
+
+        cards.forEach((card) => {
+            if (card === activeCard) return;
+            gsap.to(card, { opacity: active ? 0 : gsap.getProperty(card, 'opacity'), duration: dur, ease: 'power2.out', overwrite: 'auto' });
+        });
+
+        [counter, prevBtn, nextBtn].forEach((el) => {
+            if (!el) return;
+            gsap.to(el, { opacity: active ? 0.2 : 1, duration: dur, ease: 'power2.out', overwrite: 'auto' });
+        });
+
+        if (!active) {
+            // Hand opacity control on non-active cards back to createDeck's
+            // own layout pass rather than leaving an explicit inline value
+            // GSAP set moments ago fighting with it.
+            gsap.set(cards.filter((c) => c !== activeCard), { clearProps: 'opacity' });
+        }
+    };
+
+    cards.forEach((card) => {
+        const img = card.querySelector('[data-zoom-img]');
         if (!img) return;
 
-        // Zoom centered on the cursor: convert a viewport point to a delta
-        // against the image's current pan so the point under the cursor
-        // stays put as the scale changes.
         const zoomAt = (clientX, clientY, nextScale) => {
             const state = stateFor(img);
             const rect = img.getBoundingClientRect();
@@ -160,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
             applyZoom(img, nextScale, nextX, nextY);
         };
 
-        slide.addEventListener('wheel', (e) => {
+        card.addEventListener('wheel', (e) => {
+            if (!isActiveCard(card)) return;
             e.preventDefault();
             const state = stateFor(img);
             const factor = e.deltaY < 0 ? 1.2 : 1 / 1.2;
@@ -175,25 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
         let originX = 0;
         let originY = 0;
 
-        slide.addEventListener('pointerdown', (e) => {
+        card.addEventListener('pointerdown', (e) => {
+            if (!isActiveCard(card)) return;
+            const state = stateFor(img);
+            if (state.scale <= 1) return;
             startX = e.clientX;
             startY = e.clientY;
             wasDragging = false;
-            const state = stateFor(img);
-            if (state.scale <= 1) return;
             dragging = true;
             originX = state.x;
             originY = state.y;
-            slide.setPointerCapture(e.pointerId);
+            card.setPointerCapture?.(e.pointerId);
             img.style.cursor = 'grabbing';
         });
 
-        slide.addEventListener('pointermove', (e) => {
-            // Movement only counts as a drag while actually panning (scale >
-            // 1 and the pointer is down) — checking it unconditionally would
-            // also catch the ordinary cursor jitter between mousedown and
-            // mouseup of a plain click, which was silently swallowing the
-            // very next tap-to-zoom-out click every time.
+        card.addEventListener('pointermove', (e) => {
             if (!dragging) return;
             if (Math.hypot(e.clientX - startX, e.clientY - startY) > 20) wasDragging = true;
             const state = stateFor(img);
@@ -205,25 +175,25 @@ document.addEventListener('DOMContentLoaded', () => {
             dragging = false;
             const state = stateFor(img);
             img.style.cursor = state.scale > 1 ? 'grab' : 'zoom-in';
-            if (e && slide.hasPointerCapture?.(e.pointerId)) slide.releasePointerCapture(e.pointerId);
+            if (e && card.hasPointerCapture?.(e.pointerId)) card.releasePointerCapture(e.pointerId);
         };
-        slide.addEventListener('pointerup', endDrag);
-        slide.addEventListener('pointercancel', endDrag);
+        card.addEventListener('pointerup', endDrag);
+        card.addEventListener('pointercancel', endDrag);
 
-        // A single tap/click ON the photo itself toggles zoom (in on the
-        // tapped point, or back out if already zoomed). Clicking anywhere
-        // else in the slide — the empty letterboxed space around a
-        // fit-to-screen image — closes the viewer instead, matching how a
-        // lightbox is expected to behave.
-        slide.addEventListener('click', (e) => {
+        // A click on the active image toggles zoom (in on the tapped
+        // point, or back out if already zoomed). This listener only ever
+        // actually fires for the active card's click — createDeck's own
+        // capture-phase routing already intercepts and stops clicks on any
+        // non-active card before they reach here. Clicking the empty
+        // letterboxed space around the image (still inside the card, not
+        // on the <img> itself) does nothing — only #modalBackdrop closes
+        // the modal (see below), never inferred from "missed the image".
+        card.addEventListener('click', (e) => {
             if (wasDragging) {
                 wasDragging = false;
                 return;
             }
-            if (e.target !== img) {
-                closeModal();
-                return;
-            }
+            if (e.target !== img) return;
             const state = stateFor(img);
             if (state.scale > 1) {
                 applyZoom(img, 1, 0, 0);
@@ -233,41 +203,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Slide navigation ---
-    const updateChrome = () => {
-        if (counter) {
-            counter.textContent = `${currentIndex + 1} / ${slides.length}`;
-            counter.classList.toggle('hidden', !hasMultiple);
-        }
-        prevBtn?.classList.toggle('hidden', !hasMultiple);
-        nextBtn?.classList.toggle('hidden', !hasMultiple);
-    };
+    // --- Deck mount: positioning/drag/swipe/side-click-navigation is
+    // entirely createDeck's — this file only reacts to index changes
+    // (chrome) and tells the deck when NOT to treat a pointerdown as a
+    // navigation drag (the active card is already zoomed in and panning). ---
+    const deck = createDeck(deckRoot, cards, {
+        onChange: (index) => {
+            resetAllZoom();
+            if (counter) {
+                counter.textContent = `${index + 1} / ${cards.length}`;
+                counter.classList.toggle('hidden', !hasMultiple);
+            }
+            prevBtn?.classList.toggle('hidden', !hasMultiple);
+            nextBtn?.classList.toggle('hidden', !hasMultiple);
+        },
+        isDragBlocked: (e) => {
+            const img = e.target.closest('[data-zoom-img]');
+            if (!img) return false;
+            const card = img.closest('[data-deck-card]');
+            if (!card || !isActiveCard(card)) return false;
+            return stateFor(img).scale > 1;
+        },
+    });
 
-    const goTo = (index, animate = true) => {
-        currentIndex = (index + slides.length) % slides.length;
-        resetAllZoom();
-        gsap.to(track, {
-            x: -currentIndex * window.innerWidth,
-            duration: animate ? 0.6 : 0,
-            ease: 'power3.inOut',
+    // --- Modal open/close ---
+    let hintShown = false;
+    const showZoomHintOnce = () => {
+        if (hintShown || !zoomHint || !hasMultiple) return;
+        hintShown = true;
+        if (reducedMotion) {
+            gsap.to(zoomHint, { opacity: 0, duration: 0.5, delay: 2.2 });
+            return;
+        }
+        gsap.fromTo(zoomHint, { opacity: 0 }, {
+            opacity: 1,
+            duration: 0.4,
+            onComplete: () => {
+                gsap.to(zoomHint, { opacity: 0, duration: 0.5, delay: 2.2 });
+            },
         });
-        updateChrome();
-        updatePeeks();
     };
 
     const openModal = (index) => {
-        goTo(index, false);
+        deck.goTo(index, false);
         modal.classList.remove('hidden');
-        modal.classList.add('block');
         document.body.style.overflow = 'hidden';
-        zoomHint?.classList.remove('hidden');
+        showZoomHintOnce();
     };
 
     const closeModal = () => {
         modal.classList.add('hidden');
-        modal.classList.remove('block');
         document.body.style.overflow = 'auto';
         resetAllZoom();
+        setFocusMode(false, null);
     };
 
     triggers.forEach((trigger) => {
@@ -275,22 +263,22 @@ document.addEventListener('DOMContentLoaded', () => {
         trigger.addEventListener('click', () => openModal(index));
     });
 
-    prevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
-    nextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
-    peekPrevBtn?.addEventListener('click', () => goTo(currentIndex - 1));
-    peekNextBtn?.addEventListener('click', () => goTo(currentIndex + 1));
+    prevBtn?.addEventListener('click', () => deck.goTo(deck.getIndex() - 1));
+    nextBtn?.addEventListener('click', () => deck.goTo(deck.getIndex() + 1));
 
     closeBtn?.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
+
+    // Explicit backdrop-only close — #modalBackdrop is the ONLY element
+    // whose plain click closes the modal. #modalContent (everything else,
+    // including the deck's own inset margin) is pointer-events-none except
+    // for the specific interactive pieces that opt back in, so nothing can
+    // accidentally "fall through" to a generic close inference.
+    backdrop?.addEventListener('click', closeModal);
+
     document.addEventListener('keydown', (e) => {
         if (modal.classList.contains('hidden')) return;
         if (e.key === 'Escape') closeModal();
-        if (e.key === 'ArrowLeft') goTo(currentIndex - 1);
-        if (e.key === 'ArrowRight') goTo(currentIndex + 1);
-    });
-    window.addEventListener('resize', () => {
-        if (!modal.classList.contains('hidden')) goTo(currentIndex, false);
+        if (e.key === 'ArrowLeft') deck.goTo(deck.getIndex() - 1);
+        if (e.key === 'ArrowRight') deck.goTo(deck.getIndex() + 1);
     });
 });

@@ -28,4 +28,16 @@ class Project extends Model
     {
         return $this->gallery_images ?? [];
     }
+
+    /**
+     * The image used for the Selected Works accordion cover. Prefers the
+     * dedicated cover_image_path override (lets a project use a different
+     * crop/composition there than on its own detail page) and falls back
+     * to the main image_path when no override is set. The detail page
+     * itself always uses image_path directly, unaffected by this.
+     */
+    public function coverImagePath(): ?string
+    {
+        return $this->cover_image_path ?: $this->image_path;
+    }
 }

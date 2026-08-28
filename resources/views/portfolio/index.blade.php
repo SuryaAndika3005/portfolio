@@ -1,200 +1,241 @@
-<x-layout>
+<x-layout :hide-footer="true">
 
-    <header
-        class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 pb-24 flex flex-col items-center justify-center text-center min-h-[80vh] overflow-hidden">
+    <header id="top" class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 lg:pt-40 pb-24 lg:pb-32">
+        <div
+            class="grid grid-cols-1 min-[960px]:grid-cols-12 items-center gap-12 md:gap-14 min-[960px]:gap-10 lg:gap-16">
+            <div class="min-[960px]:col-span-6 lg:col-span-7">
+                <p style="--reveal-delay: 0ms"
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-4">
+                    {{ __(':name · :location', ['name' => 'Surya Andika', 'location' => __('Padang, Indonesia')]) }}
+                </p>
 
-        <div class="absolute top-20 left-10 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-pulse"
-            aria-hidden="true"></div>
-        <div class="absolute top-40 right-20 w-96 h-96 bg-cyan-300 rounded-full mix-blend-multiply filter blur-[120px] opacity-30 animate-pulse"
-            style="animation-delay: 2s;" aria-hidden="true"></div>
+                <h1 style="--reveal-delay: 80ms"
+                    class="reveal text-[clamp(3.5rem,6vw,6.5rem)] font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white mb-6">
+                    {!! __('Designing visuals.<br>Building :digital experiences.', ['digital' => '<span class="text-primary">'.__('digital').'</span>']) !!}
+                </h1>
 
-        <div class="relative z-10 max-w-3xl">
-            <div
-                class="inline-flex items-center space-x-3 bg-white/60 backdrop-blur-sm px-5 py-2.5 rounded-full mb-8 border border-slate-200 shadow-sm">
-                <span class="relative flex h-3.5 w-3.5">
-                    <span
-                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500"></span>
-                </span>
-                <span class="text-xs font-bold text-slate-700 uppercase tracking-widest">Available for New
-                    Projects</span>
-            </div>
+                <p style="--reveal-delay: 160ms" class="reveal text-subheading font-bold text-slate-700 dark:text-slate-200 mb-5">
+                    {{ __('Graphic Designer & Informatics Student') }}
+                </p>
 
-            <h1
-                class="text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight mb-5 text-slate-900 tracking-tight">
-                Hi, I'm <br>
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Surya
-                    Andika.</span>
-            </h1>
+                <p style="--reveal-delay: 220ms" class="reveal text-body text-slate-500 dark:text-slate-400 max-w-xl mb-10">
+                    {{ __('I work across visual design, UI/UX, web development, and applied AI/ML, combining creative thinking with a growing technical foundation.') }}
+                </p>
 
-            <h2
-                class="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 h-9 sm:h-10 lg:h-11 flex items-center justify-center">
-                <span id="role-rotator" data-roles="Graphic Designer,UI/UX Designer,Web Developer"
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 transition-opacity duration-300">Graphic
-                    Designer</span>
-            </h2>
-
-            <p class="text-slate-500 mb-12 max-w-xl mx-auto text-base sm:text-lg lg:text-xl leading-relaxed">
-                I craft bold visual identities and brand materials, backed by the ability to design and build the
-                digital products that carry them, from concept to high-performance code.
-            </p>
-
-            <div class="flex flex-wrap gap-5 items-center justify-center">
-                <a href="#projects"
-                    class="group relative px-8 py-4 bg-blue-600 text-white rounded-full font-bold overflow-hidden shadow-xl shadow-blue-200 hover:shadow-2xl hover:shadow-blue-300 transition-all duration-300 transform hover:-translate-y-1 text-lg">
-                    <div
-                        class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-500">
-                    </div>
-                    <span class="relative flex items-center gap-2">
-                        See Projects
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none"
+                <div style="--reveal-delay: 300ms" class="reveal flex flex-wrap items-center gap-x-8 gap-y-4">
+                    <a href="#projects" class="group btn btn-primary">
+                        {{ __('Explore Work') }}
+                        <svg class="w-4 h-4 group-hover:translate-x-1 motion-reduce:transform-none transition-transform duration-200" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
-                    </span>
-                </a>
-                <a href="{{ asset('storage/projects/CV.pdf') }}" download
-                    class="px-8 py-4 bg-white text-slate-700 rounded-full font-bold border-2 border-slate-200 hover:border-blue-600 hover:text-blue-600 transition-all duration-300 text-lg">
-                    Resume
-                </a>
+                    </a>
+                    <a href="{{ asset('storage/projects/CV.pdf') }}" target="_blank" rel="noopener"
+                        class="group btn-text dark:text-white dark:hover:!text-primary">
+                        {{ __('View Resume') }}
+                        <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M7 17L17 7M17 7H8M17 7v9"></path>
+                        </svg>
+                    </a>
+                </div>
             </div>
 
-            <div class="flex items-center justify-center gap-3 mt-16 pt-8 border-t border-slate-200/70">
-                <p class="text-3xl font-black text-slate-900">{{ $projectCount }}+</p>
-                <p class="text-sm font-semibold text-slate-500 text-left leading-snug">Projects shipped<br>across design
-                    &amp; development</p>
+            <div style="--reveal-delay: 420ms" class="reveal reveal-portrait min-[960px]:col-span-6 lg:col-span-5">
+                <div class="relative max-w-sm mx-auto min-[960px]:mx-0 min-[960px]:ml-auto lg:max-w-[420px]">
+                    <div class="absolute -inset-6 bg-primary-soft/70 rounded-[2.75rem] -z-10" aria-hidden="true"></div>
+                    <div
+                        class="rounded-[var(--radius-lg)] overflow-hidden border border-border-light shadow-2xl shadow-slate-200/50 dark:shadow-black/40 aspect-[4/5]">
+                        <img src="{{ asset('storage/projects/dika.webp') }}" alt="{{ __('Portrait of Surya Andika') }}"
+                            class="w-full h-full object-cover" decoding="async" fetchpriority="high">
+                    </div>
+                    <p class="mt-4 flex items-center gap-3 text-meta font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500">
+                        <span class="w-8 h-px bg-primary" aria-hidden="true"></span>
+                        {{ __('01 / Portfolio') }}
+                    </p>
+                </div>
             </div>
         </div>
     </header>
 
-    <section id="about" class="reveal max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-            <div class="lg:col-span-5 relative flex justify-center lg:justify-start">
-                <div class="relative w-full max-w-xs sm:max-w-sm">
-                    <div class="rounded-[2.5rem] overflow-hidden shadow-2xl border border-slate-100 aspect-[4/5]">
-                        <img src="{{ asset('storage/projects/dika.webp') }}" loading="lazy" decoding="async"
-                            class="lazy-fade w-full h-full object-cover" alt="Surya Andika">
-                    </div>
-                </div>
-            </div>
+    {{-- About: editorial narrative + metadata, single-statement-led, not a
+         second "narrow label / wide content" split (Hero and Selected
+         Works already use variations of that shape). Statement runs wide
+         (max-w-[1000px]); narrative and metadata sit side by side beneath
+         it in a flex row (stacked on mobile) rather than a boxed <dl> --
+         Location/Study only, no re-quoted current-employment fact (that
+         lives in Experience, not here). --}}
+    <section id="about" aria-labelledby="about-heading" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-16 lg:py-20">
+        <p style="--reveal-delay: 0ms"
+            class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-6">
+            {{ __('About / 02') }}
+        </p>
 
-            <div class="lg:col-span-7 text-center lg:text-left">
-                <span class="text-sm font-extrabold text-blue-600 uppercase tracking-widest">About Me</span>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3 mb-6">Design-first thinking, backed
-                    by code.</h3>
-                <p class="text-slate-600 text-lg leading-relaxed mb-4">
-                    I'm Surya, an Informatics student at Andalas University and a graphic designer at 523 Studio. My
-                    work sits at the intersection of visual design and web development. I care as much about how
-                    something looks as how it's built.
-                </p>
-                <p class="text-slate-600 text-lg leading-relaxed">
-                    From brand identities to full product interfaces, I like owning a project end-to-end: research,
-                    design, and, when the project calls for it, the code that ships it.
-                </p>
-                <div class="flex flex-wrap gap-3 mt-8 justify-center lg:justify-start">
-                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">Padang,
-                        Indonesia</span>
-                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">Informatics @
-                        Unand</span>
-                    <span class="px-4 py-2 bg-slate-100 rounded-full text-sm font-semibold text-slate-700">523
-                        Studio</span>
+        <h2 id="about-heading" style="--reveal-delay: 60ms"
+            class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white max-w-[1000px] mb-8">
+            {{ __('Design came first. Technology expanded the way I create.') }}
+        </h2>
+
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            <p style="--reveal-delay: 120ms" class="reveal text-body text-slate-500 dark:text-slate-400 leading-relaxed max-w-[720px] flex-1">
+                {{ __('I began in graphic design, learning to think in terms of clarity, composition, and how ideas read visually. Studying Informatics later pushed that instinct into more technical territory, but the way I approach a new problem still starts the same way it always did.') }}
+            </p>
+
+            <div class="hidden lg:block w-px bg-border-light shrink-0" style="height: 140px;" aria-hidden="true"></div>
+
+            <div style="--reveal-delay: 180ms" class="reveal flex flex-row lg:flex-col gap-8 lg:gap-6 shrink-0">
+                <div>
+                    <p class="text-meta font-bold uppercase tracking-widest text-muted mb-1">{{ __('Location') }}</p>
+                    <p class="text-small font-semibold text-slate-900 dark:text-white">{{ __('Padang, Indonesia') }}</p>
+                </div>
+                <div>
+                    <p class="text-meta font-bold uppercase tracking-widest text-muted mb-1">{{ __('Study') }}</p>
+                    <p class="text-small font-semibold text-slate-900 dark:text-white">{{ __('Informatics') }},<br class="lg:hidden">
+                        {{ __('Andalas University') }}</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="projects" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-24 relative z-10">
-        <div class="reveal flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
-            <div>
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2">Selected Works</h3>
-                <p class="text-lg text-slate-500">Three disciplines, one practice. Hover a panel to explore it.</p>
-            </div>
+    {{-- Selected Works: the signature three-panel hover accordion. Header
+         compressed to eyebrow + one-line heading (no supporting paragraph
+         -- the accordion demonstrates the work directly). Interaction
+         itself (hover-expand, instant vertical collapsed-title rotation,
+         image auto-cycle) lives entirely in project-accordion.js + the
+         .accordion-* rules in app.css -- untouched here. --}}
+    <section id="projects" aria-labelledby="works-heading" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-16 lg:py-20">
+        <div class="mb-8 lg:mb-10">
+            <p style="--reveal-delay: 0ms"
+                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
+                {{ __('Selected Works / 03') }}
+            </p>
+            <h2 id="works-heading" style="--reveal-delay: 60ms"
+                class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white">
+                {{ __('A selection of work across design and technology.') }}
+            </h2>
         </div>
 
         @php
             $accordionPanels = [
-                ['slug' => 'graphic-design', 'label' => 'Graphic Design', 'tagline' => 'Visual identities & brand campaigns', 'badge' => 'bg-blue-600/90'],
-                ['slug' => 'uiux-design', 'label' => 'UI/UX Design', 'tagline' => 'Product flows, wireframes & prototypes', 'badge' => 'bg-violet-600/90'],
-                ['slug' => 'it-development', 'label' => 'Web & App Development', 'tagline' => 'Responsive, production-ready builds', 'badge' => 'bg-emerald-600/90'],
+                ['slug' => 'graphic-design', 'label' => __('Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
+                ['slug' => 'uiux-design', 'label' => __('UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
+                ['slug' => 'it-development', 'label' => __('Web & App Development'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
             ];
-            $accordionGrouped = $projects->groupBy(fn($project) => $project->category->slug ?? 'other')->toBase();
+            // ->toBase() strips the Eloquent Collection wrapper, whose
+            // get()/except() are overridden for primary-key lookups and
+            // would misbehave on the string-slug keys groupBy() produces
+            // here.
+            $accordionGrouped = $projects->groupBy(fn ($project) => $project->category->slug ?? 'other')->toBase();
         @endphp
 
         @if ($accordionGrouped->isEmpty())
-            <div class="py-20 text-center text-slate-400">No projects available at the moment.</div>
+            <p class="text-body text-slate-400 dark:text-slate-500 py-16 text-center">{{ __('No projects yet.') }}</p>
         @else
-        <div id="works-accordion" class="reveal flex flex-col lg:flex-row gap-4 lg:h-[600px]">
+        <div id="works-accordion" style="--reveal-delay: 220ms" class="reveal flex flex-col lg:flex-row gap-4 lg:h-[600px]">
             @foreach ($accordionPanels as $panel)
-            @php($items = $accordionGrouped->get($panel['slug'], collect()))
-            @continue($items->isEmpty())
-            <a href="{{ route('portfolio.projects') }}#{{ $panel['slug'] }}" data-accordion-panel
-                class="accordion-panel group relative block overflow-hidden rounded-[2rem] min-h-[240px] lg:min-h-0 bg-slate-900">
-                <div class="absolute inset-0">
-                    {{-- Capped at 4 slides: keeping every image in a category stacked
-                    and painting simultaneously (up to 7 for Graphic Design) was
-                    part of what made hovering this row feel heavy. --}}
-                    @foreach ($items->take(4) as $i => $project)
-                        <img data-slide src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async"
+                @php
+                    // Capped at 4 slides: keeping every image in a category
+                    // stacked and painting simultaneously (up to 7 for
+                    // Graphic Design) was part of what made hovering this
+                    // row feel heavy. coverImagePath() prefers a project's
+                    // dedicated accordion cover when one is set, falling
+                    // back to its main image_path otherwise.
+                    $items = $accordionGrouped->get($panel['slug'], collect());
+                    if ($items->isEmpty()) continue;
+                    $slides = $items->take(4);
+                @endphp
+                <div data-accordion-panel tabindex="0"
+                    class="accordion-panel group/panel relative min-h-[280px] lg:min-h-0 rounded-[var(--radius-lg)] overflow-hidden bg-dark cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/60">
+                    @foreach ($slides as $i => $project)
+                        <img data-slide src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
                             class="absolute inset-0 w-full h-full object-cover object-top {{ $i === 0 ? 'is-active' : '' }}"
                             alt="{{ $project->title }}">
                     @endforeach
-                </div>
 
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-slate-900/10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/10 to-transparent pointer-events-none"></div>
 
-                <div class="absolute inset-0 p-6 lg:p-8 flex flex-col justify-end">
-                    <span
-                        class="accordion-count {{ $panel['badge'] }} backdrop-blur-sm text-white text-[11px] font-bold px-3 py-1 rounded-full mb-3 inline-block uppercase tracking-wider w-fit">
-                        {{ $items->count() }} {{ Str::plural('Work', $items->count()) }}
-                    </span>
-                    <h4 class="accordion-title font-black text-white leading-tight">{{ $panel['label'] }}</h4>
-                    <p class="accordion-tagline text-sm text-slate-300 mt-1 max-w-xs">{{ $panel['tagline'] }}</p>
+                    <a href="{{ route('portfolio.projects') }}#{{ $panel['slug'] }}"
+                        class="absolute inset-0 z-10" aria-label="{{ __('View :category projects', ['category' => $panel['label']]) }}"></a>
+
+                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-8 pointer-events-none">
+                        <span class="accordion-count inline-flex items-center w-fit {{ $panel['badge'] }} text-white text-meta font-bold uppercase tracking-widest px-3 py-1 rounded-[var(--radius-sm)] mb-3">
+                            {{ trans_choice('messages.works_count', $items->count(), ['count' => $items->count()]) }}
+                        </span>
+                        <h3 class="accordion-title font-extrabold text-white">{{ $panel['label'] }}</h3>
+                        <p class="accordion-tagline text-small text-white/70 mt-2 max-w-xs">{{ $panel['tagline'] }}</p>
+                    </div>
                 </div>
-            </a>
             @endforeach
         </div>
         @endif
 
-        <div class="mt-16 text-center">
-            <a href="{{ route('portfolio.projects') }}"
-                class="inline-flex items-center gap-3 px-10 py-4 bg-slate-900 text-white rounded-full font-bold hover:bg-blue-600 transition-all duration-300 shadow-xl hover:shadow-blue-500/30 group">
-                Explore All Works
-                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        <div class="text-center mt-10 lg:mt-12">
+            <a href="{{ route('portfolio.projects') }}" class="group btn-text dark:text-white dark:hover:!text-primary">
+                {{ __('Explore all works') }}
+                <svg class="w-4 h-4 group-hover:translate-x-1 motion-reduce:transform-none transition-transform duration-200" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
             </a>
         </div>
     </section>
 
-    <section id="skills" class="bg-slate-900 py-24 mt-10">
-        <div class="max-w-[1600px] lg:px-20 mx-auto px-6">
-            <div class="reveal text-center mb-16">
-                <h3 class="text-3xl font-bold text-white mb-4">Tech &amp; Creative Stack</h3>
-                <p class="text-slate-400">A seamless blend of software engineering expertise and visual design.</p>
+    {{-- Skills: full-width interactive capability bands on a dark section
+         -- no background word (removed; competed with Selected Works for
+         "the page's one big visual moment"). Each row's hover/focus is one
+         coordinated system: category icon shifts to primary + translates,
+         primary text brightens, secondary text gains contrast, tool tiles
+         lift in visibility, a thin leading rule appears, and the row's own
+         background makes a barely-there tone shift -- all via .skill-group
+         in app.css, not per-property inline logic here. --}}
+    <section id="skills" aria-labelledby="skills-heading" class="bg-section-skills py-16 lg:py-20">
+        <div class="max-w-[1600px] mx-auto px-8 lg:px-20">
+            <div class="mb-10 lg:mb-14">
+                <p style="--reveal-delay: 0ms"
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
+                    {{ __('Skills / 04') }}
+                </p>
+                <h2 id="skills-heading" style="--reveal-delay: 60ms"
+                    class="reveal text-heading font-extrabold tracking-tight text-white">
+                    {{ __('The tools behind the work.') }}
+                </h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach ($skillGroups as $group)
-                    <div style="--reveal-delay: {{ $loop->index * 80 }}ms"
-                        class="reveal bg-slate-800/50 p-8 rounded-3xl border border-slate-700 hover:border-blue-500 hover:bg-slate-800 transition duration-300 group flex flex-col justify-between shadow-2xl">
-                        <div>
-                            <div
-                                class="mb-6 p-3 bg-slate-700/50 w-fit rounded-2xl group-hover:bg-blue-600 group-hover:text-white text-blue-400 transition duration-300">
+            <div class="flex flex-col gap-3 lg:gap-4">
+                @foreach ($skillGroups as $i => $group)
+                    <div style="--reveal-delay: {{ 120 + $i * 60 }}ms" tabindex="0"
+                        class="skill-group reveal group/skill grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center px-4 lg:px-6 py-6 lg:py-7 outline-none">
+                        <div class="lg:col-span-3 flex items-center gap-4">
+                            <span aria-hidden="true"
+                                class="w-10 h-10 shrink-0 flex items-center justify-center rounded-[var(--radius-sm)] text-white/70 group-hover/skill:text-primary group-focus-visible/skill:text-primary transition-[color,transform] duration-[var(--motion-fast)] ease-[var(--ease-interactive)] group-hover/skill:translate-x-1 group-focus-visible/skill:translate-x-1">
                                 {!! $group['icon'] !!}
-                            </div>
-                            <h4 class="text-xl font-bold text-white mb-3">{{ $group['title'] }}</h4>
-                            <p class="text-sm text-slate-400 mb-8 leading-relaxed">{{ $group['description'] }}</p>
+                            </span>
+                            <span class="text-eyebrow font-bold uppercase tracking-[0.2em] text-white/70 group-hover/skill:text-slate-500 group-focus-visible/skill:text-slate-500 transition-colors duration-[var(--motion-fast)] ease-[var(--ease-interactive)]">{{ __($group['label']) }}</span>
                         </div>
-                        <div
-                            class="flex flex-wrap gap-4 items-center opacity-80 group-hover:opacity-100 transition duration-500">
+
+                        <div class="lg:col-span-6">
+                            @foreach ($group['primary'] as $line)
+                                <p class="text-subheading font-bold text-white group-hover/skill:text-slate-900 group-focus-visible/skill:text-slate-900 transition-colors duration-[var(--motion-fast)] ease-[var(--ease-interactive)]">
+                                    {{ __($line) }}
+                                </p>
+                            @endforeach
+                            @foreach ($group['secondary'] as $line)
+                                <p class="text-small text-white/60 group-hover/skill:text-slate-500 group-focus-visible/skill:text-slate-500 transition-colors duration-[var(--motion-fast)] ease-[var(--ease-interactive)] mt-1">
+                                    {{ __($line) }}
+                                </p>
+                            @endforeach
+                        </div>
+
+                        <div class="lg:col-span-3 flex flex-wrap gap-2 lg:justify-end">
                             @foreach ($group['tools'] as $tool)
-                                <div class="bg-white p-2.5 rounded-2xl shadow-lg hover:scale-110 transition duration-300">
-                                    <img src="{{ $tool['icon'] }}" loading="lazy" decoding="async" class="w-7 h-7"
-                                        title="{{ $tool['name'] }}" alt="{{ $tool['name'] }} logo">
-                                </div>
+                                <span title="{{ $tool['name'] }}"
+                                    class="w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] bg-white/10 group-hover/skill:bg-primary-soft group-focus-visible/skill:bg-primary-soft transition-colors duration-[var(--motion-fast)] ease-[var(--ease-interactive)]">
+                                    <span aria-hidden="true" style="--tool-icon: url('{{ $tool['icon'] }}')"
+                                        class="skill-tool-icon w-5 h-5 opacity-60 group-hover/skill:opacity-100 group-focus-visible/skill:opacity-100 group-hover/skill:!bg-primary group-focus-visible/skill:!bg-primary transition-[opacity,background-color] duration-[var(--motion-fast)]"></span>
+                                    <span class="sr-only">{{ $tool['name'] }}</span>
+                                </span>
                             @endforeach
                         </div>
                     </div>
@@ -203,206 +244,297 @@
         </div>
     </section>
 
-    <section id="education" class="max-w-[1600px] lg:px-20 mx-auto px-6 py-20 relative z-10 -mt-10">
-        <div
-            class="reveal relative overflow-hidden bg-white rounded-[3rem] p-8 sm:p-10 md:p-14 shadow-2xl shadow-slate-200/50 border border-slate-100 group hover:shadow-blue-200/50 transition-shadow duration-500">
-            <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-                <div class="flex items-start gap-6">
-                    <div
-                        class="relative bg-gradient-to-br from-blue-600 to-cyan-500 text-white p-5 rounded-3xl shadow-lg transform group-hover:scale-105 transition-transform duration-300 shrink-0">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M12 14l9-5-9-5-9 5 9 5z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z">
-                            </path>
-                        </svg>
+    {{-- Editorial Career Archive: three distinct visual grammars instead of
+         one shared timeline system. Professional Work uses an oversized
+         year as its own visual anchor (no dots, no vertical stem line) with
+         role/company/duration set beside it. Education is a solid
+         primary-blue insert -- deliberately different material/weight so a
+         single entry doesn't imitate a multi-entry timeline. Leadership &
+         Organizations runs full-width beneath as a numbered two-column
+         index. Every anchor year/GPA value is a presentation-only
+         extraction from the existing stored duration/description strings,
+         never new data. --}}
+    <section id="experience" aria-labelledby="experience-heading" class="max-w-[1600px] lg:px-20 mx-auto px-8 py-20 lg:py-24">
+        <div class="mb-12 lg:mb-16">
+            <p style="--reveal-delay: 0ms"
+                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
+                {{ __('Experience / 05') }}
+            </p>
+            <h2 id="experience-heading" style="--reveal-delay: 60ms"
+                class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white">
+                {{ __('A record of work and study.') }}
+            </h2>
+        </div>
+
+        @php
+            // Professional Work: chronological, current-first (see
+            // Experience::sortChronologically) -- independent of whatever
+            // order $experiences itself arrived in. Leadership deliberately
+            // keeps that original order untouched (the previously approved
+            // public presentation order), not re-sorted by date.
+            $professionalEntries = \App\Models\Experience::sortChronologically($experiences->where('category', 'Professional Work')->values());
+            $leadershipEntries = $experiences->reject(fn ($item) => $item->category === 'Professional Work')->values();
+            $educationEntries = [
+                (object) [
+                    'role' => __('Bachelor of Informatics'),
+                    'company' => __('Andalas University'),
+                    'duration' => '2023 - Present',
+                    'description' => 'Current GPA 3.57',
+                ],
+            ];
+            $formatDuration = fn (string $duration) => str_replace([' - ', 'Present'], [' · ', __('Present')], $duration);
+        @endphp
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-x-16 gap-y-14 mb-14 lg:mb-16">
+            <div class="lg:col-span-7">
+                {{-- Professional Work: the year is the row's own visual
+                     anchor (72-104px at desktop) rather than a small marker
+                     beside a timeline dot. Descriptions (when present)
+                     expand in place via experience-toggle.js; entries with
+                     no stored description render no toggle at all. --}}
+                <h3 style="--reveal-delay: 120ms"
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 mb-2">
+                    {{ __('Professional Work') }}
+                </h3>
+                @foreach ($professionalEntries as $item)
+                    @php
+                        $hasDescription = filled($item->description);
+                        $isCurrent = str_contains($item->duration, 'Present');
+                        preg_match('/\d{4}/', $item->duration, $yearMatch);
+                        $anchorYear = $yearMatch[0] ?? $item->duration;
+                    @endphp
+                    <div style="--reveal-delay: {{ 160 + $loop->index * 60 }}ms"
+                        class="reveal group/row border-t border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-300 {{ $loop->last ? 'border-b' : '' }}">
+                        <button type="button" @if ($hasDescription) data-experience-toggle
+                            aria-controls="professional-detail-{{ $item->id }}" aria-expanded="false" @endif
+                            class="w-full text-left grid grid-cols-[auto_1fr] gap-x-5 lg:gap-x-8 items-start py-8 lg:py-10 {{ $hasDescription ? 'cursor-pointer' : 'cursor-default' }}">
+                            <span class="text-[3rem] sm:text-[3.75rem] lg:text-[4.5rem] xl:text-[6.5rem] leading-[0.85] font-extrabold tabular-nums transition-colors duration-300 {{ $isCurrent ? 'text-primary' : 'text-soft-muted group-hover/row:text-primary' }}">
+                                {{ $anchorYear }}
+                            </span>
+                            <div class="pt-2 lg:pt-4 group-hover/row:translate-x-[3px] motion-reduce:transform-none transition-transform duration-300">
+                                <div class="flex items-start justify-between gap-4">
+                                    <h4 class="text-subheading font-bold text-slate-900 dark:text-white leading-snug">{{ $item->role }}</h4>
+                                    @if ($hasDescription)
+                                        <span data-toggle-icon
+                                            class="text-lg leading-none text-slate-400 dark:text-slate-500 group-hover/row:text-slate-600 dark:group-hover/row:text-slate-300 transition-colors duration-300 shrink-0 mt-1">+</span>
+                                    @endif
+                                </div>
+                                <p class="text-small text-slate-500 dark:text-slate-400 mt-1">{{ $item->company }}</p>
+                                <p class="text-meta text-slate-400 dark:text-slate-500 mt-1.5">{{ $formatDuration($item->duration) }}</p>
+                            </div>
+                        </button>
+                        @if ($hasDescription)
+                            <div id="professional-detail-{{ $item->id }}" class="experience-detail">
+                                <p class="text-small text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl pb-8">{{ $item->description }}</p>
+                            </div>
+                        @endif
                     </div>
-                    <div>
-                        <span
-                            class="text-sm font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 uppercase tracking-widest">2023
-                            - Present</span>
-                        <h4 class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">Bachelor of
-                            Informatics</h4>
-                        <p class="text-lg text-slate-500 font-medium mt-1">Andalas University</p>
+                @endforeach
+            </div>
+
+            <div class="lg:col-span-5 lg:self-start">
+                {{-- Education: a solid primary-blue insert, not a pale card
+                     imitating the Professional list. GPA is parsed out of
+                     the stored description text (a presentation-only
+                     extraction, not new data) and rendered only when the
+                     parse actually finds a value -- no invented "/4.00"
+                     scale is appended, since the stored source never states
+                     one. --}}
+                <h3 style="--reveal-delay: {{ 220 + $professionalEntries->count() * 60 }}ms"
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 mb-2">
+                    {{ __('Education') }}
+                </h3>
+                @foreach ($educationEntries as $item)
+                    @php
+                        preg_match('/\d{4}/', $item->duration, $eduYearMatch);
+                        $eduAnchorYear = $eduYearMatch[0] ?? $item->duration;
+                        preg_match('/GPA\s*([\d.]+)/i', (string) $item->description, $eduGpaMatch);
+                        $eduGpa = $eduGpaMatch[1] ?? null;
+                    @endphp
+                    <div style="--reveal-delay: {{ 260 + $professionalEntries->count() * 60 + $loop->index * 60 }}ms"
+                        class="reveal bg-primary rounded-[var(--radius-md)] p-8 lg:p-10">
+                        <div class="flex items-start justify-between gap-3 mb-6">
+                            <p class="text-[2.5rem] leading-none font-bold text-white tabular-nums">
+                                {{ $eduAnchorYear }}
+                            </p>
+                            <svg aria-hidden="true" class="w-6 h-6 text-white/70 shrink-0" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M22 10 12 5 2 10l10 5 10-5Z" />
+                                <path d="M6 12v5c0 1.5 2.5 3 6 3s6-1.5 6-3v-5" />
+                            </svg>
+                        </div>
+                        <h4 class="text-subheading font-bold text-white leading-snug">{{ $item->role }}</h4>
+                        <p class="text-small font-semibold text-white/80 mt-1">{{ $item->company }}</p>
+                        <p class="text-meta text-white/60 mt-1.5">{{ $formatDuration($item->duration) }}</p>
+
+                        @if ($eduGpa)
+                            <div class="mt-6 pt-5 border-t border-white/20">
+                                <p class="text-meta font-bold uppercase tracking-widest text-white/60 mb-1">
+                                    {{ __('GPA') }}
+                                </p>
+                                <p class="text-body font-bold text-white">{{ $eduGpa }}</p>
+                            </div>
+                        @endif
                     </div>
-                </div>
-                <div
-                    class="w-full md:w-auto flex items-center justify-between md:block gap-4 bg-slate-50 px-6 py-4 rounded-2xl border border-slate-100 shadow-sm text-left md:text-center md:min-w-[140px] group-hover:border-blue-200 transition-colors">
-                    <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-0 md:mb-1">Current GPA</p>
-                    <p class="text-3xl font-black text-slate-800">3.57</p>
-                </div>
+                @endforeach
             </div>
         </div>
-    </section>
 
-    <section id="experience" class="max-w-[1600px] lg:px-20 mx-auto px-6 py-24">
-        <div class="reveal text-center mb-16">
-            <h3 class="text-4xl font-extrabold text-slate-900 mb-4">The Journey</h3>
-            <p class="text-lg text-slate-500">Professional milestones, leadership roles, and creative contributions.</p>
-        </div>
+        {{-- Leadership & Organizations: full section width, read
+             column-first rather than row-first -- the collection is split
+             into two chunks (left gets the first ceil(n/2) entries, right
+             gets the rest), each rendered as its own stacked column, so the
+             numbering reads 01-04 down the left column then 05-07 down the
+             right, not interleaved row by row. Numbers are computed here,
+             purely for display -- never stored. --}}
+        <div>
+            <h3 style="--reveal-delay: {{ 320 + $professionalEntries->count() * 60 + count($educationEntries) * 60 }}ms"
+                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500 mb-6">
+                {{ __('Leadership & Organizations') }}
+            </h3>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            @forelse ($experiences->groupBy('category') as $category => $items)
-                <div style="--reveal-delay: {{ $loop->index * 100 }}ms"
-                    class="reveal bg-white rounded-[2rem] p-6 sm:p-7 shadow-lg shadow-slate-200/30 border border-slate-100 hover:border-blue-300 transition-colors duration-300 flex flex-col max-h-[26rem]">
-                    <h4 class="text-lg font-extrabold text-slate-800 mb-6 shrink-0">{{ $category }}</h4>
-                    <div
-                        class="scrollbar-thin relative pl-5 border-l-2 border-slate-100 space-y-5 overflow-y-auto pr-2 -mr-2">
-                        @foreach ($items as $item)
-                            <div class="relative">
-                                <div
-                                    class="absolute -left-[1.4rem] top-1 w-2.5 h-2.5 bg-blue-500 rounded-full ring-4 ring-white">
+            @php
+                $leadershipNumbered = $leadershipEntries->values()->map(fn ($item, $i) => (object) [
+                    'item' => $item,
+                    'number' => $i + 1,
+                ]);
+                $leadershipHalf = (int) ceil($leadershipNumbered->count() / 2);
+                $leadershipColumns = [
+                    $leadershipNumbered->slice(0, $leadershipHalf)->values(),
+                    $leadershipNumbered->slice($leadershipHalf)->values(),
+                ];
+            @endphp
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-12">
+                @foreach ($leadershipColumns as $column)
+                    <div>
+                        @foreach ($column as $entry)
+                            @php $item = $entry->item; @endphp
+                            <div style="--reveal-delay: {{ 380 + $professionalEntries->count() * 60 + count($educationEntries) * 60 + ($entry->number - 1) * 40 }}ms"
+                                class="reveal group/org grid grid-cols-12 gap-3 items-baseline py-3.5 lg:py-4 border-t border-slate-200 dark:border-white/10 {{ $loop->last ? 'border-b' : '' }} hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-300">
+                                <span class="col-span-1 text-meta font-bold text-slate-300 dark:text-slate-600 tabular-nums">{{ sprintf('%02d', $entry->number) }}</span>
+                                <span class="col-span-2 sm:col-span-4 lg:col-span-4 text-meta text-slate-400 dark:text-slate-500 group-hover/org:text-primary transition-colors duration-300 tabular-nums">{{ $formatDuration($item->duration) }}</span>
+                                <div class="col-span-9 sm:col-span-7 lg:col-span-7 group-hover/org:translate-x-[3px] motion-reduce:transform-none transition-transform duration-300">
+                                    <p class="text-small font-bold text-slate-900 dark:text-white leading-snug truncate">{{ $item->role }}</p>
+                                    <p class="text-meta text-slate-400 dark:text-slate-500 truncate">{{ $item->company }}</p>
                                 </div>
-                                <p class="text-[11px] font-bold text-blue-500 uppercase tracking-wider mb-1">
-                                    {{ $item->duration }}</p>
-                                <h5 class="text-sm font-bold text-slate-800">{{ $item->role }}</h5>
-                                <p class="text-xs text-slate-500">{{ $item->company }}</p>
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @empty
-                <p class="text-slate-400 text-center col-span-3">No experience entries yet.</p>
-            @endforelse
+                @endforeach
+            </div>
         </div>
     </section>
 
-    <section id="contact" class="relative bg-slate-900 pt-32 pb-12 mt-20 overflow-hidden border-t border-slate-800">
-        <div class="max-w-[1600px] mx-auto px-8 lg:px-20 relative z-10">
-            <div class="flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-
-                <div class="reveal w-full lg:w-5/12 text-center lg:text-left">
-                    <h2
-                        class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-tight">
-                        Let's build <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">something
-                            great.</span>
-                    </h2>
-                    <p class="text-lg text-slate-400 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                        Whether it's app design, visual identity, or web development projects, I am always open to
-                        discussing new ideas.
+    {{-- Contact: closing beat, direct-contact-first. Email is the sole
+         primary action; WhatsApp + LinkedIn are secondary, real, tappable
+         channels one tier below; the form is a quieter alternative, not
+         hidden. The footer (copyright, social row, location) is fully
+         integrated here -- this is the homepage's one and only closing
+         region, no second <x-footer> beneath it (hideFooter on <x-layout>). --}}
+    <section id="contact" aria-labelledby="contact-heading" class="bg-section-contact py-20 lg:py-24">
+        <div class="max-w-[1600px] mx-auto px-8 lg:px-20">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+                <div class="lg:col-span-7">
+                    <p style="--reveal-delay: 0ms"
+                        class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-6">
+                        {{ __('Contact / 06') }}
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="mailto:{{ config('portfolio.contact_email') }}"
-                            class="group flex items-center gap-4 bg-slate-800/50 border border-slate-700 p-4 rounded-2xl hover:bg-slate-800 hover:border-blue-500 transition-all duration-300 w-full sm:w-auto backdrop-blur-sm">
-                            <div class="text-left">
-                                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-0.5">Email</p>
-                                <p class="text-sm font-bold text-white">{{ config('portfolio.contact_email') }}</p>
-                            </div>
+                    <h2 id="contact-heading" style="--reveal-delay: 60ms"
+                        class="reveal text-display font-extrabold tracking-tight text-white leading-[1.05] mb-8 max-w-3xl">
+                        {{ __("Let's build something worth showing.") }}
+                    </h2>
+
+                    <div style="--reveal-delay: 120ms" class="reveal mb-8">
+                        <p class="text-meta font-bold uppercase tracking-widest text-dark-muted mb-2">{{ __('Email') }}</p>
+                        <a href="mailto:{{ config('portfolio.contact_email') }}" class="btn btn-primary btn-primary--inverted">
+                            {{ config('portfolio.contact_email') }}
                         </a>
-                        <a href="https://wa.me/{{ config('portfolio.whatsapp_number') }}" target="_blank" rel="noopener"
-                            class="group flex items-center gap-4 bg-slate-800/50 border border-slate-700 p-4 rounded-2xl hover:bg-slate-800 hover:border-green-500 transition-all duration-300 w-full sm:w-auto backdrop-blur-sm">
-                            <div class="text-left">
-                                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mb-0.5">WhatsApp
-                                </p>
-                                <p class="text-sm font-bold text-white">{{ config('portfolio.whatsapp_display') }}</p>
-                            </div>
+                    </div>
+
+                    <div style="--reveal-delay: 180ms" class="reveal flex flex-wrap gap-4">
+                        @if (config('portfolio.whatsapp_number'))
+                            <a href="https://wa.me/{{ config('portfolio.whatsapp_number') }}" target="_blank" rel="noopener"
+                                class="btn btn-secondary btn-secondary--on-dark">
+                                WhatsApp &middot; {{ config('portfolio.whatsapp_display') }}
+                            </a>
+                        @endif
+                        <a href="https://linkedin.com/in/suryaandika" target="_blank" rel="noopener"
+                            class="btn btn-secondary btn-secondary--on-dark">
+                            LinkedIn
                         </a>
                     </div>
                 </div>
 
-                <div class="reveal w-full lg:w-7/12" style="--reveal-delay: 120ms">
-                    <div
-                        class="bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 lg:p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
-                        @if(session('success'))
-                            <div class="bg-green-500/10 border border-green-500/50 text-green-400 px-6 py-4 rounded-2xl mb-6 font-medium"
-                                role="status">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        @if(session('error'))
-                            <div class="bg-red-500/10 border border-red-500/50 text-red-400 px-6 py-4 rounded-2xl mb-6 font-medium"
-                                role="alert">
-                                {{ session('error') }}
-                            </div>
-                        @endif
-
-                        <form action="{{ route('contact.send') }}" method="POST" class="space-y-6 relative z-10"
-                            novalidate>
-                            @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label for="name" class="block text-sm font-medium text-slate-400 mb-2 ml-2">Your
-                                        Name</label>
-                                    <input id="name" type="text" name="name" required placeholder="John Doe"
-                                        value="{{ old('name') }}"
-                                        class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
-                                    @error('name')
-                                    <p class="text-red-400 text-xs mt-2 ml-2">{{ $message }}</p>@enderror
-                                </div>
-                                <div>
-                                    <label for="email" class="block text-sm font-medium text-slate-400 mb-2 ml-2">Your
-                                        Email</label>
-                                    <input id="email" type="email" name="email" required placeholder="john@example.com"
-                                        value="{{ old('email') }}"
-                                        class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600">
-                                    @error('email')
-                                    <p class="text-red-400 text-xs mt-2 ml-2">{{ $message }}</p>@enderror
-                                </div>
-                            </div>
-                            <div>
-                                <label for="message" class="block text-sm font-medium text-slate-400 mb-2 ml-2">Message
-                                    / Project Idea</label>
-                                <textarea id="message" name="message" required rows="4"
-                                    placeholder="Tell me a little about the project you have in mind..."
-                                    class="w-full bg-slate-800/50 border border-slate-700 text-white px-5 py-4 rounded-2xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors placeholder-slate-600 resize-none">{{ old('message') }}</textarea>
-                                @error('message')
-                                <p class="text-red-400 text-xs mt-2 ml-2">{{ $message }}</p>@enderror
-                            </div>
-                            <button type="submit"
-                                class="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300 transform hover:-translate-y-1">
-                                Send Message
-                            </button>
-                        </form>
-                    </div>
+                <div style="--reveal-delay: 220ms" class="reveal lg:col-span-5">
+                    <p class="text-eyebrow font-bold uppercase tracking-[0.2em] text-dark-muted mb-4">{{ __('Or send a message') }}</p>
+                    @if (session('success'))
+                        <p class="text-small text-emerald-400 mb-4">{{ session('success') }}</p>
+                    @endif
+                    @if (session('error'))
+                        <p class="text-small text-red-400 mb-4">{{ session('error') }}</p>
+                    @endif
+                    <form id="contact-form" method="POST" action="{{ route('contact.send') }}" class="space-y-4" novalidate>
+                        @csrf
+                        <div>
+                            <label for="contact-name" class="sr-only">{{ __('Name') }}</label>
+                            <input id="contact-name" type="text" name="name" placeholder="{{ __('Name') }}" value="{{ old('name') }}"
+                                class="w-full rounded-[var(--radius-md)] bg-white/[0.04] border border-white/15 px-4 py-3 text-small text-white placeholder:text-dark-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-colors duration-[var(--motion-fast)]">
+                            @error('name') <p class="text-meta text-red-400 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="contact-email" class="sr-only">{{ __('Email') }}</label>
+                            <input id="contact-email" type="email" name="email" placeholder="{{ __('Email') }}" value="{{ old('email') }}"
+                                class="w-full rounded-[var(--radius-md)] bg-white/[0.04] border border-white/15 px-4 py-3 text-small text-white placeholder:text-dark-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-colors duration-[var(--motion-fast)]">
+                            @error('email') <p class="text-meta text-red-400 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="contact-message" class="sr-only">{{ __('Message') }}</label>
+                            <textarea id="contact-message" name="message" rows="4" placeholder="{{ __('Message') }}"
+                                class="w-full rounded-[var(--radius-md)] bg-white/[0.04] border border-white/15 px-4 py-3 text-small text-white placeholder:text-dark-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 transition-colors duration-[var(--motion-fast)]">{{ old('message') }}</textarea>
+                            @error('message') <p class="text-meta text-red-400 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <button id="contact-submit" type="submit" class="btn btn-secondary btn-secondary--on-dark w-full justify-center">
+                            {{ __('Send Message') }}
+                        </button>
+                    </form>
                 </div>
-            </div>
-        </div>
-
-        <div
-            class="max-w-[1600px] mx-auto px-8 lg:px-20 mt-32 relative z-10 border-t border-slate-800/50 pt-8 pb-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-            <div class="text-slate-500 text-sm font-medium">
-                &copy; {{ date('Y') }} <span class="text-slate-300 font-bold">Surya Andika</span>. All rights reserved.
-            </div>
-
-            <div class="flex space-x-5">
-                <a href="https://github.com/SuryaAndika3005" target="_blank" rel="noopener"
-                    class="text-slate-500 hover:text-slate-900 transition-colors" aria-label="GitHub profile">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                            d="M12 0C5.373 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.605-2.665-.303-5.467-1.332-5.467-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-                    </svg>
-                </a>
-                <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener"
-                    class="text-slate-500 hover:text-blue-400 transition-colors" aria-label="LinkedIn profile">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path
-                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                    </svg>
-                </a>
-                <a href="https://instagram.com/surdik_28" target="_blank" rel="noopener"
-                    class="text-slate-500 hover:text-pink-500 transition-colors" aria-label="Instagram profile">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 8a3 3 0 110-6 3 3 0 010 6zm5.25-8.25a1.25 1.25 0 112.5 0 1.25 1.25 0 01-2.5 0zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 2.16c3.203 0 3.583.012 4.849.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.849.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z" />
-                    </svg>
-                </a>
-            </div>
-            <div class="text-slate-500 text-sm flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                Based in Padang, Indonesia
             </div>
         </div>
     </section>
+
+    {{-- Quiet closing strip -- restored to a compact bar per the "revert
+         Footer" correction (the earlier editorial three-zone version with
+         the oversized watermark and full nav cluster was reverted; see
+         CONTACT_FOOTER_REFINEMENT_REPORT.md for that superseded design).
+         bg-dark-surface is untouched by the Skills/Contact color-hierarchy
+         patch, so this keeps its exact prior dark-mode tone. Bottom
+         padding stays a little larger than the top so the fixed
+         Preferences FAB has real clearance below this row once the page
+         is scrolled fully down. --}}
+    <footer class="bg-dark-surface border-t border-border-dark">
+        <div class="max-w-[1600px] mx-auto px-8 lg:px-20 pt-8 lg:pt-10 pb-14 lg:pb-16">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 text-center sm:text-left">
+                    <a href="{{ route('home') }}" class="text-base font-black tracking-tighter text-white">
+                        SURYA<span class="text-primary">ANDIKA</span>
+                    </a>
+                    <span class="hidden sm:inline text-dark-muted" aria-hidden="true">&middot;</span>
+                    <p class="text-meta text-dark-muted">&copy; {{ date('Y') }} {{ __('Surya Andika. All rights reserved.') }}</p>
+                </div>
+
+                <nav aria-label="{{ __('Footer') }}" class="flex items-center gap-6">
+                    <a href="https://linkedin.com/in/suryaandika" target="_blank" rel="noopener" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">Instagram</a>
+                    <a href="#top" class="text-small font-semibold text-dark-muted hover:text-white transition-colors duration-[var(--motion-fast)]">{{ __('Back to top') }} &uarr;</a>
+                </nav>
+            </div>
+        </div>
+    </footer>
 
     @push('scripts')
-        @vite('resources/js/project-accordion.js')
+        @vite(['resources/js/project-accordion.js', 'resources/js/experience-toggle.js', 'resources/js/home-nav-scrollspy.js'])
     @endpush
 
 </x-layout>

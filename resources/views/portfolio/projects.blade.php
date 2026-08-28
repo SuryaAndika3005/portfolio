@@ -1,217 +1,186 @@
-<x-layout title="Project Archive | Surya Andika" :show-back="true">
+@php
+    // Computed BEFORE <x-layout> opens (not inside its slot) because
+    // :archive-chapters="$topbarChapters" is evaluated the moment the
+    // component tag is processed -- a @php block placed after the
+    // opening tag but before the closing tag runs too late for that one
+    // attribute.
+    $grouped = $projects->groupBy(fn ($project) => $project->category->slug ?? 'other')->toBase();
+    $chapters = collect([
+        ['slug' => 'graphic-design', 'label' => __('Graphic Design'), 'shortLabel' => __('Design')],
+        ['slug' => 'uiux-design', 'label' => __('UI/UX Design'), 'shortLabel' => __('UI/UX')],
+        ['slug' => 'it-development', 'label' => __('Web & App Development'), 'shortLabel' => __('Web & App')],
+    ])->filter(fn ($c) => $grouped->get($c['slug'], collect())->isNotEmpty())->values();
 
-    @php
-        // ->toBase() strips the Eloquent Collection wrapper, whose get()/except()
-        // are overridden for primary-key lookups and would misbehave on the
-        // string-slug keys groupBy() produces here.
-        $grouped = $projects->groupBy(fn($project) => $project->category->slug ?? 'other')->toBase();
-        $graphicDesign = $grouped->get('graphic-design', collect());
-        $uiux = $grouped->get('uiux-design', collect());
-        $itDev = $grouped->get('it-development', collect());
-        $otherGroups = $grouped->except(['graphic-design', 'uiux-design', 'it-development']);
-    @endphp
+    // Fed to <x-layout>, which threads it to <x-nav> for the archive
+    // topbar's chapter links.
+    $topbarChapters = $chapters->isNotEmpty()
+        ? $chapters->map(fn ($chapter, $i) => [
+            'slug' => $chapter['slug'],
+            'label' => $chapter['label'],
+            'shortLabel' => Str::upper($chapter['shortLabel']),
+            'index' => sprintf('%02d', $i + 1),
+        ])->all()
+        : null;
 
-    <header class="reveal pt-16 pb-16 px-8 lg:px-20 max-w-[1600px] mx-auto text-center">
-        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 mb-6 tracking-tight">
-            Project <span
-                class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Archive.</span>
+    $otherGroups = $grouped->except(['graphic-design', 'uiux-design', 'it-development']);
+@endphp
+<x-layout title="Project Archive | Surya Andika"
+    meta-description="The full project archive: graphic design, UI/UX, and web & app development work by Surya Andika."
+    :archive-chapters="$topbarChapters">
+
+    {{-- Editorial Contact Sheet with chapter navigation integrated into the
+         single archive topbar (see nav.blade.php's archiveChapters branch)
+         -- there is no second sticky bar on this page. Each chapter uses a
+         density/treatment matched to how that category's work is actually
+         meant to be looked at: Graphic Design is artwork-first (no chrome,
+         denser grid), UI/UX and Web/App are interface-first
+         (browser-chrome, reused unmodified from the project detail page). --}}
+    <header class="reveal pt-12 lg:pt-16 pb-12 lg:pb-16 px-8 lg:px-20 max-w-[1600px] mx-auto">
+        <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">{{ __('Archive') }}</p>
+        <h1 class="text-heading lg:text-display font-extrabold tracking-tight text-ink max-w-2xl">
+            {{ __('The complete collection.') }}
         </h1>
-        <p class="text-lg lg:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            A complete collection of my digital journeys, from code architecture to classy visual explorations.
-        </p>
     </header>
 
-    <main class="max-w-[1600px] mx-auto px-8 lg:px-20 pb-32">
+    <main class="max-w-[1600px] mx-auto px-8 lg:px-20 pb-24 lg:pb-32">
 
-        @if ($graphicDesign->isNotEmpty() || $uiux->isNotEmpty() || $itDev->isNotEmpty())
-            <div class="reveal flex flex-wrap justify-center gap-2 bg-slate-100 p-1.5 rounded-full border border-slate-200/60 shadow-inner w-fit mx-auto mb-20"
-                role="navigation" aria-label="Jump to project category">
-                @if ($graphicDesign->isNotEmpty())
-                    <a href="#graphic-design"
-                        class="px-6 py-2.5 text-sm font-semibold rounded-full text-slate-600 hover:text-white hover:bg-blue-600 transition-colors duration-300">Visual
-                        Design</a>
-                @endif
-                @if ($uiux->isNotEmpty())
-                    <a href="#uiux-design"
-                        class="px-6 py-2.5 text-sm font-semibold rounded-full text-slate-600 hover:text-white hover:bg-violet-600 transition-colors duration-300">UI/UX</a>
-                @endif
-                @if ($itDev->isNotEmpty())
-                    <a href="#it-development"
-                        class="px-6 py-2.5 text-sm font-semibold rounded-full text-slate-600 hover:text-white hover:bg-emerald-600 transition-colors duration-300">Web
-                        &amp; App Dev</a>
-                @endif
-            </div>
-        @endif
-
-        @if ($graphicDesign->isEmpty() && $uiux->isEmpty() && $itDev->isEmpty() && $otherGroups->isEmpty())
+        @if ($chapters->isEmpty() && $otherGroups->isEmpty())
             <div class="py-20 text-center">
-                <p class="text-slate-400 font-medium">No projects available at the moment.</p>
+                <p class="text-body text-muted font-medium">{{ __('No projects available at the moment.') }}</p>
             </div>
         @endif
 
-        {{-- Section 1: Visual & Graphic Design. Clean poster grid, no chrome. --}}
-        @if ($graphicDesign->isNotEmpty())
-            <section id="graphic-design" class="reveal mb-28 scroll-mt-28">
-                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-                    <div>
-                        <span class="text-xs font-extrabold text-blue-600 uppercase tracking-widest">01. Visual
-                            Design</span>
-                        <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Visual &amp; Graphic Design</h3>
+        {{-- Section 1: Graphic Design. Artwork-first -- no device chrome,
+             the poster/asset itself is the subject. Contact-sheet density:
+             up to 3 columns desktop. --}}
+        @if ($grouped->get('graphic-design', collect())->isNotEmpty())
+            @php $gd = $grouped->get('graphic-design'); @endphp
+            <section id="graphic-design" data-chapter-section class="reveal mb-24 lg:mb-28 scroll-mt-28">
+                <div class="relative mb-10">
+                    <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">01</span>
+                    <div class="relative">
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('Graphic Design') }}</span>
+                        <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $gd->count(), ['count' => $gd->count()]) }}</h2>
                     </div>
-                    <p class="text-slate-500 max-w-md">Bold visual identities, brand campaigns, and print-ready
-                        compositions.</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach ($graphicDesign as $project)
-                        @php($tools = array_filter(array_map('trim', explode(',', $project->tools ?? ''))))
-                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 60 }}ms"
-                            class="reveal group block">
-                            <div
-                                class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-100 shadow-sm group-hover:shadow-xl group-hover:ring-2 group-hover:ring-blue-400/40 transition-all duration-500 ease-out border border-slate-200/50">
-                                <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async"
-                                    class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                                    alt="{{ $project->title }} preview">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+                    @foreach ($gd as $i => $project)
+                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 40 }}ms"
+                            class="reveal group block outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
+                            <div class="relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden bg-canvas">
+                                <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                                    class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
+                                    alt="{{ __(':title preview', ['title' => $project->title]) }}">
                             </div>
-
-                            <h4
-                                class="text-xl font-bold text-slate-900 mt-5 group-hover:text-blue-600 transition-colors duration-300">
-                                {{ $project->title }}</h4>
-                            <p class="text-sm text-slate-500 mt-1">{{ $project->description ?? 'Graphic Design' }}</p>
-                        
-        @if (count($tools))
-            <div class="flex flex-wrap gap-2 mt-4">
-                @foreach ($tools as $tool)
-                    <span class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
-                        {{ $tool }}
-                    </span>
-                @endforeach
-            </div>
-        @endif
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                            </div>
                         </a>
                     @endforeach
                 </div>
             </section>
         @endif
 
-        {{-- Section 2: UI/UX Case Studies. Framed prototype cards, top-cropped flow preview + tool chips. --}}
-        @if ($uiux->isNotEmpty())
-        <section id="uiux-design" class="reveal mb-28 scroll-mt-28">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-                <div>
-                    <span class="text-xs font-extrabold text-violet-600 uppercase tracking-widest">02. Product
-                        Design</span>
-                    <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">UI/UX Case Studies</h3>
+        {{-- Section 2: UI/UX Design. Interface-first -- Figma-style browser
+             chrome frames each screen. --}}
+        @if ($grouped->get('uiux-design', collect())->isNotEmpty())
+            @php $uiux = $grouped->get('uiux-design'); @endphp
+            <section id="uiux-design" data-chapter-section class="reveal mb-24 lg:mb-28 scroll-mt-28">
+                <div class="relative mb-10">
+                    <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">02</span>
+                    <div class="relative">
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('UI/UX Design') }}</span>
+                        <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $uiux->count(), ['count' => $uiux->count()]) }}</h2>
+                    </div>
                 </div>
-                <p class="text-slate-500 max-w-md">End-to-end product flows: research, wireframing, and interactive
-                    prototypes.</p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                @foreach ($uiux as $project)
-                @php($tools = array_filter(array_map('trim', explode(',', $project->tools ?? ''))))
-                <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 80 }}ms"
-                    class="reveal group block">
-                    <x-browser-chrome accent="uiux" label="Figma Prototype">
-                        <div class="aspect-[4/3] overflow-hidden bg-slate-100">
-                            <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async"
-                                class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                                alt="{{ $project->title }} preview">
-                        </div>
-                    </x-browser-chrome>
-
-                    <h4
-                        class="text-xl font-bold text-slate-900 mt-5 group-hover:text-violet-600 transition-colors duration-300">
-                        {{ $project->title }}</h4>
-                    <p class="text-sm text-slate-500 mt-1 line-clamp-2">{{ $project->description }}</p>
-
-                    @if (count($tools))
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            @foreach ($tools as $tool)
-                                <span
-                                    class="bg-violet-50 text-violet-700 text-xs font-semibold px-3 py-1 rounded-full">{{ $tool }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                </a>
-                @endforeach
-            </div>
-        </section>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+                    @foreach ($uiux as $i => $project)
+                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 60 }}ms"
+                            class="reveal group block outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
+                            <x-browser-chrome accent="uiux" :label="$project->title" class="!rounded-[var(--radius-md)]">
+                                <div class="aspect-[16/9] overflow-hidden bg-canvas">
+                                    <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                                        class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
+                                        alt="{{ __(':title preview', ['title' => $project->title]) }}">
+                                </div>
+                            </x-browser-chrome>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
         @endif
 
-        {{-- Section 3: Web & App Development. Literal browser-chrome frame, wide screenshot crop + tool chips. --}}
-        @if ($itDev->isNotEmpty())
-        <section id="it-development" class="reveal mb-16 scroll-mt-28">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-                <div>
-                    <span class="text-xs font-extrabold text-emerald-600 uppercase tracking-widest">03.
-                        Engineering</span>
-                    <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Web &amp; App Development</h3>
+        {{-- Section 3: Web & App Development. Implementation-first -- same
+             browser-chrome treatment, wider aspect for a real product
+             screenshot. --}}
+        @if ($grouped->get('it-development', collect())->isNotEmpty())
+            @php $itDev = $grouped->get('it-development'); @endphp
+            <section id="it-development" data-chapter-section class="reveal mb-16 scroll-mt-28">
+                <div class="relative mb-10">
+                    <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">03</span>
+                    <div class="relative">
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('Web & App Development') }}</span>
+                        <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $itDev->count(), ['count' => $itDev->count()]) }}</h2>
+                    </div>
                 </div>
-                <p class="text-slate-500 max-w-md">Responsive, production-ready builds, from pixel-perfect integration
-                    to scalable architecture.</p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                @foreach ($itDev as $project)
-                @php($tools = array_filter(array_map('trim', explode(',', $project->tools ?? ''))))
-                <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 80 }}ms"
-                    class="reveal group block">
-                    <x-browser-chrome accent="it" label="{{ Str::slug($project->title) }}.app">
-                        <div class="aspect-[16/10] overflow-hidden bg-slate-100">
-                            <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async"
-                                class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                                alt="{{ $project->title }} preview">
-                        </div>
-                    </x-browser-chrome>
-
-                    <h4
-                        class="text-xl font-bold text-slate-900 mt-5 group-hover:text-emerald-600 transition-colors duration-300">
-                        {{ $project->title }}</h4>
-                    <p class="text-sm text-slate-500 mt-1 line-clamp-2">{{ $project->description }}</p>
-
-                    @if (count($tools))
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            @foreach ($tools as $tool)
-                                <span
-                                    class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1 rounded-full">{{ $tool }}</span>
-                            @endforeach
-                        </div>
-                    @endif
-                </a>
-                @endforeach
-            </div>
-        </section>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10">
+                    @foreach ($itDev as $i => $project)
+                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 80 }}ms"
+                            class="reveal group block outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
+                            <x-browser-chrome accent="it" :label="Str::slug($project->title) . '.app'" class="!rounded-[var(--radius-md)]">
+                                <div class="aspect-[16/10] overflow-hidden bg-canvas">
+                                    <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                                        class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
+                                        alt="{{ __(':title preview', ['title' => $project->title]) }}">
+                                </div>
+                            </x-browser-chrome>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
         @endif
 
-        {{-- Any category outside the 3 core disciplines (e.g. Fotografi, Modeling): same poster treatment, neutral
-        accent. --}}
+        {{-- Any category outside the 3 core disciplines (e.g. Fotografi,
+             Modeling): same artwork-first poster treatment as Graphic
+             Design, neutral accent, no topbar chapter link (not part of
+             $topbarChapters above). --}}
         @foreach ($otherGroups as $slug => $items)
             <section class="reveal mb-16 scroll-mt-28">
                 <div class="mb-10">
-                    <span
-                        class="text-xs font-extrabold text-slate-500 uppercase tracking-widest">{{ $items->first()->category->name ?? 'Other Work' }}</span>
-                    <h3 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">
-                        {{ $items->first()->category->name ?? 'Other Work' }}</h3>
+                    <span class="text-eyebrow font-bold uppercase tracking-widest text-muted">{{ $items->first()->category->name ?? __('Other Work') }}</span>
+                    <h2 class="text-subheading font-extrabold text-ink mt-2">{{ $items->first()->category->name ?? __('Other Work') }}</h2>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
                     @foreach ($items as $project)
-                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 60 }}ms"
-                            class="reveal group block">
-                            <div
-                                class="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-slate-100 shadow-sm group-hover:shadow-xl group-hover:ring-2 group-hover:ring-slate-400/40 transition-all duration-500 ease-out border border-slate-200/50">
-                                <img src="{{ asset('storage/' . $project->image_path) }}" loading="lazy" decoding="async"
-                                    class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                                    alt="{{ $project->title }} preview">
+                        <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 40 }}ms"
+                            class="reveal group block outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
+                            <div class="relative aspect-[4/5] rounded-[var(--radius-md)] overflow-hidden bg-canvas">
+                                <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                                    class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
+                                    alt="{{ __(':title preview', ['title' => $project->title]) }}">
                             </div>
-                            <h4
-                                class="text-xl font-bold text-slate-900 mt-5 group-hover:text-slate-600 transition-colors duration-300">
-                                {{ $project->title }}</h4>
+                            <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)] mt-4">{{ $project->title }}</h3>
                         </a>
                     @endforeach
                 </div>
             </section>
         @endforeach
     </main>
+
+    @push('scripts')
+        @vite('resources/js/archive-nav.js')
+    @endpush
 
 </x-layout>

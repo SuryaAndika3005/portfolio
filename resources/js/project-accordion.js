@@ -1,17 +1,22 @@
 // Homepage "Selected Works" horizontal accordion.
 // Each panel auto-cycles a background slideshow of that category's project
-// images at all times. On desktop (the lg breakpoint enables the row layout
-// in CSS), hovering a panel expands it and collapses its siblings; leaving
-// the whole accordion resets everyone back to equal width.
+// images at all times, EXCEPT while any panel in the row is hover/focus
+// expanded — the auto-cycle would otherwise visibly fight the viewer's own
+// hover-driven attention (a sibling image swapping underneath them while
+// they're deliberately looking at the expanded panel). On desktop (the lg
+// breakpoint enables the row layout in CSS), hovering a panel expands it
+// and collapses its siblings; leaving the whole accordion resets everyone
+// back to equal width.
 
 document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('works-accordion');
     if (!container) return;
 
-    const panels = Array.from(container.querySelectorAll('[data-accordion-panel]'));
+    const panels = Array.from(container.querySelectorAll('.accordion-panel'));
     if (!panels.length) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let anyExpanded = false;
 
     if (!reduceMotion) {
         panels.forEach((panel) => {
@@ -23,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const interval = 3200 + Math.random() * 900;
 
             setInterval(() => {
+                if (anyExpanded) return;
                 slides[index].classList.remove('is-active');
                 index = (index + 1) % slides.length;
                 slides[index].classList.add('is-active');
@@ -31,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const setExpanded = (activePanel) => {
+        anyExpanded = Boolean(activePanel);
         panels.forEach((panel) => {
             panel.classList.toggle('is-expanded', panel === activePanel);
             panel.classList.toggle('is-collapsed', Boolean(activePanel) && panel !== activePanel);
