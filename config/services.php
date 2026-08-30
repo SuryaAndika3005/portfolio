@@ -61,6 +61,10 @@ return [
     | the 3.5 Flash-Lite generation for the largest RPM headroom while
     | staying in the same model family as the default.
     */
+    'google_analytics' => [
+        'measurement_id' => env('GOOGLE_ANALYTICS_ID'),
+    ],
+
     'gemini' => [
         'key' => env('GOOGLE_API_KEY'),
         'default_model' => env('GEMINI_MODEL', 'gemini-3.7-flash'),

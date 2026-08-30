@@ -10,6 +10,8 @@
 @php
     $resolvedDescription = $metaDescription ?? 'Portfolio of Surya Andika: UI/UX design, graphic design, and web development.';
     $resolvedOgImage = $ogImage ?? asset('storage/projects/dika.webp');
+    $gaMeasurementId = config('services.google_analytics.measurement_id');
+    $gaEnabled = app()->environment('production') && filled($gaMeasurementId);
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
@@ -33,6 +35,18 @@
             } catch (e) {}
         })();
     </script>
+    @if ($gaEnabled)
+        {{-- Google tag (gtag.js) -- production-only, gated on
+             GOOGLE_ANALYTICS_ID via config/services.php so local/dev
+             requests never reach GA4. Kept to a single tag per page. --}}
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaMeasurementId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', {!! json_encode($gaMeasurementId) !!});
+        </script>
+    @endif
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $resolvedDescription }}">
     {{-- Every public page is indexable; this is stated explicitly (rather
