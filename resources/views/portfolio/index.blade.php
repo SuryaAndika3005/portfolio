@@ -183,8 +183,12 @@
          Project Detail/Gallery, untouched by this pass.
 
          A CONTENT-TYPE variant (from category + the cover's own actual
-         aspect ratio, read once via getimagesize(), never from project
-         ID) decides only the crop's object-position -- a generic rule per
+         aspect ratio, resolved from $featuredCoverMetadata --
+         PortfolioController::index() reads every Featured cover's
+         dimensions ONCE per request via App\Support\FeaturedCoverMetadata
+         (one cached lookup for the whole set, not five getimagesize()
+         calls per page load), never from project ID) decides only the
+         crop's object-position -- a generic rule per
          type, not a per-project tuned value:
            - 'browser': a landscape web/app screenshot -- object-top, so
              the crop keeps page identity/KPIs/primary chart (near the top
@@ -222,8 +226,8 @@
                         $isSecondary = $loop->iteration === 2;
 
                         $coverPath = $project->coverImagePath();
-                        $dimensions = $coverPath ? @getimagesize(public_path('storage/' . $coverPath)) : false;
-                        $isPortraitCover = $dimensions && $dimensions[1] > $dimensions[0];
+                        $coverMeta = $coverPath ? ($featuredCoverMetadata[$coverPath] ?? null) : null;
+                        $isPortraitCover = $coverMeta && $coverMeta['height'] > $coverMeta['width'];
 
                         $treatment = match (true) {
                             $slug === 'graphic-design' => 'artwork',
@@ -282,7 +286,7 @@
                         // instead wider than the source (the hero-row
                         // case), cropping is vertical, so top-alignment
                         // (unchanged) is what applies.
-                        $imageAspectRatio = $dimensions ? $dimensions[0] / $dimensions[1] : null;
+                        $imageAspectRatio = $coverMeta ? $coverMeta['width'] / $coverMeta['height'] : null;
                         $objectPositionClass = match (true) {
                             $treatment === 'phone' => 'object-[center_20%]',
                             $treatment === 'browser' && $imageAspectRatio && $canvasAspectRatio < $imageAspectRatio => 'object-left-top',

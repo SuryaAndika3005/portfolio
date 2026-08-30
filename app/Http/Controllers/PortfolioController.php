@@ -7,6 +7,7 @@ use App\Mail\ContactMessage;
 use App\Models\Category;
 use App\Models\Experience;
 use App\Models\Project;
+use App\Support\FeaturedCoverMetadata;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -28,12 +29,15 @@ class PortfolioController extends Controller
     {
         $projects = Project::with('category')->published()->latest()->get();
         $featuredProjects = $this->buildFeaturedProjects($projects);
+        $featuredCoverMetadata = FeaturedCoverMetadata::forPaths(
+            $featuredProjects->map(fn (Project $project) => $project->coverImagePath())->filter()->values()->all()
+        );
         $categories = Category::all();
         $experiences = Experience::latest()->get();
         $skillGroups = config('skills.groups');
         $projectCount = Project::published()->count();
 
-        return view('portfolio.index', compact('projects', 'featuredProjects', 'categories', 'experiences', 'skillGroups', 'projectCount'));
+        return view('portfolio.index', compact('projects', 'featuredProjects', 'featuredCoverMetadata', 'categories', 'experiences', 'skillGroups', 'projectCount'));
     }
 
     /**
