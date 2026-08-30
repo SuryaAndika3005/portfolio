@@ -23,3 +23,23 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Cache policy for static images (Mobile Performance Optimization pass) --
+# a moderate, non-immutable window. Project media (storage/projects/**, via
+# the storage symlink) can be replaced by an admin in the CMS without its
+# filename changing, unlike Vite's hashed build/ assets (which get their
+# own far-future immutable rule in build/.htaccess), so this deliberately
+# stays short enough that a swapped cover photo shows up for real visitors
+# within a week rather than being immutable-cached indefinitely.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(webp|png|jpe?g|gif|svg|ico)$">
+        ExpiresDefault "access plus 7 days"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(webp|png|jpe?g|gif|svg|ico)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>

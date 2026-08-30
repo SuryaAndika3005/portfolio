@@ -38,61 +38,109 @@
     @endpush
 
     <header id="top" class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 lg:pt-40 pb-24 lg:pb-32">
+        {{-- Mobile Hero Content Order fix: three flat grid siblings (copy /
+             portrait / actions) instead of the old two (text-column /
+             portrait-column, with actions nested inside the text column).
+             Source order is copy, portrait, actions -- at mobile/tablet
+             (below min-[960px], a single grid-cols-1 track) that source
+             order IS the display order, so the portrait lands between
+             description and the CTA row with zero `order` utilities and no
+             duplicated markup. At min-[960px]+, explicit col-start/row-start
+             placement reassembles the original 2-column composition: copy
+             top-left, actions bottom-left (same column, next row), portrait
+             right, spanning both rows so its total allotted height still
+             matches copy+actions combined -- i.e. the exact original
+             proportions, just re-expressed as 3 explicitly-placed items
+             instead of 2 auto-flowed ones. gap-x carries the original
+             column gap (min-[960px]:gap-10 lg:gap-16, unchanged); gap-y
+             reuses the original mobile stacking gap (gap-12 md:gap-14) for
+             copy->portrait->actions, and min-[960px]:gap-y-10 reproduces the
+             original description->CTA spacing (was mb-10 = same 2.5rem)
+             now that it's a row-gap instead of a margin. --}}
         <div
-            class="grid grid-cols-1 min-[960px]:grid-cols-12 items-center gap-12 md:gap-14 min-[960px]:gap-10 lg:gap-16">
-            <div class="min-[960px]:col-span-6 lg:col-span-7">
-                <p style="--reveal-delay: 0ms"
-                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-4">
+            class="grid grid-cols-1 min-[960px]:grid-cols-12 items-center gap-y-12 md:gap-y-14 min-[960px]:gap-y-10 gap-x-10 lg:gap-x-16">
+            {{-- Not .reveal (Mobile Performance Optimization pass): every
+                 element in this header is already inside the initial
+                 viewport on load, so the scroll-triggered fade/slide-in
+                 was never actually revealing anything as the user
+                 scrolled -- it was only an opacity:0-until-JS-runs delay
+                 on content shown immediately. That delay is what the
+                 LCP trace (see the portrait <img>'s comment below) traced
+                 the H1's ~3.3-3.6s render delay to: an element starting
+                 at opacity:0 doesn't register as an LCP candidate until
+                 IntersectionObserver + the CSS transition finish, which
+                 under mobile network conditions was most of the metric.
+                 Below-the-fold sections (Featured, About, Skills, etc.)
+                 keep .reveal untouched -- this is scoped to the
+                 above-the-fold hero only, not a site-wide removal. --}}
+            <div class="min-[960px]:col-start-1 min-[960px]:col-span-6 lg:col-span-7 min-[960px]:row-start-1">
+                <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 mb-4">
                     {{ __(':name · :location', ['name' => 'Surya Andika', 'location' => __('Padang, Indonesia')]) }}
                 </p>
 
-                <h1 style="--reveal-delay: 80ms"
-                    class="reveal text-[clamp(3.5rem,6vw,6.5rem)] font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white mb-6">
+                <h1 class="text-[clamp(3.5rem,6vw,6.5rem)] font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white mb-6">
                     {!! __('Designing visuals.<br>Building :digital experiences.', ['digital' => '<span class="text-primary-fg">'.__('digital').'</span>']) !!}
                 </h1>
 
-                <p style="--reveal-delay: 160ms" class="reveal text-subheading font-bold text-slate-700 dark:text-slate-200 mb-5">
+                <p class="text-subheading font-bold text-slate-700 dark:text-slate-200 mb-5">
                     {{ __('Graphic Designer & Informatics Student') }}
                 </p>
 
-                <p style="--reveal-delay: 220ms" class="reveal text-body text-slate-500 dark:text-slate-400 max-w-xl mb-10">
+                <p class="text-body text-slate-500 dark:text-slate-400 max-w-xl">
                     {{ __('I work across visual design, UI/UX, web development, and applied AI/ML, combining creative thinking with a growing technical foundation.') }}
                 </p>
-
-                <div style="--reveal-delay: 300ms" class="reveal flex flex-wrap items-center gap-x-8 gap-y-4">
-                    <a href="#projects" class="group btn btn-primary">
-                        {{ __('Explore Work') }}
-                        <svg class="w-4 h-4 group-hover:translate-x-1 motion-reduce:transform-none transition-transform duration-200" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </a>
-                    <a href="{{ asset('storage/projects/CV.pdf') }}" target="_blank" rel="noopener"
-                        class="group btn-text dark:text-white dark:hover:!text-primary-fg">
-                        {{ __('View Resume') }}
-                        <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
-                                d="M7 17L17 7M17 7H8M17 7v9"></path>
-                        </svg>
-                    </a>
-                </div>
             </div>
 
-            <div style="--reveal-delay: 420ms" class="reveal reveal-portrait min-[960px]:col-span-6 lg:col-span-5">
+            <div class="min-[960px]:col-start-7 lg:col-start-8 min-[960px]:col-span-6 lg:col-span-5 min-[960px]:row-start-1 min-[960px]:row-span-2">
                 <div class="relative max-w-sm mx-auto min-[960px]:mx-0 min-[960px]:ml-auto lg:max-w-[420px]">
                     <div class="absolute -inset-6 bg-primary-soft/70 rounded-[2.75rem] -z-10" aria-hidden="true"></div>
                     <div
                         class="rounded-[var(--radius-lg)] overflow-hidden border border-border-light shadow-2xl shadow-slate-200/50 dark:shadow-black/40 aspect-[4/5]">
-                        <img src="{{ asset('storage/projects/dika.webp') }}" alt="{{ __('Portrait of Surya Andika') }}"
-                            class="w-full h-full object-cover" decoding="async" fetchpriority="high">
+                        {{-- Not fetchpriority="high" -- the Mobile Performance
+                             Optimization pass's mobile trace (real DevTools
+                             throttling, LCP breakdown insight) confirmed the
+                             actual LCP element on this page is the H1 text
+                             beside this portrait, not this image; an
+                             incorrect high-priority hint here was competing
+                             for bandwidth against the render-blocking CSS
+                             that actually gates the H1's paint. srcset/sizes
+                             use pre-generated width derivatives (see
+                             App\Support\ResponsiveImage) so mobile no longer
+                             downloads the full ~1738px source for a ~350px
+                             box; same crop/composition at every width. --}}
+                        <img src="{{ asset('storage/projects/dika.webp') }}"
+                            @if ($portraitSrcset = \App\Support\ResponsiveImage::srcset('projects/dika.webp'))
+                                srcset="{{ $portraitSrcset }}"
+                                sizes="(min-width: 1024px) 420px, (min-width: 960px) 38vw, (min-width: 640px) 384px, calc(100vw - 64px)"
+                            @endif
+                            alt="{{ __('Portrait of Surya Andika') }}"
+                            class="w-full h-full object-cover" decoding="async">
                     </div>
                     <p class="mt-4 flex items-center gap-3 text-meta font-bold uppercase tracking-[0.25em] text-slate-400 dark:text-slate-500">
                         <span class="w-8 h-px bg-primary" aria-hidden="true"></span>
                         {{ __('01 / Portfolio') }}
                     </p>
                 </div>
+            </div>
+
+            <div class="min-[960px]:col-start-1 min-[960px]:col-span-6 lg:col-span-7 min-[960px]:row-start-2 flex flex-wrap items-center gap-x-8 gap-y-4">
+                <a href="#projects" class="group btn btn-primary">
+                    {{ __('Explore Work') }}
+                    <svg class="w-4 h-4 group-hover:translate-x-1 motion-reduce:transform-none transition-transform duration-200" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </a>
+                <a href="{{ asset('storage/projects/CV.pdf') }}" target="_blank" rel="noopener"
+                    class="group btn-text dark:text-white dark:hover:!text-primary-fg">
+                    {{ __('View Resume') }}
+                    <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M7 17L17 7M17 7H8M17 7v9"></path>
+                    </svg>
+                </a>
             </div>
         </div>
     </header>
@@ -258,6 +306,20 @@
                         };
 
                         $titleSizeClass = $isHero ? 'text-subheading' : 'text-small';
+
+                        // Rendered-width breakpoints for srcset's `sizes`
+                        // (Mobile Performance Optimization pass), derived
+                        // from this grid's own column math (max-w-1600,
+                        // lg:px-20, lg:gap-x-8, 12 columns) -- not a
+                        // per-project value, purely a function of slot
+                        // position, so it stays correct regardless of which
+                        // project lands in which slot.
+                        $imgSizes = match (true) {
+                            $isHero => '(min-width: 1024px) 827px, (min-width: 768px) 336px, calc(100vw - 64px)',
+                            $isSecondary => '(min-width: 1024px) 581px, (min-width: 768px) 336px, calc(100vw - 64px)',
+                            $loop->last => '(min-width: 1024px) 459px, (min-width: 768px) 704px, calc(100vw - 64px)',
+                            default => '(min-width: 1024px) 459px, (min-width: 768px) 336px, calc(100vw - 64px)',
+                        };
                     @endphp
                     <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 60 }}ms"
                         class="reveal group block {{ $spanClass }} outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
@@ -274,7 +336,12 @@
                              Project Detail / the gallery / the fullscreen
                              viewer. --}}
                         <div class="relative {{ $canvasClass }} rounded-[var(--radius-md)] border border-border-light bg-canvas overflow-hidden">
-                            <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                            <img src="{{ asset('storage/' . $project->coverImagePath()) }}"
+                                @if ($coverSrcset = $project->coverSrcset())
+                                    srcset="{{ $coverSrcset }}"
+                                    sizes="{{ $imgSizes }}"
+                                @endif
+                                loading="lazy" decoding="async"
                                 class="lazy-fade w-full h-full object-cover {{ $objectPositionClass }} transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
                                 alt="{{ __(':title preview', ['title' => $project->title]) }}">
                         </div>
@@ -397,7 +464,12 @@
                 <div data-accordion-panel tabindex="0"
                     class="accordion-panel group/panel relative min-h-[280px] lg:min-h-0 rounded-[var(--radius-lg)] overflow-hidden bg-dark cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/60">
                     @foreach ($slides as $i => $project)
-                        <img data-slide src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                        <img data-slide src="{{ asset('storage/' . $project->coverImagePath()) }}"
+                            @if ($coverSrcset = $project->coverSrcset())
+                                srcset="{{ $coverSrcset }}"
+                                sizes="(min-width: 1024px) 469px, calc(100vw - 64px)"
+                            @endif
+                            loading="lazy" decoding="async"
                             class="absolute inset-0 w-full h-full object-cover object-top {{ $i === 0 ? 'is-active' : '' }}"
                             alt="{{ $project->title }}">
                     @endforeach

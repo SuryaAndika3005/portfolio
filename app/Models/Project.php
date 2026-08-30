@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ResponsiveImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,6 +50,21 @@ class Project extends Model
     public function coverImagePath(): ?string
     {
         return $this->cover_image_path ?: $this->image_path;
+    }
+
+    /**
+     * srcset for coverImagePath(), from pre-generated width derivatives
+     * (Mobile Performance Optimization pass). Same file backs both the
+     * Featured grid and the Selected Works accordion, so this is shared
+     * rather than duplicated -- and it's generic over ANY project's cover,
+     * never keyed by project ID (a future project with no derivatives on
+     * disk yet just falls back to the plain cover image, unbroken).
+     */
+    public function coverSrcset(): ?string
+    {
+        $path = $this->coverImagePath();
+
+        return $path ? ResponsiveImage::srcset($path) : null;
     }
 
     /**
