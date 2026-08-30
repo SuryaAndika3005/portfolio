@@ -18,13 +18,21 @@ use Illuminate\Support\Facades\Storage;
  * disk yields no srcset and the caller's plain <img src> still renders
  * exactly as before, so this never produces a broken image.
  *
- * The directory listing itself is cached (rememberForever, per directory)
- * -- first measured attempt did this on every request for every cover
- * (Featured grid + accordion share the same 5 covers, so ~18 Storage::files()
- * calls per homepage load) and measurably regressed server-response-time
- * in Lighthouse. Derivatives only change when someone reruns the generator,
- * so `php artisan cache:forget` (or a cache:clear) is the expected step
- * after regenerating a project's derivatives, same as any other build asset.
+ * The directory listing itself is cached per directory -- first measured
+ * attempt did this on every request for every cover (Featured grid +
+ * accordion share the same 5 covers, so ~18 Storage::files() calls per
+ * homepage load) and measurably regressed server-response-time in
+ * Lighthouse. It's a short (~10 minute) TTL rather than rememberForever,
+ * though: derivatives for this portfolio are uploaded by hand via FTP/File
+ * Manager, with no SSH access to run `cache:forget` afterward, so a
+ * permanent cache could lock in an empty/incomplete listing from whichever
+ * request happened to hit the directory first -- e.g. mid-upload, or before
+ * a project's derivatives exist at all -- and never self-correct. A newly
+ * uploaded derivative simply becomes visible the next time this cache entry
+ * expires, no manual cache-clear step required. Key is "v2"-suffixed to
+ * force a clean break from any pre-existing rememberForever() entries a
+ * prior deploy may have already cached permanently -- bump again if the
+ * cached value's shape ever changes.
  */
 class ResponsiveImage
 {
@@ -37,8 +45,9 @@ class ResponsiveImage
         $stem = pathinfo($storagePath, PATHINFO_FILENAME);
         $prefix = $dir === '.' ? '' : "{$dir}/";
 
-        $basenames = Cache::rememberForever(
-            "responsive-image-derivatives:{$dir}",
+        $basenames = Cache::remember(
+            "responsive-image-derivatives:v2:{$dir}",
+            now()->addMinutes(10),
             fn () => Storage::disk('public')->files($dir === '.' ? '' : $dir)
         );
 

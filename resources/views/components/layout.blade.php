@@ -14,7 +14,13 @@
     $gaEnabled = app()->environment('production') && filled($gaMeasurementId);
 @endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
+{{-- data-locale (BFCache Preference State Sync fix): the locale this exact
+     HTML was rendered with, read by resources/js/locale-sync.js to detect a
+     stale BFCache-restored snapshot after a locale switch elsewhere. Not a
+     styling/behavior hook -- lang= above still does that job; this is a
+     dedicated sync value so a future change to lang='s format never
+     silently breaks the sync check. --}}
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-locale="{{ app()->getLocale() }}" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -78,7 +84,7 @@
          existed only in the unused stock welcome.blade.php, never here). --}}
     @fonts
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme.js', 'resources/js/preferences-fab.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme.js', 'resources/js/preferences-fab.js', 'resources/js/locale-sync.js'])
     @stack('styles')
     {{-- Structured data: each page pushes its own JSON-LD payload(s) via
          @push('json-ld') + <x-json-ld :data="..."> (see that component) --

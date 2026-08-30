@@ -52,3 +52,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentPreference() === 'system') applyTheme('system');
     });
 });
+
+// BFCache restoration: `pageshow` fires on every load (normal AND
+// bfcache-restored), but `event.persisted` is only true for the latter --
+// a page pulled back out of bfcache resumes exactly as it was frozen,
+// including whatever .dark class was applied before the visitor navigated
+// away. If they changed the theme (or the OS flipped light/dark while
+// "System" was selected) on another page in between, that frozen snapshot
+// is now stale. Re-running applyTheme() re-reads localStorage and
+// re-evaluates media.matches fresh, so it self-corrects for every case
+// (Light<->Dark, System<->Light, and an OS change during System) with the
+// same logic already used on normal load -- no separate BFCache-specific
+// theme logic needed. Gated on `persisted` specifically so this never runs
+// (and can never introduce a flash) on a normal fresh load, where the
+// inline anti-FOUC script + the DOMContentLoaded handler above have
+// already applied the correct theme before this fires.
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) applyTheme(currentPreference());
+});

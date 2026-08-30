@@ -16,6 +16,7 @@ export default defineConfig({
                 "resources/js/home-nav-scrollspy.js",
                 "resources/js/theme.js",
                 "resources/js/preferences-fab.js",
+                "resources/js/locale-sync.js",
                 "resources/css/admin.css",
                 "resources/js/admin.js",
                 "resources/js/admin/project-assistant.js",
