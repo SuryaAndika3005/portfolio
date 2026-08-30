@@ -6,15 +6,75 @@
     // description, falls back to the Problem field (the next most
     // reader-facing sentence of the case study), then a plain
     // category-based sentence if neither exists. Always plain text (no
-    // HTML) and capped for a sane meta-description length.
-    $metaSource = $project->description ?: $project->problem;
+    // HTML) and capped for a sane meta-description length. Reads through
+    // localized() (Global Language Catalog System) so metadata always
+    // matches whatever locale the visible page content is rendered in --
+    // there is no separate "SEO locale" from the "page locale".
+    $metaSource = $project->localized('description') ?: $project->localized('problem');
     $projectMetaDescription = $metaSource
         ? Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($metaSource))), 160)
         : __(':category project by Surya Andika.', ['category' => $project->category->name ?? __('Portfolio')]);
-    $projectOgImage = asset('storage/'.$project->coverImagePath());
+    // coverImagePath() can be null for a project with neither cover_image_path
+    // nor image_path set -- falls back to the same site-level social image
+    // <x-layout> itself defaults to, rather than emitting a broken
+    // asset('storage/') URL with nothing after the trailing slash.
+    $projectOgImage = $project->coverImagePath()
+        ? asset('storage/' . $project->coverImagePath())
+        : asset('storage/projects/dika.webp');
 @endphp
 <x-layout :title="$project->title . ' | Surya Andika'" :meta-description="$projectMetaDescription"
     :og-image="$projectOgImage" og-type="article" :show-back="true">
+
+    @php
+        // Keywords: only real, existing per-project data (tools + category),
+        // never invented terms -- omitted entirely when a project has
+        // neither.
+        $keywordParts = collect([$project->category->name ?? null])
+            ->merge($project->tools ? array_map('trim', explode(',', $project->tools)) : [])
+            ->filter()
+            ->unique()
+            ->values();
+    @endphp
+    @push('json-ld')
+        {{-- CreativeWork (not SoftwareApplication) is deliberately generic --
+             this portfolio spans graphic design, UI/UX, web development, and
+             AI projects, and pretending every one of them is installable
+             software would be dishonest schema. No dateCreated: the DB only
+             ever holds a bare year (e.g. "2026"), and while a reduced-
+             precision "YYYY" is technically valid ISO 8601, Google's own
+             structured-data guidance for CreativeWork date fields expects a
+             full date/datetime -- a bare year is liable to be read as weak
+             or invalid by real consumers. Omitting the field is honest;
+             fabricating "2026-01-01" (a specific day nobody claimed) is not,
+             so that option is off the table too. --}}
+        <x-json-ld :data="[
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                array_filter([
+                    '@type' => 'CreativeWork',
+                    'name' => $project->title,
+                    'description' => $projectMetaDescription,
+                    'url' => route('portfolio.show', $project->id),
+                    'image' => $projectOgImage,
+                    'creator' => [
+                        '@type' => 'Person',
+                        '@id' => route('home') . '#person',
+                        'name' => 'Surya Andika',
+                        'url' => route('home'),
+                    ],
+                    'keywords' => $keywordParts->isNotEmpty() ? $keywordParts->implode(', ') : null,
+                ]),
+                [
+                    '@type' => 'BreadcrumbList',
+                    'itemListElement' => [
+                        ['@type' => 'ListItem', 'position' => 1, 'name' => __('Home'), 'item' => route('home')],
+                        ['@type' => 'ListItem', 'position' => 2, 'name' => __('Projects'), 'item' => route('portfolio.projects')],
+                        ['@type' => 'ListItem', 'position' => 3, 'name' => $project->title, 'item' => route('portfolio.show', $project->id)],
+                    ],
+                ],
+            ],
+        ]" />
+    @endpush
 
     @php
         $categorySlug = $project->category->slug ?? '';
@@ -36,14 +96,9 @@
         $mainSlideSrc = $project->image_path ? asset('storage/' . $project->image_path) : null;
         $allSlides = collect([$mainSlideSrc])->filter()->merge(collect($project->galleryImages())->map(fn ($img) => asset($img)))->values();
 
-        $hasCaseStudy = filled($project->problem) || filled($project->process) || filled($project->result);
+        $hasCaseStudy = filled($project->localized('problem')) || filled($project->localized('process')) || filled($project->localized('result'));
+        $hasGallery = ! empty($project->galleryImages());
         $hasPrevNext = $previousProject && $nextProject && $previousProject->id !== $nextProject->id;
-
-        // Small editorial section numbers (see the case-study rhythm below)
-        // only make sense if they actually count something real -- computed
-        // as each optional section is confirmed present, not hardcoded, so
-        // a project with only one of the two never shows a stray "02".
-        $sectionIndex = 0;
     @endphp
 
     {{-- Editorial case study: asymmetric intro (title/summary/metadata left,
@@ -57,23 +112,37 @@
     <header class="reveal max-w-[1600px] mx-auto px-8 lg:px-20 pt-16 lg:pt-20 pb-10 lg:pb-12">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             <div class="lg:col-span-5">
-                <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
-                    {{ $project->category->name ?? __('Project') }}
+                {{-- Category name is shared taxonomy UI copy, not project
+                     content, so it goes through __() like any other static
+                     string (Section 6, Global Language Catalog System) --
+                     it just isn't routed through localized(), which is
+                     reserved for the 5 per-project fields. Existing
+                     lang/id.json keys already cover it for two of the
+                     three categories in real use; a category name with no
+                     matching key (e.g. "IT & Development", which the
+                     archive page's own hardcoded chapter label spells
+                     differently as "Web & App Development") simply
+                     renders unchanged, exactly like before this pass. --}}
+                <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
+                    {{ $project->category->name ? __($project->category->name) : __('Project') }}
                 </p>
-                <h1 class="text-[clamp(2rem,4.5vw,3.25rem)] font-extrabold leading-[1.05] tracking-tight text-ink">
+                <h1 class="text-[clamp(2rem,5vw,var(--text-display))] font-extrabold leading-[1.05] tracking-tight text-ink">
                     {{ $project->title }}
                 </h1>
 
-                @if ($project->description)
-                    <p class="text-body text-muted leading-relaxed mt-6">{{ $project->description }}</p>
+                @if ($project->localized('description'))
+                    <p class="text-body text-muted leading-relaxed mt-6">{{ $project->localized('description') }}</p>
                 @endif
 
-                @if ($project->role || $project->client || $project->year || $project->tools)
+                {{-- client/year/tools are never routed through localized() --
+                     technology and company names stay as written regardless
+                     of locale (Section 3 of the batch brief this implements). --}}
+                @if ($project->localized('role') || $project->client || $project->year || $project->tools)
                     <dl class="grid grid-cols-2 gap-x-6 gap-y-6 py-6 mt-8 border-t border-b border-border-light">
-                        @if ($project->role)
+                        @if ($project->localized('role'))
                             <div>
                                 <dt class="text-meta font-bold uppercase tracking-widest text-muted mb-1">{{ __('Role') }}</dt>
-                                <dd class="text-small font-semibold text-ink">{{ $project->role }}</dd>
+                                <dd class="text-small font-semibold text-ink">{{ $project->localized('role') }}</dd>
                             </div>
                         @endif
                         @if ($project->client)
@@ -172,41 +241,89 @@
     </header>
 
     <main class="max-w-[1600px] mx-auto px-8 lg:px-20">
-        {{-- Project Details: Problem/Process/Result, rendered only when
-             actually stored -- no invented case-study copy. Deliberately
-             image-free and quiet: the page's two visual peaks are the
-             primary cover above and the fullscreen gallery, so this section
-             is pure editorial typography -- a horizontal three-beat story
-             (Problem / Process / Result) at desktop width, stacked at
-             everything narrower than lg (an exact 2-column split would
-             leave the 3rd item orphaned on its own row, which reads worse
-             than a clean single column). Restrained index, primary-accent
-             label, text-body copy -- no cards, no background fills, no
-             icons; thin lg-only column rules stand in for a fourth visual
-             layer without adding weight. --}}
+        {{-- Case study (Project Detail Layout V2): stacked editorial
+             sections instead of the old three-way equal columns. That grid
+             read fine visually but didn't scale -- a long Process section
+             (routinely the meatiest of the three) forced Problem/Result
+             into a mismatched height, and body copy had to squeeze into a
+             narrow third of the page. Each section now gets the full
+             reading measure (capped at max-w-[720px], never the full
+             viewport), its own 01/02/03 identity, and reads top-to-bottom
+             like the rest of the page instead of side-by-side. One shared
+             soft container (not three floating cards -- Section 14 of the
+             brief this implements is explicit that a case study isn't a
+             dashboard) with thin dividers between sections stands in for
+             the old column rules. Icons are decorative only (aria-hidden)
+             and never substitute for the text label. A field this project
+             doesn't have (e.g. no Result yet) simply isn't in
+             $caseStudyItems -- never a fabricated "02" gap. --}}
         @if ($hasCaseStudy)
             @php
-                $sectionIndex++;
                 $caseStudyItems = collect([
-                    $project->problem ? ['label' => __('Problem'), 'body' => $project->problem] : null,
-                    $project->process ? ['label' => __('Process'), 'body' => $project->process] : null,
-                    $project->result ? ['label' => __('Result'), 'body' => $project->result] : null,
+                    $project->localized('problem') ? ['label' => __('Problem'), 'body' => $project->localized('problem'), 'icon' => 'problem'] : null,
+                    $project->localized('process') ? ['label' => __('Process'), 'body' => $project->localized('process'), 'icon' => 'process'] : null,
+                    $project->localized('result') ? ['label' => __('Result'), 'body' => $project->localized('result'), 'icon' => 'result'] : null,
                 ])->filter()->values();
             @endphp
-            <div class="reveal pt-10 lg:pt-12 pb-16 lg:pb-20 border-b border-border-light">
-                <p class="text-meta font-bold uppercase tracking-widest text-muted mb-2">
-                    {{ __(':index / Project Details', ['index' => sprintf('%02d', $sectionIndex)]) }}
-                </p>
-                <h2 class="text-subheading font-extrabold tracking-tight text-ink mb-8 lg:mb-10">{{ __('Project Details') }}</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-10 lg:gap-x-12 gap-y-10 lg:divide-x lg:divide-border-light">
+            <div class="reveal py-10 lg:py-14">
+                <h2 class="sr-only">{{ __('Case Study') }}</h2>
+                <div class="bg-surface border border-border-light rounded-[var(--radius-lg)] divide-y divide-border-light">
                     @foreach ($caseStudyItems as $i => $item)
-                        <div class="lg:px-10 lg:first:pl-0 lg:last:pr-0">
-                            <h3 class="text-eyebrow font-bold uppercase tracking-[0.25em] mb-3">
-                                <span class="text-primary/60">{{ sprintf('%02d', $i + 1) }} /</span>
-                                <span class="text-primary">{{ Str::upper($item['label']) }}</span>
-                            </h3>
-                            <p class="text-body text-muted leading-relaxed">{{ $item['body'] }}</p>
-                        </div>
+                        <section class="p-8 sm:p-10 lg:p-12 grid grid-cols-1 lg:grid-cols-[13rem_1fr] gap-x-12 gap-y-5">
+                            <div class="flex items-center gap-3 lg:flex-col lg:items-start lg:gap-4">
+                                <span aria-hidden="true"
+                                    class="inline-flex items-center justify-center w-10 h-10 shrink-0 rounded-full bg-primary-soft text-primary-fg">
+                                    @switch($item['icon'])
+                                        @case('problem')
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.51"/></svg>
+                                            @break
+                                        @case('process')
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v5h5"/><path d="M20 20v-5h-5"/><path d="M4.5 9a8 8 0 0 1 13.9-4.2L20 9"/><path d="M19.5 15a8 8 0 0 1-13.9 4.2L4 15"/></svg>
+                                            @break
+                                        @case('result')
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg>
+                                    @endswitch
+                                </span>
+                                <h3 class="text-eyebrow font-bold uppercase tracking-[0.25em]">
+                                    <span class="text-primary-fg/60">{{ sprintf('%02d', $i + 1) }} /</span>
+                                    <span class="text-primary-fg">{{ Str::upper($item['label']) }}</span>
+                                </h3>
+                            </div>
+                            <div class="max-w-[720px]">
+                                <p class="text-body text-muted leading-relaxed whitespace-pre-line">{{ $item['body'] }}</p>
+                            </div>
+                        </section>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- Project Gallery: a generic label on purpose (Section 19 of the
+             brief) -- "System Screenshots" would read oddly on a graphic-
+             design or branding project, and the content architecture has
+             no per-project section-name field to draw a context-specific
+             label from anyway. Reuses the SAME $allSlides/fullscreen deck
+             the hero visual already opens (no second modal system, no
+             duplicated gallery dataset) -- these thumbnails are just more
+             entry points into it, offset by the gallery's own position in
+             $allSlides (index 1+, since index 0 is the hero/main image).
+             Renders nothing at all when the project has no gallery images
+             (Section 18) -- no empty grid, no placeholder tiles. --}}
+        @if ($hasGallery)
+            <div class="reveal py-10 lg:py-14 border-t border-border-light">
+                <h2 class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-8 lg:mb-10">
+                    {{ __('Project Gallery') }}
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                    @foreach ($project->galleryImages() as $i => $image)
+                        <button type="button"
+                            class="group relative aspect-[4/3] rounded-[var(--radius-md)] overflow-hidden border border-border-light bg-canvas outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                            data-modal-trigger data-slide-index="{{ $i + 1 }}"
+                            aria-label="{{ __('View gallery image :n of :title fullscreen', ['n' => $i + 1, 'title' => $project->title]) }}">
+                            <img src="{{ asset($image) }}" loading="lazy" decoding="async"
+                                class="w-full h-full object-cover object-top transition-transform duration-[var(--motion-fast)] ease-[var(--ease-interactive)] group-hover:scale-[1.03]"
+                                alt="{{ __(':title, gallery image :n', ['title' => $project->title, 'n' => $i + 1]) }}">
+                        </button>
                     @endforeach
                 </div>
             </div>
@@ -231,7 +348,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-meta font-bold uppercase tracking-widest text-muted mb-1">&larr; {{ __('Previous Project') }}</p>
-                        <p class="text-body font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)] truncate">
+                        <p class="text-body font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)] truncate">
                             {{ $previousProject->title }}
                         </p>
                     </div>
@@ -243,7 +360,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-meta font-bold uppercase tracking-widest text-muted mb-1">{{ __('Next Project') }} &rarr;</p>
-                        <p class="text-body font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)] truncate">
+                        <p class="text-body font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)] truncate">
                             {{ $nextProject->title }}
                         </p>
                     </div>
@@ -289,14 +406,22 @@
              the deck (see #modalDeck's inset below) without needing to
              infer "is this click on empty space" anywhere. --}}
         <div id="modalContent" class="absolute inset-0 z-10 pointer-events-none">
-            <button type="button" id="modalClose" class="pointer-events-auto absolute top-6 right-6 md:top-8 md:right-8 z-[60] text-white hover:text-blue-400 transition transform hover:rotate-90 duration-300" aria-label="{{ __('Close image preview') }}">
+            {{-- Touch targets (Final QA fix): each button's inset position is
+                 pulled in by exactly its own added padding, so the VISIBLE
+                 icon renders at the identical pixel position as before --
+                 only the invisible tappable box around it grows, to >=44x44
+                 CSS px at every breakpoint (modalClose: 32+16=48 base,
+                 40+16=56 md+; modalPrev/Next: 20+24=44 base exact,
+                 24+24=48 md+). No visible circle/background is added, so
+                 nothing looks visually bulkier. --}}
+            <button type="button" id="modalClose" class="pointer-events-auto absolute top-4 right-4 md:top-6 md:right-6 p-2 z-[60] text-white hover:text-blue-400 transition transform hover:rotate-90 duration-300" aria-label="{{ __('Close image preview') }}">
                 <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
 
-            <button type="button" id="modalPrev" class="hidden pointer-events-auto absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-[60] text-white p-2" aria-label="{{ __('Previous image') }}">
+            <button type="button" id="modalPrev" class="hidden pointer-events-auto absolute left-2 md:left-5 top-1/2 -translate-y-1/2 p-3 z-[60] text-white" aria-label="{{ __('Previous image') }}">
                 <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
             </button>
-            <button type="button" id="modalNext" class="hidden pointer-events-auto absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-[60] text-white p-2" aria-label="{{ __('Next image') }}">
+            <button type="button" id="modalNext" class="hidden pointer-events-auto absolute right-2 md:right-5 top-1/2 -translate-y-1/2 p-3 z-[60] text-white" aria-label="{{ __('Next image') }}">
                 <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
             </button>
 

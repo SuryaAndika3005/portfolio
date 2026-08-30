@@ -244,11 +244,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Focus lifecycle: opening the modal must move focus into it (nothing
+    // did before this — a keyboard user's focus stayed on the now-hidden-
+    // behind-the-backdrop trigger, and Tab walked straight into background
+    // page content despite aria-modal="true"), and closing must return
+    // focus to whichever trigger opened it, not just leave it wherever the
+    // in-modal Tabbing left off.
+    let lastTrigger = null;
+
+    const focusableInModal = () =>
+        Array.from(modal.querySelectorAll('button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+            .filter((el) => el.offsetParent !== null);
+
+    const trapTabKey = (e) => {
+        const focusables = focusableInModal();
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (!focusables.includes(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+        } else if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    };
+
     const openModal = (index) => {
         deck.goTo(index, false);
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         showZoomHintOnce();
+        closeBtn?.focus();
     };
 
     const closeModal = () => {
@@ -256,11 +286,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'auto';
         resetAllZoom();
         setFocusMode(false, null);
+        lastTrigger?.focus();
+        lastTrigger = null;
     };
 
     triggers.forEach((trigger) => {
         const index = parseInt(trigger.dataset.slideIndex ?? '0', 10);
-        trigger.addEventListener('click', () => openModal(index));
+        trigger.addEventListener('click', () => {
+            lastTrigger = trigger;
+            openModal(index);
+        });
     });
 
     prevBtn?.addEventListener('click', () => deck.goTo(deck.getIndex() - 1));
@@ -280,5 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') closeModal();
         if (e.key === 'ArrowLeft') deck.goTo(deck.getIndex() - 1);
         if (e.key === 'ArrowRight') deck.goTo(deck.getIndex() + 1);
+        if (e.key === 'Tab') trapTabKey(e);
     });
 });

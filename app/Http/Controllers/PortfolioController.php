@@ -15,18 +15,51 @@ use Illuminate\View\View;
 class PortfolioController extends Controller
 {
     /**
-     * Homepage: all projects (grouped by category into the works accordion),
-     * all categories, and experience timeline.
+     * Number of projects to show on the homepage's Featured Projects section
+     * when no project is marked is_highlighted (see buildFeaturedProjects).
+     */
+    private const FEATURED_FALLBACK_COUNT = 4;
+
+    /**
+     * Homepage: featured projects, all projects (grouped by category into
+     * the works accordion), all categories, and experience timeline.
      */
     public function index(): View
     {
-        $projects = Project::with('category')->latest()->get();
+        $projects = Project::with('category')->published()->latest()->get();
+        $featuredProjects = $this->buildFeaturedProjects($projects);
         $categories = Category::all();
         $experiences = Experience::latest()->get();
         $skillGroups = config('skills.groups');
-        $projectCount = Project::count();
+        $projectCount = Project::published()->count();
 
-        return view('portfolio.index', compact('projects', 'categories', 'experiences', 'skillGroups', 'projectCount'));
+        return view('portfolio.index', compact('projects', 'featuredProjects', 'categories', 'experiences', 'skillGroups', 'projectCount'));
+    }
+
+    /**
+     * Featured Projects for the homepage: is_highlighted projects ordered by
+     * featured_order, or a fallback to the most recent published projects
+     * when none are highlighted -- so the homepage never renders an empty
+     * featured section. $allProjects is expected to already be
+     * published+latest()-ordered (from index()), but this re-asserts
+     * is_published defensively (cheap in-memory filter, not a query) so an
+     * unpublished project can never surface here even if is_highlighted is
+     * accidentally left true, or a future caller passes an unfiltered
+     * collection. Ties in featured_order break deterministically by id
+     * (ascending) rather than being left to whatever order the collection
+     * happened to arrive in.
+     */
+    private function buildFeaturedProjects($allProjects)
+    {
+        $highlighted = $allProjects
+            ->where('is_published', true)
+            ->where('is_highlighted', true)
+            ->sortBy([['featured_order', 'asc'], ['id', 'asc']])
+            ->values();
+
+        return $highlighted->isNotEmpty()
+            ? $highlighted
+            : $allProjects->where('is_published', true)->take(self::FEATURED_FALLBACK_COUNT);
     }
 
     /**
@@ -34,7 +67,7 @@ class PortfolioController extends Controller
      */
     public function projects(): View
     {
-        $projects = Project::with('category')->latest()->get();
+        $projects = Project::with('category')->published()->latest()->get();
         $categories = Category::all();
 
         return view('portfolio.projects', compact('projects', 'categories'));
@@ -42,16 +75,26 @@ class PortfolioController extends Controller
 
     /**
      * Single project detail page. Previous/next navigation is scoped to
-     * the current project's own category and ordered the same way the
-     * archive/homepage already order everything (->latest()) -- the one
-     * ordering that's consistently used and trustworthy site-wide, unlike
-     * is_highlighted/featured_order (unpopulated/unused, see the audit).
+     * the current project's own category, published-only (an unpublished
+     * project never appears as a neighbor), and ordered the same way the
+     * archive/homepage order everything by default (->latest()) --
+     * is_highlighted/featured_order only drive the homepage's Featured
+     * Projects section, not this chronological neighbor ordering.
+     *
+     * An unpublished project 404s on this public route (Curation Pass
+     * 01.1 -- "unpublished" must mean actually inaccessible, not just
+     * unlisted). This check is generic on is_published, not a per-ID
+     * condition, and only applies to this public route -- the admin edit
+     * route resolves the same Project model through a separate controller
+     * untouched by this guard, so admin access is unaffected.
      */
     public function show(Project $project): View
     {
+        abort_unless($project->is_published, 404);
+
         $project->load('category');
 
-        $siblingIds = Project::where('category_id', $project->category_id)->latest()->pluck('id');
+        $siblingIds = Project::where('category_id', $project->category_id)->published()->latest()->pluck('id');
         $position = $siblingIds->search($project->id);
         $siblingCount = $siblingIds->count();
 

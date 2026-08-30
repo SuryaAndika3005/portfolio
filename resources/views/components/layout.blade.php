@@ -35,6 +35,11 @@
     </script>
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $resolvedDescription }}">
+    {{-- Every public page is indexable; this is stated explicitly (rather
+         than left to the crawler default) so an accidental noindex
+         regression is a one-line diff to spot, and so this tag is the
+         opposite of admin/_layout.blade.php's noindex, nofollow. --}}
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
@@ -50,8 +55,21 @@
     <meta name="twitter:description" content="{{ $resolvedDescription }}">
     <meta name="twitter:image" content="{{ $resolvedOgImage }}">
 
+    {{-- Self-hosted Instrument Sans (weights 400/500/600 via the Vite fonts
+         plugin, configured in vite.config.js) -- this directive is what
+         actually injects its @font-face rules + preload links; app.css only
+         references the family name, it doesn't declare the font itself.
+         Without this the site silently falls back to the browser's default
+         sans-serif on every page (found during the final QA pass -- @fonts
+         existed only in the unused stock welcome.blade.php, never here). --}}
+    @fonts
+
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme.js', 'resources/js/preferences-fab.js'])
     @stack('styles')
+    {{-- Structured data: each page pushes its own JSON-LD payload(s) via
+         @push('json-ld') + <x-json-ld :data="..."> (see that component) --
+         nothing is emitted here for pages that push nothing. --}}
+    @stack('json-ld')
 </head>
 <body class="bg-canvas text-slate-800 dark:text-slate-100 font-sans antialiased">
 

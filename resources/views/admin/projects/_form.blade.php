@@ -148,6 +148,44 @@
             </x-admin.form-section>
         @endif
 
+        {{-- is_published gates every public listing surface AND the
+             project's own detail page (404 when false — see
+             PortfolioController@show). Defaults to checked for a new
+             project ($project is null) so the common case (publish
+             immediately) needs no extra click; an existing project shows
+             its real stored value. Same absent-checkbox-must-still-save
+             reasoning as Featured below applies here too (see
+             ProjectRequest::prepareForValidation). --}}
+        <x-admin.form-section title="Visibility">
+            <label class="admin-checkbox-tag flex items-center gap-2">
+                <input type="checkbox" name="is_published" value="1" class="rounded border-border-light"
+                       @checked(old('is_published', $project->is_published ?? true))>
+                Published (visible on the public site)
+            </label>
+        </x-admin.form-section>
+
+        {{-- is_highlighted/featured_order now drive the homepage's Featured
+             Projects section (Curation Pass 01) -- exposed here so editing
+             a project never silently un-features it (the form only ever
+             submits what's rendered; an absent checkbox would reset
+             is_highlighted to false on save). --}}
+        <x-admin.form-section title="Featured">
+            <div class="space-y-4">
+                <label class="admin-checkbox-tag flex items-center gap-2">
+                    <input type="checkbox" name="is_highlighted" value="1" class="rounded border-border-light"
+                           @checked(old('is_highlighted', $project->is_highlighted ?? false))>
+                    Show in homepage Featured Projects
+                </label>
+
+                <x-admin.field label="Featured Order" for="featured_order"
+                    hint="Lower numbers appear first. Only matters while Featured is checked.">
+                    <input id="featured_order" type="number" name="featured_order" min="1" step="1"
+                           value="{{ old('featured_order', $project->featured_order ?? '') }}"
+                           class="admin-input {{ $errors->has('featured_order') ? 'has-error' : '' }}">
+                </x-admin.field>
+            </div>
+        </x-admin.form-section>
+
         <div id="workspace-curate">
             <x-admin.form-section title="Media">
                 <div class="space-y-6">

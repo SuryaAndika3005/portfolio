@@ -17,20 +17,24 @@
                 <p class="text-small text-muted mt-3 max-w-sm leading-relaxed">
                     {{ __('Design, technology, and selected work from Surya Andika.') }}
                 </p>
-                <p class="text-meta font-semibold uppercase tracking-widest text-soft-muted mt-4">
+                {{-- text-muted, not text-soft-muted -- the latter measures ~2.45:1
+                     against this background, well under WCAG AA's 4.5:1 for normal
+                     text; text-muted (~4.55:1) is the existing token already used
+                     for the nav links right below and actually passes. --}}
+                <p class="text-meta font-semibold uppercase tracking-widest text-muted mt-4">
                     {{ __('Graphic Designer & Informatics Student') }} &middot; {{ __('Padang, Indonesia') }}
                 </p>
             </div>
 
             <nav aria-label="{{ __('Footer') }}" class="lg:col-span-3 flex flex-row lg:flex-col gap-x-6 gap-y-3 flex-wrap">
-                <a href="{{ route('home') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Home') }}</a>
-                <a href="{{ route('portfolio.projects') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Projects') }}</a>
-                <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
-                <a href="mailto:{{ config('portfolio.contact_email') }}" class="text-small font-semibold text-muted hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ __('Email') }}</a>
+                <a href="{{ route('home') }}" class="text-small font-semibold text-muted hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ __('Home') }}</a>
+                <a href="{{ route('portfolio.projects') }}" class="text-small font-semibold text-muted hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ __('Projects') }}</a>
+                <a href="https://linkedin.com/in/surya-andika" target="_blank" rel="noopener" class="text-small font-semibold text-muted hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">LinkedIn</a>
+                <a href="mailto:{{ config('portfolio.contact_email') }}" class="text-small font-semibold text-muted hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ __('Email') }}</a>
             </nav>
 
             <div class="lg:col-span-3 lg:text-right">
-                <p class="text-meta text-soft-muted">
+                <p class="text-meta text-muted">
                     &copy; {{ date('Y') }} {{ __('Surya Andika. All rights reserved.') }}
                 </p>
             </div>

@@ -36,7 +36,8 @@ class ProjectRequest extends FormRequest
             'gallery_order' => ['nullable', 'array'],
             'gallery_order.*' => ['string'],
             'is_highlighted' => ['sometimes', 'boolean'],
-            'featured_order' => ['nullable', 'integer', 'min:0'],
+            'featured_order' => ['nullable', 'integer', 'min:1'],
+            'is_published' => ['sometimes', 'boolean'],
         ];
     }
 
@@ -45,6 +46,16 @@ class ProjectRequest extends FormRequest
         $this->merge([
             'is_highlighted' => $this->boolean('is_highlighted'),
             'remove_cover_image' => $this->boolean('remove_cover_image'),
+            // Same reasoning as is_highlighted above: an unchecked checkbox
+            // is simply absent from the request, so without this coercion
+            // an admin unpublishing a project by unchecking the box would
+            // silently no-op on save (the key would be missing from
+            // $request->safe(), and Project::update() never nulls out a
+            // key it wasn't given). No default-true here: "new project
+            // defaults to published" is handled by the checkbox rendering
+            // checked out of the box, not by this coercion — a genuinely
+            // unchecked box must still resolve to false.
+            'is_published' => $this->boolean('is_published'),
         ]);
     }
 

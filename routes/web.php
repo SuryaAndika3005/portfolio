@@ -8,8 +8,14 @@ use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\SeoController;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
+
+// Locale-independent: a crawler gets one canonical sitemap/robots.txt
+// regardless of session state, so these sit outside the SetLocale group.
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
 // SetLocale is scoped to just these public-facing routes (not the global
 // web group) specifically so it never reaches Admin -- Admin stays

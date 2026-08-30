@@ -81,4 +81,22 @@ class LocalizationTest extends TestCase
             __('This string intentionally has no Indonesian translation.')
         );
     }
+
+    public function test_homepage_and_archive_page_title_and_description_switch_locale(): void
+    {
+        // Language Content Completion pass: title/meta-description on both
+        // pages were passed to <x-layout> as literal string attributes
+        // (title="...") rather than :title="__('...')" -- a plain string
+        // attribute never runs through the translator at all, so the
+        // browser tab title and meta description silently stayed English
+        // under the Indonesian locale even though every other static
+        // string on both pages switched correctly.
+        $this->get(route('lang.switch', ['locale' => 'id']));
+
+        $home = $this->get('/');
+        $home->assertSee('<title>Surya Andika — Desainer Grafis &amp; Mahasiswa Informatika</title>', false);
+
+        $archive = $this->get('/projects');
+        $archive->assertSee('<title>Arsip Proyek | Surya Andika</title>', false);
+    }
 }

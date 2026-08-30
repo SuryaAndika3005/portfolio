@@ -16,6 +16,20 @@
     --color-primary: #2563EB;
     --color-primary-strong: #1D4ED8;
     --color-primary-soft: #EFF6FF;
+    /* Text-only variant of the brand blue (Final QA dark-mode contrast
+       fix). --color-primary itself is deliberately identical between
+       Light/Dark (see the .dark block below) because it's most visibly
+       used as a solid BACKGROUND fill (buttons, badges) where that
+       decision is correct and unaffected by this fix -- white-on-blue
+       contrast there was never the problem. The problem was every place
+       --color-primary is instead used as FOREGROUND text color (eyebrow
+       labels, active nav links, card numbering) against a dark canvas/
+       surface: measured ~3.3-3.6:1 there, under WCAG AA's 4.5:1 for
+       normal text. --color-primary-fg is identical to --color-primary in
+       Light mode (already ~4.9-5.2:1, no change needed) and is the ONLY
+       token every `text-primary`-as-actual-text usage should read in
+       dark mode -- see the .dark override below for the actual fix. */
+    --color-primary-fg: #2563EB;
     --color-dark: #0F172A;
     --color-dark-surface: #172033;
     --color-dark-muted: #94A3B8;
@@ -71,12 +85,21 @@
    LOCALIZATION_THEME_AUDIT.md). --color-primary/--color-primary-strong/
    --color-dark-muted are deliberately NOT redefined here -- primary blue
    stays the same recognizable shade in both themes (Section 20 of the
-   brief), and dark-muted's slate-400 value already reads fine against a
-   dark background in Light mode's own dark sections, so Dark mode reuses
-   it unchanged. --color-dark/--color-dark-surface get pushed a shade
-   deeper than the new dark canvas specifically so Skills/Contact still
-   read as "the deep sections" relative to the rest of a dark-mode page,
-   instead of the whole page collapsing into one flat black surface. */
+   brief) for its BACKGROUND-fill uses (buttons, badges), and dark-muted's
+   slate-400 value already reads fine against a dark background in Light
+   mode's own dark sections, so Dark mode reuses it unchanged.
+   --color-primary-fg IS redefined, on purpose (Final QA dark-mode
+   contrast fix): it's the text-only variant every `text-primary` class
+   was pointed at instead of --color-primary directly (see @theme above),
+   so this is the one and only place the actual color-value fix lives --
+   #4F8AF7 clears 4.5:1 against every dark surface tone this page actually
+   uses text on (canvas/surface/dark-surface below), with margin to spare
+   (~5.1-5.5:1), while staying recognizably the same blue as #2563EB
+   rather than drifting toward a different hue. --color-dark/
+   --color-dark-surface get pushed a shade deeper than the new dark canvas
+   specifically so Skills/Contact still read as "the deep sections"
+   relative to the rest of a dark-mode page, instead of the whole page
+   collapsing into one flat black surface. */
 .dark {
     --color-canvas: #0B1220;
     --color-surface: #131C2E;
@@ -84,6 +107,7 @@
     --color-muted: #94A3B8;
     --color-soft-muted: #64748B;
     --color-primary-soft: rgba(37, 99, 235, 0.18);
+    --color-primary-fg: #4F8AF7;
     --color-dark: #05070D;
     --color-dark-surface: #10182A;
     --color-border-light: rgba(148, 163, 184, 0.16);
@@ -109,6 +133,20 @@
        purpose -- Light theme is unaffected by this patch. */
     --color-section-skills: #071029;
     --color-section-contact: color-mix(in srgb, var(--color-primary) 40%, var(--color-dark));
+}
+
+/* Skills/Contact render on a dark navy background (--color-section-skills/
+   --color-section-contact above) EVEN IN LIGHT THEME, by original design —
+   that's the whole point of the color-hierarchy patch those tokens
+   implement. --color-primary-fg's .dark override above only fires when the
+   whole site is in dark theme, so on its own it would leave these two
+   sections' eyebrow/accent text back at the un-lightened --color-primary
+   value while in Light theme, under the same ~3.3-3.6:1 failure the .dark
+   fix was for -- scoped here, independent of .dark, so it's correct in
+   both overall themes wherever these two sections actually render. */
+#skills,
+#contact {
+    --color-primary-fg: #4F8AF7;
 }
 
 /* Non-@theme tokens on purpose: Tailwind v4's --radius-* keys in @theme

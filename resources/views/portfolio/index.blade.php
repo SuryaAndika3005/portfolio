@@ -1,4 +1,41 @@
-<x-layout :hide-footer="true">
+{{-- Title/description reuse the hero's own existing copy verbatim (the
+     subheading line for the title, the intro paragraph for the
+     description) rather than inventing new positioning language -- see
+     the SEO pass report for why. Routed through __() (: prefix, not a
+     literal string attribute) so the browser tab title and meta
+     description actually switch locale too -- found missing entirely
+     during the Language Content Completion pass's EN/ID sweep. --}}
+<x-layout :hide-footer="true"
+    :title="__('Surya Andika — Graphic Designer & Informatics Student')"
+    :meta-description="__('I work across visual design, UI/UX, web development, and applied AI/ML, combining creative thinking with a growing technical foundation.')">
+
+    @push('json-ld')
+        {{-- Person + WebSite: the only two entities this portfolio has real
+             data for. sameAs is limited to the LinkedIn URL already linked
+             in the footer -- no invented social profiles. @id gives this
+             Person a stable identity a structured-data consumer can match
+             against the same @id used for CreativeWork.creator on every
+             project detail page (show.blade.php), rather than each page
+             minting an ambiguous, un-linked Person stub of its own. --}}
+        <x-json-ld :data="[
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                [
+                    '@type' => 'Person',
+                    '@id' => route('home') . '#person',
+                    'name' => 'Surya Andika',
+                    'url' => route('home'),
+                    'jobTitle' => 'Graphic Designer & Informatics Student',
+                    'sameAs' => ['https://linkedin.com/in/surya-andika'],
+                ],
+                [
+                    '@type' => 'WebSite',
+                    'name' => 'Surya Andika',
+                    'url' => route('home'),
+                ],
+            ],
+        ]" />
+    @endpush
 
     <header id="top" class="relative max-w-[1600px] mx-auto px-8 lg:px-20 pt-32 lg:pt-40 pb-24 lg:pb-32">
         <div
@@ -11,7 +48,7 @@
 
                 <h1 style="--reveal-delay: 80ms"
                     class="reveal text-[clamp(3.5rem,6vw,6.5rem)] font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white mb-6">
-                    {!! __('Designing visuals.<br>Building :digital experiences.', ['digital' => '<span class="text-primary">'.__('digital').'</span>']) !!}
+                    {!! __('Designing visuals.<br>Building :digital experiences.', ['digital' => '<span class="text-primary-fg">'.__('digital').'</span>']) !!}
                 </h1>
 
                 <p style="--reveal-delay: 160ms" class="reveal text-subheading font-bold text-slate-700 dark:text-slate-200 mb-5">
@@ -32,7 +69,7 @@
                         </svg>
                     </a>
                     <a href="{{ asset('storage/projects/CV.pdf') }}" target="_blank" rel="noopener"
-                        class="group btn-text dark:text-white dark:hover:!text-primary">
+                        class="group btn-text dark:text-white dark:hover:!text-primary-fg">
                         {{ __('View Resume') }}
                         <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none"
                             fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -60,6 +97,211 @@
         </div>
     </header>
 
+    {{-- Featured Projects (Editorial Layout V2 + Media Art Direction): the
+         first real per-project list on the homepage -- Selected Works
+         below is category-grouped, not an ordered highlight reel. Source
+         is PortfolioController::buildFeaturedProjects() (is_highlighted +
+         featured_order, falling back to latest published projects when
+         nothing is highlighted yet).
+
+         GRID (unchanged from Editorial Layout V2): hierarchy is assigned
+         by POSITION in that ordered list (slot 1 = hero, slot 2 =
+         secondary, slots 3+ = supporting tier), never by project identity.
+         This only makes sense as a 5-item, 2-row (2 + 3) composition; if
+         the Featured count ever changes from 5, this section's hierarchy
+         needs re-art-direction, the same way any real editorial layout
+         would (a generic N-column bento grid was deliberately rejected in
+         favor of this).
+
+         MEDIA CANVAS (unchanged from the Media Art Direction pass): every
+         card still gets a CONTROLLED OUTER CANVAS with a fixed aspect
+         ratio driven by its ROW, not by the source image's own dimensions
+         -- row 1 (hero + secondary) uses a wide "hero" canvas; row 2's
+         three supporting cards all share one canvas ratio, so their outer
+         heights -- and caption baselines -- stay identical regardless of
+         what's inside. That part of the earlier pass already solved the
+         row-2 baseline problem and is untouched here.
+
+         MEDIA FILL (this pass, Full-Bleed Cover pass): the previous pass
+         then placed the real asset INSIDE that canvas with object-contain
+         (+ inset padding, + a chrome bar for 'browser') -- correct for
+         baseline alignment, but it left Money Tracker/Yasmin visually
+         small inside a lot of empty mat space, and the browser frame's
+         chrome bar ate into the image area. This pass keeps the exact
+         same canvas, drops the padding/chrome entirely, and switches
+         every content type to object-cover so the real asset fills 100%
+         of its canvas -- a Featured card is a teaser, not the complete
+         work; the uncropped source is still exactly one click away on
+         Project Detail/Gallery, untouched by this pass.
+
+         A CONTENT-TYPE variant (from category + the cover's own actual
+         aspect ratio, read once via getimagesize(), never from project
+         ID) decides only the crop's object-position -- a generic rule per
+         type, not a per-project tuned value:
+           - 'browser': a landscape web/app screenshot -- object-top, so
+             the crop keeps page identity/KPIs/primary chart (near the top
+             of any dashboard) and drops whatever falls below the fold.
+           - 'phone': a portrait-shaped UI/UX cover -- object-position
+             biased toward the upper third (not pure top), since a mobile
+             screen's hero metric sits at the very top but a bit more
+             context (the next section down) reads better than a hard
+             top-crop; this is a generic "portrait interface" rule, not
+             Money-Tracker-specific, even though Money Tracker is
+             currently the only project it applies to.
+           - 'artwork': Graphic Design -- object-top, since promotional
+             artwork conventionally puts the headline/hero visual at the
+             top and secondary contact/footer details at the bottom.
+         Any future Featured project slots into one of these three by its
+         own real category + image data, automatically. --}}
+    @if ($featuredProjects->isNotEmpty())
+        <section id="featured" aria-labelledby="featured-heading" class="max-w-[1600px] mx-auto px-8 lg:px-20 pt-16 lg:pt-20">
+            <div class="mb-10 lg:mb-14">
+                <p style="--reveal-delay: 0ms"
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
+                    {{ __('Featured / 02') }}
+                </p>
+                <h2 id="featured-heading" style="--reveal-delay: 60ms"
+                    class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    {{ __('A few projects worth a closer look.') }}
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-8 gap-y-12 lg:gap-x-8 lg:gap-y-16">
+                @foreach ($featuredProjects as $i => $project)
+                    @php
+                        $slug = $project->category->slug ?? 'other';
+                        $isHero = $loop->first;
+                        $isSecondary = $loop->iteration === 2;
+
+                        $coverPath = $project->coverImagePath();
+                        $dimensions = $coverPath ? @getimagesize(public_path('storage/' . $coverPath)) : false;
+                        $isPortraitCover = $dimensions && $dimensions[1] > $dimensions[0];
+
+                        $treatment = match (true) {
+                            $slug === 'graphic-design' => 'artwork',
+                            $slug === 'uiux-design' && $isPortraitCover => 'phone',
+                            default => 'browser',
+                        };
+
+                        // Outer canvas is a ROW decision (position),
+                        // independent of $treatment (a content-type
+                        // decision) -- row 1 gets a wide hero canvas, row
+                        // 2's three cards converge on ONE shared canvas at
+                        // md+ so their heights (and caption baselines)
+                        // match exactly no matter what content type ends
+                        // up inside each. Below md (mobile, single column,
+                        // no sibling row to align with) portrait content
+                        // -- phone/artwork -- gets a taller canvas instead
+                        // of the same wide desktop one, so it isn't
+                        // needlessly shrunk on the one breakpoint where
+                        // extra height costs nothing (Section 13: "media
+                        // may receive a taller canvas [on mobile] where
+                        // portrait sources benefit"). The landscape
+                        // ('browser') treatment never benefits from that,
+                        // so it keeps one ratio at every breakpoint.
+                        $canvasClass = match (true) {
+                            $isHero || $isSecondary => 'aspect-[13/6]',
+                            $treatment === 'browser' => 'aspect-[4/3]',
+                            default => 'aspect-[4/5] md:aspect-[4/3]',
+                        };
+                        // Numeric twin of $canvasClass's ratio, needed
+                        // below to reason about which way object-cover
+                        // will actually crop -- not tied to row/slot, so
+                        // it stays correct if the canvas ratios above are
+                        // ever retuned.
+                        $canvasAspectRatio = ($isHero || $isSecondary) ? 13 / 6 : 4 / 3;
+
+                        // Full-bleed crop position, per content-type
+                        // variant (a generic rule, not a per-project
+                        // value). 'browser' is the interesting case:
+                        // object-cover crops WIDTH (left/right) whenever
+                        // the canvas is proportionally narrower than the
+                        // source screenshot, which happens whenever a
+                        // landscape app cover (~1.6 native aspect here)
+                        // sits in a squarer canvas than that -- the
+                        // supporting-row canvas (4/3 = 1.33) is exactly
+                        // this case, the hero-row canvas (13/6 = 2.17) is
+                        // not. Centered horizontal cropping then cuts
+                        // evenly off both edges, which for a left-nav'd
+                        // dashboard means losing real UI (sidebar/page
+                        // heading) on the side that matters. Left-aligning
+                        // the crop instead keeps that content and crops
+                        // the less-important right edge -- decided purely
+                        // from the two real aspect ratios being compared,
+                        // never from which project or row this is, so any
+                        // future landscape-app cover gets the geometrically
+                        // correct choice automatically. When the canvas is
+                        // instead wider than the source (the hero-row
+                        // case), cropping is vertical, so top-alignment
+                        // (unchanged) is what applies.
+                        $imageAspectRatio = $dimensions ? $dimensions[0] / $dimensions[1] : null;
+                        $objectPositionClass = match (true) {
+                            $treatment === 'phone' => 'object-[center_20%]',
+                            $treatment === 'browser' && $imageAspectRatio && $canvasAspectRatio < $imageAspectRatio => 'object-left-top',
+                            default => 'object-top',
+                        };
+
+                        // Slot-based span (position, not identity) -- see
+                        // the section comment above. At tablet (md,
+                        // 2-column grid) slots 1-4 simply pair off two per
+                        // row in order (no explicit span needed, a bare
+                        // grid item already takes 1 of 2 columns); only
+                        // the last item spans the full tablet row instead
+                        // of pairing oddly with whoever preceded it, so a
+                        // 5-item set never leaves an orphaned half-empty
+                        // row at any breakpoint.
+                        $spanClass = match (true) {
+                            $isHero => 'lg:col-span-7',
+                            $isSecondary => 'lg:col-span-5',
+                            $loop->last => 'md:col-span-2 lg:col-span-4',
+                            default => 'lg:col-span-4',
+                        };
+
+                        $titleSizeClass = $isHero ? 'text-subheading' : 'text-small';
+                    @endphp
+                    <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 60 }}ms"
+                        class="reveal group block {{ $spanClass }} outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
+                        {{-- Full-bleed cover (Featured Cover Full-Bleed
+                             pass): every content type now shares the exact
+                             same structure -- a bordered/rounded canvas
+                             with the real asset filling it via
+                             object-cover, no chrome bar, no inset padding,
+                             no inner mat box. Only $objectPositionClass
+                             (a generic per-type rule, computed above)
+                             differs between them. This is a teaser crop,
+                             not the complete work -- the full uncropped
+                             asset is unchanged and still one click away on
+                             Project Detail / the gallery / the fullscreen
+                             viewer. --}}
+                        <div class="relative {{ $canvasClass }} rounded-[var(--radius-md)] border border-border-light bg-canvas overflow-hidden">
+                            <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy" decoding="async"
+                                class="lazy-fade w-full h-full object-cover {{ $objectPositionClass }} transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
+                                alt="{{ __(':title preview', ['title' => $project->title]) }}">
+                        </div>
+
+                        <div class="mt-4 lg:mt-5">
+                            <p class="text-meta font-bold uppercase tracking-widest text-muted">
+                                <span class="text-primary-fg tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <span class="mx-1 text-soft-muted">/</span>{{ __($project->category->name ?? '') }}
+                            </p>
+                            <h3 class="{{ $titleSizeClass }} font-bold text-ink mt-1.5 inline-flex items-center gap-1.5">
+                                {{ $project->title }}
+                                <svg class="w-4 h-4 shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 motion-reduce:transition-none transition-[opacity,transform] duration-200" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
+                            </h3>
+                            @if ($isHero && $project->localized('role'))
+                                <p class="text-small text-muted mt-1">{{ $project->localized('role') }}</p>
+                            @endif
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
     {{-- About: editorial narrative + metadata, single-statement-led, not a
          second "narrow label / wide content" split (Hero and Selected
          Works already use variations of that shape). Statement runs wide
@@ -69,8 +311,8 @@
          lives in Experience, not here). --}}
     <section id="about" aria-labelledby="about-heading" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-16 lg:py-20">
         <p style="--reveal-delay: 0ms"
-            class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-6">
-            {{ __('About / 02') }}
+            class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-6">
+            {{ __('About / 03') }}
         </p>
 
         <h2 id="about-heading" style="--reveal-delay: 60ms"
@@ -108,8 +350,8 @@
     <section id="projects" aria-labelledby="works-heading" class="max-w-[1600px] mx-auto px-8 lg:px-20 py-16 lg:py-20">
         <div class="mb-8 lg:mb-10">
             <p style="--reveal-delay: 0ms"
-                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
-                {{ __('Selected Works / 03') }}
+                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
+                {{ __('Selected Works / 04') }}
             </p>
             <h2 id="works-heading" style="--reveal-delay: 60ms"
                 class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white">
@@ -118,10 +360,16 @@
         </div>
 
         @php
+            // label is sourced from the actual Category model (by slug),
+            // same as the archive page's chapters -- not a third
+            // independently hardcoded copy of the category name (Global
+            // Language Catalog System, category-consistency fix). tagline
+            // and badge stay hand-authored, presentational-only fields.
+            $categoryNames = $categories->keyBy('slug');
             $accordionPanels = [
-                ['slug' => 'graphic-design', 'label' => __('Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
-                ['slug' => 'uiux-design', 'label' => __('UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
-                ['slug' => 'it-development', 'label' => __('Web & App Development'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
+                ['slug' => 'graphic-design', 'label' => __($categoryNames->get('graphic-design')->name ?? 'Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
+                ['slug' => 'uiux-design', 'label' => __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
+                ['slug' => 'it-development', 'label' => __($categoryNames->get('it-development')->name ?? 'IT & Development'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
             ];
             // ->toBase() strips the Eloquent Collection wrapper, whose
             // get()/except() are overridden for primary-key lookups and
@@ -172,7 +420,7 @@
         @endif
 
         <div class="text-center mt-10 lg:mt-12">
-            <a href="{{ route('portfolio.projects') }}" class="group btn-text dark:text-white dark:hover:!text-primary">
+            <a href="{{ route('portfolio.projects') }}" class="group btn-text dark:text-white dark:hover:!text-primary-fg">
                 {{ __('Explore all works') }}
                 <svg class="w-4 h-4 group-hover:translate-x-1 motion-reduce:transform-none transition-transform duration-200" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -194,8 +442,8 @@
         <div class="max-w-[1600px] mx-auto px-8 lg:px-20">
             <div class="mb-10 lg:mb-14">
                 <p style="--reveal-delay: 0ms"
-                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
-                    {{ __('Skills / 04') }}
+                    class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
+                    {{ __('Skills / 05') }}
                 </p>
                 <h2 id="skills-heading" style="--reveal-delay: 60ms"
                     class="reveal text-heading font-extrabold tracking-tight text-white">
@@ -209,7 +457,7 @@
                         class="skill-group reveal group/skill grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center px-4 lg:px-6 py-6 lg:py-7 outline-none">
                         <div class="lg:col-span-3 flex items-center gap-4">
                             <span aria-hidden="true"
-                                class="w-10 h-10 shrink-0 flex items-center justify-center rounded-[var(--radius-sm)] text-white/70 group-hover/skill:text-primary group-focus-visible/skill:text-primary transition-[color,transform] duration-[var(--motion-fast)] ease-[var(--ease-interactive)] group-hover/skill:translate-x-1 group-focus-visible/skill:translate-x-1">
+                                class="w-10 h-10 shrink-0 flex items-center justify-center rounded-[var(--radius-sm)] text-white/70 group-hover/skill:text-primary-fg group-focus-visible/skill:text-primary-fg transition-[color,transform] duration-[var(--motion-fast)] ease-[var(--ease-interactive)] group-hover/skill:translate-x-1 group-focus-visible/skill:translate-x-1">
                                 {!! $group['icon'] !!}
                             </span>
                             <span class="text-eyebrow font-bold uppercase tracking-[0.2em] text-white/70 group-hover/skill:text-slate-500 group-focus-visible/skill:text-slate-500 transition-colors duration-[var(--motion-fast)] ease-[var(--ease-interactive)]">{{ __($group['label']) }}</span>
@@ -257,8 +505,8 @@
     <section id="experience" aria-labelledby="experience-heading" class="max-w-[1600px] lg:px-20 mx-auto px-8 py-20 lg:py-24">
         <div class="mb-12 lg:mb-16">
             <p style="--reveal-delay: 0ms"
-                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">
-                {{ __('Experience / 05') }}
+                class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
+                {{ __('Experience / 06') }}
             </p>
             <h2 id="experience-heading" style="--reveal-delay: 60ms"
                 class="reveal text-heading font-extrabold tracking-tight text-slate-900 dark:text-white">
@@ -308,7 +556,14 @@
                         <button type="button" @if ($hasDescription) data-experience-toggle
                             aria-controls="professional-detail-{{ $item->id }}" aria-expanded="false" @endif
                             class="w-full text-left grid grid-cols-[auto_1fr] gap-x-5 lg:gap-x-8 items-start py-8 lg:py-10 {{ $hasDescription ? 'cursor-pointer' : 'cursor-default' }}">
-                            <span class="text-[3rem] sm:text-[3.75rem] lg:text-[4.5rem] xl:text-[6.5rem] leading-[0.85] font-extrabold tabular-nums transition-colors duration-300 {{ $isCurrent ? 'text-primary' : 'text-soft-muted group-hover/row:text-primary' }}">
+                            {{-- text-muted, not text-soft-muted -- this year label is real
+                                 content (not a decorative watermark like the archive page's
+                                 aria-hidden "01"/"02"/"03" numerals, which legitimately keep
+                                 text-soft-muted at 15% opacity). text-soft-muted at full
+                                 opacity measures ~2.45:1 against this section's background,
+                                 under WCAG AA even at this large size (3:1); text-muted clears
+                                 it comfortably. --}}
+                            <span class="text-[3rem] sm:text-[3.75rem] lg:text-[4.5rem] xl:text-[6.5rem] leading-[0.85] font-extrabold tabular-nums transition-colors duration-300 {{ $isCurrent ? 'text-primary-fg' : 'text-muted group-hover/row:text-primary-fg' }}">
                                 {{ $anchorYear }}
                             </span>
                             <div class="pt-2 lg:pt-4 group-hover/row:translate-x-[3px] motion-reduce:transform-none transition-transform duration-300">
@@ -414,7 +669,7 @@
                             <div style="--reveal-delay: {{ 380 + $professionalEntries->count() * 60 + count($educationEntries) * 60 + ($entry->number - 1) * 40 }}ms"
                                 class="reveal group/org grid grid-cols-12 gap-3 items-baseline py-3.5 lg:py-4 border-t border-slate-200 dark:border-white/10 {{ $loop->last ? 'border-b' : '' }} hover:border-slate-300 dark:hover:border-white/20 transition-colors duration-300">
                                 <span class="col-span-1 text-meta font-bold text-slate-300 dark:text-slate-600 tabular-nums">{{ sprintf('%02d', $entry->number) }}</span>
-                                <span class="col-span-2 sm:col-span-4 lg:col-span-4 text-meta text-slate-400 dark:text-slate-500 group-hover/org:text-primary transition-colors duration-300 tabular-nums">{{ $formatDuration($item->duration) }}</span>
+                                <span class="col-span-2 sm:col-span-4 lg:col-span-4 text-meta text-slate-400 dark:text-slate-500 group-hover/org:text-primary-fg transition-colors duration-300 tabular-nums">{{ $formatDuration($item->duration) }}</span>
                                 <div class="col-span-9 sm:col-span-7 lg:col-span-7 group-hover/org:translate-x-[3px] motion-reduce:transform-none transition-transform duration-300">
                                     <p class="text-small font-bold text-slate-900 dark:text-white leading-snug truncate">{{ $item->role }}</p>
                                     <p class="text-meta text-slate-400 dark:text-slate-500 truncate">{{ $item->company }}</p>
@@ -438,8 +693,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
                 <div class="lg:col-span-7">
                     <p style="--reveal-delay: 0ms"
-                        class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-6">
-                        {{ __('Contact / 06') }}
+                        class="reveal text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-6">
+                        {{ __('Contact / 07') }}
                     </p>
                     <h2 id="contact-heading" style="--reveal-delay: 60ms"
                         class="reveal text-display font-extrabold tracking-tight text-white leading-[1.05] mb-8 max-w-3xl">

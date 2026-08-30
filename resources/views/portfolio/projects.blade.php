@@ -5,10 +5,20 @@
     // opening tag but before the closing tag runs too late for that one
     // attribute.
     $grouped = $projects->groupBy(fn ($project) => $project->category->slug ?? 'other')->toBase();
+    // label is sourced from the actual Category model (by slug), routed
+    // through __() same as any other static string -- not a second,
+    // independently hardcoded copy of the category name. This is the one
+    // place that name is decided; the project-detail eyebrow (show.blade.php)
+    // reads the identical $project->category->name, so the two surfaces can
+    // never drift out of sync with each other again (Global Language
+    // Catalog System, category-consistency fix). shortLabel stays
+    // hand-authored -- it's a presentational abbreviation, not the
+    // category's name.
+    $categoryNames = $categories->keyBy('slug');
     $chapters = collect([
-        ['slug' => 'graphic-design', 'label' => __('Graphic Design'), 'shortLabel' => __('Design')],
-        ['slug' => 'uiux-design', 'label' => __('UI/UX Design'), 'shortLabel' => __('UI/UX')],
-        ['slug' => 'it-development', 'label' => __('Web & App Development'), 'shortLabel' => __('Web & App')],
+        ['slug' => 'graphic-design', 'label' => __($categoryNames->get('graphic-design')->name ?? 'Graphic Design'), 'shortLabel' => __('Design')],
+        ['slug' => 'uiux-design', 'label' => __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design'), 'shortLabel' => __('UI/UX')],
+        ['slug' => 'it-development', 'label' => __($categoryNames->get('it-development')->name ?? 'IT & Development'), 'shortLabel' => __('Web & App')],
     ])->filter(fn ($c) => $grouped->get($c['slug'], collect())->isNotEmpty())->values();
 
     // Fed to <x-layout>, which threads it to <x-nav> for the archive
@@ -24,8 +34,11 @@
 
     $otherGroups = $grouped->except(['graphic-design', 'uiux-design', 'it-development']);
 @endphp
-<x-layout title="Project Archive | Surya Andika"
-    meta-description="The full project archive: graphic design, UI/UX, and web & app development work by Surya Andika."
+{{-- title/meta-description routed through __() (: prefix, not a literal
+     string attribute) so they switch locale -- same gap and fix as the
+     homepage, found during the Language Content Completion pass. --}}
+<x-layout :title="__('Project Archive | Surya Andika')"
+    :meta-description="__('The full project archive: graphic design, UI/UX, and web & app development work by Surya Andika.')"
     :archive-chapters="$topbarChapters">
 
     {{-- Editorial Contact Sheet with chapter navigation integrated into the
@@ -36,7 +49,7 @@
          denser grid), UI/UX and Web/App are interface-first
          (browser-chrome, reused unmodified from the project detail page). --}}
     <header class="reveal pt-12 lg:pt-16 pb-12 lg:pb-16 px-8 lg:px-20 max-w-[1600px] mx-auto">
-        <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary mb-4">{{ __('Archive') }}</p>
+        <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">{{ __('Archive') }}</p>
         <h1 class="text-heading lg:text-display font-extrabold tracking-tight text-ink max-w-2xl">
             {{ __('The complete collection.') }}
         </h1>
@@ -59,7 +72,7 @@
                 <div class="relative mb-10">
                     <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">01</span>
                     <div class="relative">
-                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('Graphic Design') }}</span>
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary-fg">{{ __($categoryNames->get('graphic-design')->name ?? 'Graphic Design') }}</span>
                         <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $gd->count(), ['count' => $gd->count()]) }}</h2>
                     </div>
                 </div>
@@ -74,8 +87,8 @@
                                     alt="{{ __(':title preview', ['title' => $project->title]) }}">
                             </div>
                             <div class="flex items-baseline gap-2 mt-4">
-                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
-                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                                <span class="text-meta font-bold text-primary-fg/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
                             </div>
                         </a>
                     @endforeach
@@ -91,7 +104,7 @@
                 <div class="relative mb-10">
                     <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">02</span>
                     <div class="relative">
-                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('UI/UX Design') }}</span>
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary-fg">{{ __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design') }}</span>
                         <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $uiux->count(), ['count' => $uiux->count()]) }}</h2>
                     </div>
                 </div>
@@ -108,8 +121,8 @@
                                 </div>
                             </x-browser-chrome>
                             <div class="flex items-baseline gap-2 mt-4">
-                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
-                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                                <span class="text-meta font-bold text-primary-fg/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
                             </div>
                         </a>
                     @endforeach
@@ -126,7 +139,7 @@
                 <div class="relative mb-10">
                     <span aria-hidden="true" class="absolute -top-6 lg:-top-10 left-0 text-[5rem] lg:text-[7rem] font-extrabold text-soft-muted/15 leading-none select-none">03</span>
                     <div class="relative">
-                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary">{{ __('Web & App Development') }}</span>
+                        <span class="text-eyebrow font-bold uppercase tracking-widest text-primary-fg">{{ __($categoryNames->get('it-development')->name ?? 'IT & Development') }}</span>
                         <h2 class="text-subheading font-extrabold text-ink mt-2">{{ trans_choice('messages.projects_count', $itDev->count(), ['count' => $itDev->count()]) }}</h2>
                     </div>
                 </div>
@@ -143,8 +156,8 @@
                                 </div>
                             </x-browser-chrome>
                             <div class="flex items-baseline gap-2 mt-4">
-                                <span class="text-meta font-bold text-primary/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
-                                <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
+                                <span class="text-meta font-bold text-primary-fg/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
+                                <h3 class="text-small font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)]">{{ $project->title }}</h3>
                             </div>
                         </a>
                     @endforeach
@@ -159,8 +172,10 @@
         @foreach ($otherGroups as $slug => $items)
             <section class="reveal mb-16 scroll-mt-28">
                 <div class="mb-10">
-                    <span class="text-eyebrow font-bold uppercase tracking-widest text-muted">{{ $items->first()->category->name ?? __('Other Work') }}</span>
-                    <h2 class="text-subheading font-extrabold text-ink mt-2">{{ $items->first()->category->name ?? __('Other Work') }}</h2>
+                    {{-- Same __() treatment as the category eyebrow on the
+                         project detail page -- see that comment. --}}
+                    <span class="text-eyebrow font-bold uppercase tracking-widest text-muted">{{ $items->first()->category->name ? __($items->first()->category->name) : __('Other Work') }}</span>
+                    <h2 class="text-subheading font-extrabold text-ink mt-2">{{ $items->first()->category->name ? __($items->first()->category->name) : __('Other Work') }}</h2>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
                     @foreach ($items as $project)
@@ -171,7 +186,7 @@
                                     class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
                                     alt="{{ __(':title preview', ['title' => $project->title]) }}">
                             </div>
-                            <h3 class="text-small font-bold text-ink group-hover:text-primary transition-colors duration-[var(--motion-fast)] mt-4">{{ $project->title }}</h3>
+                            <h3 class="text-small font-bold text-ink group-hover:text-primary-fg transition-colors duration-[var(--motion-fast)] mt-4">{{ $project->title }}</h3>
                         </a>
                     @endforeach
                 </div>

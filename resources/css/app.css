@@ -386,7 +386,13 @@ img.lazy-fade.is-loaded {
 }
 
 .nav-link.is-active {
-    color: var(--color-primary) !important;
+    /* --color-primary-fg, not --color-primary: this is text color, and
+       --color-primary itself is deliberately unified across themes (see
+       foundation.css) -- --color-primary-fg is the text-only variant that
+       IS redefined for Dark, to clear WCAG AA against a dark background
+       (Final QA fix). The little active-state dot below (::after) stays
+       on --color-primary since it's a background fill, not text. */
+    color: var(--color-primary-fg) !important;
 }
 
 .nav-link::after {
@@ -412,7 +418,7 @@ img.lazy-fade.is-loaded {
    desktop's floating pill nav, so the tiny-marker language doesn't apply
    here (Section 10 of the brief). Same !important reasoning as above. */
 #mobile-menu a.is-active {
-    color: var(--color-primary) !important;
+    color: var(--color-primary-fg) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -632,7 +638,7 @@ img.lazy-fade.is-loaded {
 .prefs-fab-option[aria-current="true"],
 .prefs-fab-option[aria-pressed="true"] {
     background-color: var(--color-primary-soft);
-    color: var(--color-primary);
+    color: var(--color-primary-fg);
     border-color: rgba(37, 99, 235, 0.35);
 }
 
@@ -651,7 +657,7 @@ img.lazy-fade.is-loaded {
 .archive-chapter-link:hover,
 .archive-chapter-link:focus-visible,
 .archive-chapter-link.is-active {
-    color: var(--color-primary);
+    color: var(--color-primary-fg);
 }
 
 .archive-chapter-link::after {

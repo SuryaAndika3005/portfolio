@@ -16,7 +16,7 @@
                  with no extra visibility-toggle logic needed. Hidden below
                  md: full category names/counts still exist in the page's
                  own static index and chapter headings. --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-primary transition-colors duration-200 group shrink-0">
+            <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-primary-fg transition-colors duration-200 group shrink-0">
                 <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -41,7 +41,7 @@
                  left, brand on the right. No full nav links re-appear here;
                  the archive is one click away via this link, and the
                  homepage via the brand. --}}
-            <a href="{{ route('portfolio.projects') }}" class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 hover:text-primary transition-colors duration-200 group">
+            <a href="{{ route('portfolio.projects') }}" class="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-600 dark:text-slate-300 hover:text-primary-fg transition-colors duration-200 group">
                 <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -56,10 +56,10 @@
             </a>
 
             <div class="hidden md:flex items-center gap-1 bg-white/50 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 pl-6 pr-1.5 py-1.5 rounded-[var(--radius-pill)] shadow-sm">
-                <a href="{{ route('home') }}" data-nav-link data-target="top" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary focus-visible:text-primary">{{ __('Home') }}</a>
-                <a href="{{ route('home') }}#about" data-nav-link data-target="about" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary focus-visible:text-primary">{{ __('About') }}</a>
-                <a href="{{ route('home') }}#projects" data-nav-link data-target="projects" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary focus-visible:text-primary">{{ __('Projects') }}</a>
-                <a href="{{ route('home') }}#skills" data-nav-link data-target="skills" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary focus-visible:text-primary">{{ __('Skills') }}</a>
+                <a href="{{ route('home') }}" data-nav-link data-target="top" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-fg focus-visible:text-primary-fg">{{ __('Home') }}</a>
+                <a href="{{ route('home') }}#about" data-nav-link data-target="about" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-fg focus-visible:text-primary-fg">{{ __('About') }}</a>
+                <a href="{{ route('home') }}#projects" data-nav-link data-target="projects" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-fg focus-visible:text-primary-fg">{{ __('Projects') }}</a>
+                <a href="{{ route('home') }}#skills" data-nav-link data-target="skills" class="nav-link px-4 py-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-primary-fg focus-visible:text-primary-fg">{{ __('Skills') }}</a>
                 <a href="{{ route('home') }}#contact" class="btn btn-primary ml-4 !py-2 !px-5 text-sm">{{ __("Let's Talk") }}</a>
             </div>
 
@@ -80,10 +80,10 @@
              tokens used elsewhere (Footer, Contact form, etc.) -- opaque
              in both themes by definition, no alpha channel, no blur. --}}
         <div id="mobile-menu" class="hidden absolute top-full left-0 w-full md:hidden flex-col bg-surface border-b border-border-light shadow-lg px-6 py-5">
-            <a href="{{ route('home') }}" data-nav-link data-target="top" class="block w-full text-lg font-bold text-ink hover:text-primary transition-colors duration-200 py-3">{{ __('Home') }}</a>
-            <a href="{{ route('home') }}#about" data-nav-link data-target="about" class="block w-full text-lg font-bold text-ink hover:text-primary transition-colors duration-200 py-3">{{ __('About') }}</a>
-            <a href="{{ route('home') }}#projects" data-nav-link data-target="projects" class="block w-full text-lg font-bold text-ink hover:text-primary transition-colors duration-200 py-3">{{ __('Projects') }}</a>
-            <a href="{{ route('home') }}#skills" data-nav-link data-target="skills" class="block w-full text-lg font-bold text-ink hover:text-primary transition-colors duration-200 py-3">{{ __('Skills') }}</a>
+            <a href="{{ route('home') }}" data-nav-link data-target="top" class="block w-full text-lg font-bold text-ink hover:text-primary-fg transition-colors duration-200 py-3">{{ __('Home') }}</a>
+            <a href="{{ route('home') }}#about" data-nav-link data-target="about" class="block w-full text-lg font-bold text-ink hover:text-primary-fg transition-colors duration-200 py-3">{{ __('About') }}</a>
+            <a href="{{ route('home') }}#projects" data-nav-link data-target="projects" class="block w-full text-lg font-bold text-ink hover:text-primary-fg transition-colors duration-200 py-3">{{ __('Projects') }}</a>
+            <a href="{{ route('home') }}#skills" data-nav-link data-target="skills" class="block w-full text-lg font-bold text-ink hover:text-primary-fg transition-colors duration-200 py-3">{{ __('Skills') }}</a>
             <a href="{{ route('home') }}#contact" class="btn btn-primary w-full justify-center mt-4">{{ __("Let's Talk") }}</a>
         </div>
     @endunless
