@@ -75,6 +75,21 @@
     <meta name="twitter:description" content="{{ $resolvedDescription }}">
     <meta name="twitter:image" content="{{ $resolvedOgImage }}">
 
+    {{-- @vite BEFORE @fonts (Mobile LCP Final Optimization pass): the LCP
+         element on the homepage is the hero H1 text, which paints only once
+         app.css (render-blocking, no fallback) arrives -- but @fonts emits
+         its own <link rel="preload" as="font"> tags, and the preload
+         scanner requests whatever it meets first in the HTML. With @fonts
+         first, 3 font files were being discovered (and competing for the
+         same limited early connections/bandwidth) before app.css even
+         entered the queue, on every load -- pure request-ordering, no
+         change to what's fetched. Font-face text always paints via
+         font-display: swap regardless of arrival order (confirmed via
+         Lighthouse's font-display-insight: 0ms available savings), so
+         there's no correctness reason for fonts to go first; only the
+         genuinely paint-blocking resource (app.css) benefits from being
+         the earliest. --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme.js', 'resources/js/preferences-fab.js', 'resources/js/locale-sync.js'])
     {{-- Self-hosted Instrument Sans (weights 400/500/600 via the Vite fonts
          plugin, configured in vite.config.js) -- this directive is what
          actually injects its @font-face rules + preload links; app.css only
@@ -83,8 +98,6 @@
          sans-serif on every page (found during the final QA pass -- @fonts
          existed only in the unused stock welcome.blade.php, never here). --}}
     @fonts
-
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme.js', 'resources/js/preferences-fab.js', 'resources/js/locale-sync.js'])
     @stack('styles')
     {{-- Structured data: each page pushes its own JSON-LD payload(s) via
          @push('json-ld') + <x-json-ld :data="..."> (see that component) --
