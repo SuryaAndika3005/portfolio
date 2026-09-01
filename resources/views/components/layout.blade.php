@@ -6,6 +6,7 @@
     'archiveChapters' => null,
     'ogImage' => null,
     'ogType' => 'website',
+    'noindex' => false,
 ])
 @php
     $resolvedDescription = $metaDescription ?? 'Portfolio of Surya Andika: UI/UX design, graphic design, and web development.';
@@ -55,12 +56,24 @@
     @endif
     <title>{{ $title }}</title>
     <meta name="description" content="{{ $resolvedDescription }}">
-    {{-- Every public page is indexable; this is stated explicitly (rather
-         than left to the crawler default) so an accidental noindex
-         regression is a one-line diff to spot, and so this tag is the
-         opposite of admin/_layout.blade.php's noindex, nofollow. --}}
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{ url()->current() }}">
+    {{-- Every public page is indexable by default; this is stated
+         explicitly (rather than left to the crawler default) so an
+         accidental noindex regression is a one-line diff to spot, and so
+         this tag is the opposite of admin/_layout.blade.php's noindex,
+         nofollow. The one deliberate exception is an error page (404 --
+         see resources/views/errors/404.blade.php), which passes
+         :noindex="true": a real 404 already tells crawlers not to index
+         it via HTTP status, but the explicit tag makes that unambiguous
+         to consumers that don't check status codes, and a canonical URL
+         on an error page (which by definition isn't a real, distinct
+         piece of content) would be actively misleading -- so it's
+         omitted entirely rather than pointing at the broken URL itself. --}}
+    @if ($noindex)
+        <meta name="robots" content="noindex, nofollow">
+    @else
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ url()->current() }}">
+    @endif
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
 
     <meta property="og:site_name" content="Surya Andika">

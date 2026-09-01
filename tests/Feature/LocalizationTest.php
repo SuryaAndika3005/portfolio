@@ -94,7 +94,7 @@ class LocalizationTest extends TestCase
         $this->get(route('lang.switch', ['locale' => 'id']));
 
         $home = $this->get('/');
-        $home->assertSee('<title>Surya Andika — Desainer Grafis &amp; Mahasiswa Informatika</title>', false);
+        $home->assertSee('<title>Surya Andika, Desainer Grafis &amp; Mahasiswa Informatika</title>', false);
 
         $archive = $this->get('/projects');
         $archive->assertSee('<title>Arsip Proyek | Surya Andika</title>', false);

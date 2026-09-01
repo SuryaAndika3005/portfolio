@@ -3,6 +3,15 @@
 @php
     $allTools = config('portfolio.tool_options');
     $selectedTools = collect(explode(',', old('tools', $project->tools ?? '')))->map(fn ($t) => trim($t))->filter();
+    // "Other tools" custom-text fallback: previously only ever read from
+    // old('tools_custom'), which is empty on a normal (non-validation-
+    // error) page load -- so opening Edit on any project whose tools
+    // include something outside the fixed checkbox list, then saving
+    // without manually retyping those into this field, silently dropped
+    // them from the stored tools string. Falls back to whichever of the
+    // project's actual tools aren't one of the fixed checkboxes, so the
+    // field now reflects what's really saved.
+    $customToolsFallback = $selectedTools->diff($allTools)->implode(', ');
     $roleOptions = ['Graphic Designer', 'UI/UX Designer', 'Web & App Developer', 'Mobile Developer', 'Video Editor', 'Photographer', 'Model'];
     $clientOptions = ['Personal / Commercial', 'Akademik', 'Sports & Event', '523 Studio', 'Alir Pictures'];
     $currentYear = (int) date('Y');
@@ -96,7 +105,7 @@
                         </label>
                     @endforeach
                 </div>
-                <input type="text" name="tools_custom" placeholder="Other tools not listed (comma separated)" value="{{ old('tools_custom') }}"
+                <input type="text" name="tools_custom" placeholder="Other tools not listed (comma separated)" value="{{ old('tools_custom', $customToolsFallback) }}"
                        class="admin-input mt-2">
 
                 {{-- Curate: Tool Suggestions, moved from the old Assistant

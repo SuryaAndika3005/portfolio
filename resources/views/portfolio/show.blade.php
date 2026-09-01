@@ -1,15 +1,5 @@
 @php
-    // Computed before <x-layout> opens (attributes on the opening tag are
-    // evaluated immediately, before any @php inside its slot would run —
-    // same reasoning as projects.blade.php's $topbarChapters). Derived from
-    // real project data, never invented copy: prefers the short
-    // description, falls back to the Problem field (the next most
-    // reader-facing sentence of the case study), then a plain
-    // category-based sentence if neither exists. Always plain text (no
-    // HTML) and capped for a sane meta-description length. Reads through
-    // localized() (Global Language Catalog System) so metadata always
-    // matches whatever locale the visible page content is rendered in --
-    // there is no separate "SEO locale" from the "page locale".
+
     $metaSource = $project->localized('description') ?: $project->localized('problem');
     $projectMetaDescription = $metaSource
         ? Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($metaSource))), 160)
@@ -79,13 +69,22 @@
     @php
         $categorySlug = $project->category->slug ?? '';
         $isUiux = $categorySlug === 'uiux-design';
-        $isIt = $categorySlug === 'it-development';
+        // Web & Systems (slug 'it-development', kept for backward
+        // compatibility -- see projects.blade.php's $chapters comment) and
+        // AI & Data (slug 'ai-data') both get the same wide,
+        // browser-chrome-framed treatment below: they were one category
+        // ("IT & Development") until the Archive Taxonomy Restructure split
+        // it in two, and the detail-page hero treatment was never about
+        // which of the two a project ended up in -- it's about "this is an
+        // application/interface/model-output screenshot", which both
+        // halves still are.
+        $isTechnical = in_array($categorySlug, ['it-development', 'ai-data'], true);
         // A fixed aspect keeps the preview to a sane on-screen size instead of
         // dumping the full (sometimes 10,000px+ tall) source image inline; the
         // complete image is only ever fully shown (fit-to-screen + zoomable) in
         // the fullscreen modal's rotating deck.
-        $showcaseAspectClass = $isUiux || $isIt ? 'aspect-[16/9]' : 'aspect-[4/5]';
-        $showcaseWidthClass = $isUiux || $isIt ? 'max-w-4xl' : 'max-w-md lg:max-w-lg';
+        $showcaseAspectClass = $isUiux || $isTechnical ? 'aspect-[16/9]' : 'aspect-[4/5]';
+        $showcaseWidthClass = $isUiux || $isTechnical ? 'max-w-4xl' : 'max-w-md lg:max-w-lg';
         // Up to 2 gallery shots peek out from behind the main preview on hover
         // (one to each side), teasing that there's more without a full second
         // grid.
@@ -215,7 +214,7 @@
                         </div>
                     @endif
 
-                    @if ($isUiux || $isIt)
+                    @if ($isUiux || $isTechnical)
                         <x-browser-chrome :accent="$isUiux ? 'uiux' : 'it'"
                             :label="$isUiux ? $project->title : Str::slug($project->title) . '.app'"
                             class="relative z-10 !rounded-[var(--radius-lg)] transition-transform duration-[var(--motion-fast)] ease-[var(--ease-interactive)] group-hover:-translate-y-[2px]">

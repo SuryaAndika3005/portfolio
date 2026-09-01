@@ -201,7 +201,12 @@ class ProjectLocalizationTest extends TestCase
 
     public function test_category_localization_is_consistent_across_public_surfaces(): void
     {
-        $category = Category::factory()->create(['slug' => 'it-development', 'name' => 'IT & Development']);
+        // 'Web & Systems' / slug 'it-development' -- the current real
+        // display name for this slug since the Archive Taxonomy
+        // Restructure (formerly 'IT & Development'; the slug itself was
+        // deliberately kept, only the name changed -- see
+        // CategoryController's class docblock).
+        $category = Category::factory()->create(['slug' => 'it-development', 'name' => 'Web & Systems']);
         Project::factory()->create([
             'id' => 7001,
             'category_id' => $category->id,
@@ -213,7 +218,7 @@ class ProjectLocalizationTest extends TestCase
         $detail = $this->get('/project/7001');
         $archive = $this->get('/projects');
 
-        $detail->assertOk()->assertSee('IT &amp; Pengembangan', false);
-        $archive->assertOk()->assertSee('IT &amp; Pengembangan', false);
+        $detail->assertOk()->assertSee('Web &amp; Sistem', false);
+        $archive->assertOk()->assertSee('Web &amp; Sistem', false);
     }
 }

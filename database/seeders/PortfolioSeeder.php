@@ -6,34 +6,58 @@ use App\Models\Category;
 use App\Models\Experience;
 use App\Models\Project;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class PortfolioSeeder extends Seeder
 {
     public function run(): void
     {
+        // Archive Taxonomy Restructure: name => slug pinned explicitly for
+        // every category (not derived via Str::slug($name)) after
+        // discovering that deriving it dynamically here would be a real
+        // landmine for 'Web & Systems' specifically -- Str::slug('Web &
+        // Systems') produces 'web-systems', but the live category (matched
+        // by name below) intentionally KEPT its original 'it-development'
+        // slug when it was renamed from "IT & Development" (see
+        // CategoryController's docblock for why the slug must never
+        // change). Re-running this seeder with a name-derived slug would
+        // silently rewrite that slug and break every slug-keyed Blade
+        // view/test. 'AI & Data' is a genuinely new category with no
+        // legacy slug to preserve, so its pinned slug ('ai-data') simply
+        // matches what Str::slug would have produced anyway.
         $categories = [
-            'Graphic Design',
-            'UI/UX Design',
-            'IT & Development',
-            'Fotografi',
-            'Modeling'
+            'Graphic Design' => 'graphic-design',
+            'UI/UX Design' => 'uiux-design',
+            'Web & Systems' => 'it-development',
+            'AI & Data' => 'ai-data',
+            'Fotografi' => 'fotografi',
+            'Modeling' => 'modeling',
         ];
 
-        foreach ($categories as $category) {
-            // Matched by name (a stable key) rather than name+slug, so a
-            // fixed/changed slug format updates the existing row instead of
-            // creating a duplicate category with the same name.
+        foreach ($categories as $name => $slug) {
+            // Matched by name (a stable key), same as before -- but the
+            // slug is now always the pinned value above, never derived, so
+            // a re-run can rename IT & Development -> Web & Systems (an
+            // old DB from before this pass) without ever touching its
+            // slug.
             Category::updateOrCreate(
-                ['name' => $category],
-                ['slug' => Str::slug($category)]
+                ['name' => $name],
+                ['slug' => $slug]
             );
         }
 
         // Mengambil ID Kategori untuk relasi data
         $graphicId = Category::where('name', 'Graphic Design')->first()->id;
         $uiUxId = Category::where('name', 'UI/UX Design')->first()->id;
-        $itId = Category::where('name', 'IT & Development')->first()->id;
+        // Still the same 'it-development'-slugged category as before the
+        // split -- only its display name changed. None of this seeder's
+        // own baseline projects belong in the new 'AI & Data' category
+        // (that category exists here only so a fresh install has the
+        // correct 4-category taxonomy from the start); the real AI/data
+        // projects (Vision AI Attendance, WebGIS, Speech Emotion
+        // Recognition) were all added later via the Admin CMS, outside
+        // this seeder, and reassigned to AI & Data directly in the
+        // database -- see the Archive Taxonomy Restructure report.
+        $itId = Category::where('name', 'Web & Systems')->first()->id;
         $fgId = Category::where('name', 'Fotografi')->first()->id;
         $mdlId = Category::where('name', 'Modeling')->first()->id;
 

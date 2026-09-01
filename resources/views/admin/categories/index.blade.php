@@ -5,7 +5,7 @@
         <h1 class="text-subheading font-extrabold text-ink">Categories</h1>
     </div>
     <p class="text-small text-muted mb-6 max-w-2xl">
-        Creating new categories is disabled for now — the homepage's Selected Works section only recognizes the three categories it already has panels for. Names can be renamed freely; slugs stay fixed because the public site's category-aware layout depends on them.
+        Creating new categories through this page is disabled for now — the homepage's Selected Works section only recognizes four categories: Graphic Design and UI/UX Design each get their own panel, and Web & Systems + AI & Data share one combined panel. Names can be renamed freely; slugs stay fixed because the public site's category-aware layout depends on them.
     </p>
 
     <div class="admin-table-wrap hidden lg:block">

@@ -6,7 +6,7 @@
      description actually switch locale too -- found missing entirely
      during the Language Content Completion pass's EN/ID sweep. --}}
 <x-layout :hide-footer="true"
-    :title="__('Surya Andika — Graphic Designer & Informatics Student')"
+    :title="__('Surya Andika, Graphic Designer & Informatics Student')"
     :meta-description="__('I work across visual design, UI/UX, web development, and applied AI/ML, combining creative thinking with a growing technical foundation.')">
 
     @push('json-ld')
@@ -79,7 +79,7 @@
                 </p>
 
                 <h1 class="text-[clamp(3.5rem,6vw,6.5rem)] font-extrabold leading-[1.05] tracking-tight text-slate-900 dark:text-white mb-6">
-                    {!! __('Designing visuals.<br>Building :digital experiences.', ['digital' => '<span class="text-primary-fg">'.__('digital').'</span>']) !!}
+                    {!! __('Designing visuals.<br>Building :software.', ['software' => '<span class="text-primary-fg">'.__('software').'</span>']) !!}
                 </h1>
 
                 <p class="text-subheading font-bold text-slate-700 dark:text-slate-200 mb-5">
@@ -436,20 +436,28 @@
             // independently hardcoded copy of the category name (Global
             // Language Catalog System, category-consistency fix). tagline
             // and badge stay hand-authored, presentational-only fields.
+            //
+            // Archive Taxonomy Restructure: the Archive now splits the
+            // former single "IT & Development" chapter into "Web & Systems"
+            // (slug 'it-development', kept) and "AI & Data" (slug
+            // 'ai-data', new) -- but this homepage accordion intentionally
+            // stays at 3 panels, not 4 (explicit instruction: preserve this
+            // section's existing behavior, no fourth panel). The third
+            // panel below now pools BOTH slugs under one hand-authored,
+            // deliberately broad label/tagline rather than either
+            // category's own (now more specific) name -- "slugs" (plural)
+            // replaces the single "slug" key only for this one panel, and
+            // its click-through anchor still lands on the Archive's Web &
+            // Systems chapter (the more general/first of the two).
             $categoryNames = $categories->keyBy('slug');
             $accordionPanels = [
-                ['slug' => 'graphic-design', 'label' => __($categoryNames->get('graphic-design')->name ?? 'Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
-                ['slug' => 'uiux-design', 'label' => __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
-                ['slug' => 'it-development', 'label' => __($categoryNames->get('it-development')->name ?? 'IT & Development'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
+                ['slugs' => ['graphic-design'], 'anchor' => 'graphic-design', 'label' => __($categoryNames->get('graphic-design')->name ?? 'Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
+                ['slugs' => ['uiux-design'], 'anchor' => 'uiux-design', 'label' => __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
+                ['slugs' => ['it-development', 'ai-data'], 'anchor' => 'it-development', 'label' => __('Web & App'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
             ];
-            // ->toBase() strips the Eloquent Collection wrapper, whose
-            // get()/except() are overridden for primary-key lookups and
-            // would misbehave on the string-slug keys groupBy() produces
-            // here.
-            $accordionGrouped = $projects->groupBy(fn ($project) => $project->category->slug ?? 'other')->toBase();
         @endphp
 
-        @if ($accordionGrouped->isEmpty())
+        @if ($projects->isEmpty())
             <p class="text-body text-slate-400 dark:text-slate-500 py-16 text-center">{{ __('No projects yet.') }}</p>
         @else
         <div id="works-accordion" style="--reveal-delay: 220ms" class="reveal flex flex-col lg:flex-row gap-4 lg:h-[600px]">
@@ -461,7 +469,19 @@
                     // row feel heavy. coverImagePath() prefers a project's
                     // dedicated accordion cover when one is set, falling
                     // back to its main image_path otherwise.
-                    $items = $accordionGrouped->get($panel['slug'], collect());
+                    //
+                    // Filtered directly from $projects (already
+                    // published()->latest()-ordered by the controller)
+                    // rather than from $accordionGrouped, so a panel
+                    // pooling two slugs (Web & Systems + AI & Data, since
+                    // the Archive Taxonomy Restructure) still gets a single
+                    // globally-recency-ordered item list -- concatenating
+                    // two already-ordered per-slug groups would put every
+                    // Web & Systems item before every AI & Data item
+                    // regardless of actual recency, which is wrong here
+                    // (e.g. Speech Emotion, AI & Data, is newer than most
+                    // of Web & Systems).
+                    $items = $projects->filter(fn ($project) => in_array($project->category->slug ?? 'other', $panel['slugs'], true))->values();
                     if ($items->isEmpty()) continue;
                     $slides = $items->take(4);
                 @endphp
@@ -480,7 +500,7 @@
 
                     <div class="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/10 to-transparent pointer-events-none"></div>
 
-                    <a href="{{ route('portfolio.projects') }}#{{ $panel['slug'] }}"
+                    <a href="{{ route('portfolio.projects') }}#{{ $panel['anchor'] }}"
                         class="absolute inset-0 z-10" aria-label="{{ __('View :category projects', ['category' => $panel['label']]) }}"></a>
 
                     <div class="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-8 pointer-events-none">
