@@ -98,7 +98,7 @@ class ProjectCompletenessTest extends TestCase
         // live-demo/repository column for any category — Section 29), so
         // completeness must not vary by category name/slug.
         $graphicDesign = Category::factory()->create(['name' => 'Graphic Design', 'slug' => 'graphic-design']);
-        $webApp = Category::factory()->create(['name' => 'Web & App', 'slug' => 'it-development']);
+        $webApp = Category::factory()->create(['name' => 'Web & Systems', 'slug' => 'it-development']);
 
         $projectA = Project::create(['category_id' => $graphicDesign->id, 'title' => 'A', 'role' => 'Designer']);
         $projectB = Project::create(['category_id' => $webApp->id, 'title' => 'B', 'role' => 'Developer']);

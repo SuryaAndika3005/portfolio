@@ -13,7 +13,7 @@ use Tests\TestCase;
  * Systems" (slug 'it-development', kept for backward compatibility --
  * see CategoryController's class docblock) and a new "AI & Data" category
  * (slug 'ai-data'). This covers the resulting 4-chapter Archive, the
- * Homepage's 3-panel accordion still correctly pooling both slugs into one
+ * Homepage's four-panel accordion representing each discipline in its own
  * panel, Project Detail category labels, and localization of the two
  * category names -- all against a small, fully self-contained dataset
  * rather than the real production categories, so this suite keeps passing
@@ -128,21 +128,27 @@ class ArchiveTaxonomyTest extends TestCase
         $this->assertStringContainsString('AI Data Alpha', $html);
     }
 
-    public function test_homepage_technical_panel_pools_both_slugs_without_a_fourth_panel(): void
+    public function test_homepage_has_four_separate_discipline_panels(): void
     {
         $this->seedFourCategoryTaxonomy();
 
         $html = $this->get('/')->assertOk()->getContent();
-
-        // Still exactly 3 accordion panels (data-accordion-panel), not 4 --
-        // the explicit "no fourth panel" instruction.
-        $this->assertSame(3, substr_count($html, 'data-accordion-panel'));
-
-        // The combined third panel must represent both slugs: at least one
-        // project from each appears somewhere in the accordion markup (as
-        // an alt text on one of its up-to-4 cover slides).
+        $this->assertSame(4, substr_count($html, 'data-accordion-panel'));
+        $this->assertStringContainsString('data-category="it-development"', $html);
+        $this->assertStringContainsString('data-category="ai-data"', $html);
         $this->assertStringContainsString('alt="Web Systems Alpha"', $html);
         $this->assertStringContainsString('alt="AI Data Alpha"', $html);
+    }
+
+    public function test_ai_archive_uses_only_raw_covers_and_three_columns_on_large_screens(): void
+    {
+        $this->seedFourCategoryTaxonomy();
+        $html = $this->get('/projects')->assertOk()->getContent();
+        $section = explode('</section>', explode('id="ai-data"', $html, 2)[1], 2)[0];
+        $this->assertSame(3, substr_count($section, 'data-cover-treatment="raw"'));
+        $this->assertStringContainsString('xl:grid-cols-3', $section);
+        $this->assertStringNotContainsString('bg-emerald-50', $section);
+        $this->assertStringContainsString('aspect-[16/10]', $section);
     }
 
     public function test_project_detail_shows_the_correct_new_category_label(): void

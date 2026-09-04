@@ -157,19 +157,21 @@ img.lazy-fade.is-loaded {
 @media (min-width: 1024px) {
     .accordion-panel {
         flex: 1 1 0%;
+        min-width: 0;
         /* A gentler, evenly-weighted curve than the expo-style easing used
            for .reveal — that one decelerates hard and reads as an abrupt
            "snap" when applied to a layout-affecting property like flex-grow.
            will-change/contain scope the resulting reflow to just this panel
            instead of the whole row repainting on every frame, which is what
-           made hovering feel heavy with 3 panels of full-size photos. */
+           made hovering feel heavy with multiple panels of full-size photos. */
         transition: flex-grow 0.5s var(--ease-interactive);
         will-change: flex-grow;
         contain: layout paint;
     }
 
     .accordion-title {
-        font-size: 1.75rem;
+        font-size: clamp(1rem, 1.7vw, 1.5rem);
+        white-space: normal;
     }
 
     .accordion-tagline {
@@ -183,17 +185,17 @@ img.lazy-fade.is-loaded {
     }
 
     .accordion-panel.is-expanded {
-        flex-grow: 3.2;
+        flex-grow: 4;
     }
 
     .accordion-panel.is-collapsed {
-        flex-grow: 0.55;
+        flex-grow: 0.85;
     }
 
     /* Collapsed (desktop only, via this breakpoint): title and count badge
        turn into one vertical label — rotate(180deg) keeps the reading
        direction bottom-to-top, matching how the panel is anchored — instead
-       of cramming a full category name like "Web & App Development" into a
+       of cramming a full category name like "Web & Systems" into a
        narrow horizontal column. This property is deliberately absent from
        both elements' transitions above, so the flip is an instant cut, not
        a visible spin. */
@@ -211,6 +213,7 @@ img.lazy-fade.is-loaded {
 
 @media (prefers-reduced-motion: reduce) {
     .accordion-panel,
+    .accordion-title,
     .accordion-tagline,
     #works-accordion [data-slide] {
         transition: none;
@@ -683,5 +686,19 @@ img.lazy-fade.is-loaded {
     .archive-chapter-link,
     .archive-chapter-link::after {
         transition: none;
+    }
+}
+
+/* Archive canvas includes the browser bar, not an extra bar above 16:10. */
+.archive-browser-cover { aspect-ratio: 16 / 10; display: flex; flex-direction: column; }
+.archive-browser-cover > :first-child { flex-shrink: 0; }
+#works-accordion .accordion-panel:focus-within { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+
+/* Keep the approved headings within narrow phones in both locales.
+   Their existing scale and composition remain unchanged from 480px up. */
+@media (max-width: 479px) {
+    #top h1,
+    #contact h2 {
+        font-size: clamp(2.5rem, 10vw, 3.5rem);
     }
 }

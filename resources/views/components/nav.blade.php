@@ -16,7 +16,7 @@
                  with no extra visibility-toggle logic needed. Hidden below
                  md: full category names/counts still exist in the page's
                  own static index and chapter headings. --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-2 font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-primary-fg transition-colors duration-200 group shrink-0">
+            <a href="{{ route('home') }}" aria-label="{{ __('Back Home') }}" class="flex items-center gap-2 font-bold text-sm text-slate-600 dark:text-slate-300 hover:text-primary-fg transition-colors duration-200 group shrink-0">
                 <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>

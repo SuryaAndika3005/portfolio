@@ -115,13 +115,7 @@
                      content, so it goes through __() like any other static
                      string (Section 6, Global Language Catalog System) --
                      it just isn't routed through localized(), which is
-                     reserved for the 5 per-project fields. Existing
-                     lang/id.json keys already cover it for two of the
-                     three categories in real use; a category name with no
-                     matching key (e.g. "IT & Development", which the
-                     archive page's own hardcoded chapter label spells
-                     differently as "Web & App Development") simply
-                     renders unchanged, exactly like before this pass. --}}
+                     reserved for the 5 per-project fields. The four public discipline names have Indonesian translations. --}}
                 <p class="text-eyebrow font-bold uppercase tracking-[0.25em] text-primary-fg mb-4">
                     {{ $project->category->name ? __($project->category->name) : __('Project') }}
                 </p>
@@ -239,7 +233,7 @@
         </div>
     </header>
 
-    <main class="max-w-[1600px] mx-auto px-8 lg:px-20">
+    <div class="max-w-[1600px] mx-auto px-8 lg:px-20">
         {{-- Case study (Project Detail Layout V2): stacked editorial
              sections instead of the old three-way equal columns. That grid
              read fine visually but didn't scale -- a long Process section
@@ -388,7 +382,7 @@
                 <a href="{{ route('portfolio.projects') }}" class="btn btn-secondary">{{ __('View All Projects') }}</a>
             </div>
         </section>
-    </main>
+    </div>
 
     <div id="imageModal" class="hidden fixed inset-0 z-[100] overflow-hidden" role="dialog" aria-modal="true" aria-label="{{ __('Image preview') }}">
         {{-- Dedicated backdrop layer — the ONLY element that closes the modal

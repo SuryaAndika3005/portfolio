@@ -412,7 +412,7 @@
         </div>
     </section>
 
-    {{-- Selected Works: the signature three-panel hover accordion. Header
+    {{-- Selected Works: the signature four-panel hover accordion. Header
          compressed to eyebrow + one-line heading (no supporting paragraph
          -- the accordion demonstrates the work directly). Interaction
          itself (hover-expand, instant vertical collapsed-title rotation,
@@ -437,23 +437,13 @@
             // Language Catalog System, category-consistency fix). tagline
             // and badge stay hand-authored, presentational-only fields.
             //
-            // Archive Taxonomy Restructure: the Archive now splits the
-            // former single "IT & Development" chapter into "Web & Systems"
-            // (slug 'it-development', kept) and "AI & Data" (slug
-            // 'ai-data', new) -- but this homepage accordion intentionally
-            // stays at 3 panels, not 4 (explicit instruction: preserve this
-            // section's existing behavior, no fourth panel). The third
-            // panel below now pools BOTH slugs under one hand-authored,
-            // deliberately broad label/tagline rather than either
-            // category's own (now more specific) name -- "slugs" (plural)
-            // replaces the single "slug" key only for this one panel, and
-            // its click-through anchor still lands on the Archive's Web &
-            // Systems chapter (the more general/first of the two).
+            // Four disciplines, each linked to its own Archive chapter.
             $categoryNames = $categories->keyBy('slug');
             $accordionPanels = [
                 ['slugs' => ['graphic-design'], 'anchor' => 'graphic-design', 'label' => __($categoryNames->get('graphic-design')->name ?? 'Graphic Design'), 'tagline' => __('Visual identities, campaigns, and communication.'), 'badge' => 'bg-primary/90'],
                 ['slugs' => ['uiux-design'], 'anchor' => 'uiux-design', 'label' => __($categoryNames->get('uiux-design')->name ?? 'UI/UX Design'), 'tagline' => __('Interfaces, flows, and product experiences.'), 'badge' => 'bg-violet-600/90'],
-                ['slugs' => ['it-development', 'ai-data'], 'anchor' => 'it-development', 'label' => __('Web & App'), 'tagline' => __('Digital products from interface to implementation.'), 'badge' => 'bg-emerald-600/90'],
+                ['slugs' => ['it-development'], 'anchor' => 'it-development', 'label' => __('Web & Systems'), 'tagline' => __('Web applications and operational systems.'), 'badge' => 'bg-emerald-600/90'],
+                ['slugs' => ['ai-data'], 'anchor' => 'ai-data', 'label' => __('AI & Data'), 'tagline' => __('Computer vision, speech, and forecasting.'), 'badge' => 'bg-primary/90'],
             ];
         @endphp
 
@@ -470,28 +460,18 @@
                     // dedicated accordion cover when one is set, falling
                     // back to its main image_path otherwise.
                     //
-                    // Filtered directly from $projects (already
-                    // published()->latest()-ordered by the controller)
-                    // rather than from $accordionGrouped, so a panel
-                    // pooling two slugs (Web & Systems + AI & Data, since
-                    // the Archive Taxonomy Restructure) still gets a single
-                    // globally-recency-ordered item list -- concatenating
-                    // two already-ordered per-slug groups would put every
-                    // Web & Systems item before every AI & Data item
-                    // regardless of actual recency, which is wrong here
-                    // (e.g. Speech Emotion, AI & Data, is newer than most
-                    // of Web & Systems).
+                    // Preserve the controller order within each discipline.
                     $items = $projects->filter(fn ($project) => in_array($project->category->slug ?? 'other', $panel['slugs'], true))->values();
                     if ($items->isEmpty()) continue;
                     $slides = $items->take(4);
                 @endphp
-                <div data-accordion-panel tabindex="0"
+                <div data-accordion-panel data-category="{{ $panel['anchor'] }}"
                     class="accordion-panel group/panel relative min-h-[280px] lg:min-h-0 rounded-[var(--radius-lg)] overflow-hidden bg-dark cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/60">
                     @foreach ($slides as $i => $project)
                         <img data-slide src="{{ asset('storage/' . $project->coverImagePath()) }}"
                             @if ($coverSrcset = $project->coverSrcset())
                                 srcset="{{ $coverSrcset }}"
-                                sizes="(min-width: 1024px) 469px, calc(100vw - 64px)"
+                                sizes="(min-width: 1024px) 65vw, calc(100vw - 64px)"
                             @endif
                             loading="lazy" decoding="async"
                             class="absolute inset-0 w-full h-full object-cover object-top {{ $i === 0 ? 'is-active' : '' }}"
@@ -503,7 +483,7 @@
                     <a href="{{ route('portfolio.projects') }}#{{ $panel['anchor'] }}"
                         class="absolute inset-0 z-10" aria-label="{{ __('View :category projects', ['category' => $panel['label']]) }}"></a>
 
-                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-8 pointer-events-none">
+                    <div class="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-5 xl:p-6 pointer-events-none">
                         <span class="accordion-count inline-flex items-center w-fit {{ $panel['badge'] }} text-white text-meta font-bold uppercase tracking-widest px-3 py-1 rounded-[var(--radius-sm)] mb-3">
                             {{ trans_choice('messages.works_count', $items->count(), ['count' => $items->count()]) }}
                         </span>

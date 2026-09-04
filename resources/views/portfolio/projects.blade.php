@@ -32,19 +32,7 @@
 
     $otherGroups = $grouped->except(['graphic-design', 'uiux-design', 'it-development', 'ai-data']);
 
-    // Archive cover treatment for the Web & Systems and AI & Data chapters
-    // (split from the former single "IT & Development" chapter -- Archive
-    // Taxonomy Restructure): 'chrome' (default, browser-framed) stays the
-    // norm for both -- most of these really are application UI and benefit
-    // from that context. A couple of covers read more like the project's
-    // actual visual output (a live CV scanner frame, a model's trend chart)
-    // than "a screen in a browser", so for just those the real screenshot
-    // is shown full-bleed instead, cropped tighter to drop the surrounding
-    // app chrome. This is a display decision about a specific image, not a
-    // fact about the project, so it lives here rather than as a new
-    // database column -- keyed by project id (never title), and only ever
-    // a path to a real, already-captured screenshot; nothing generated.
-    // Unaffected by which of the two chapters a project now belongs to.
+    // Authentic output crops for AI & Data; other entries use coverImagePath().
     $rawCovers = [
         21 => 'projects/vision-ai/recognition-scanner-raw.webp',
         24 => 'projects/webgis/trend-chart-raw.webp',
@@ -54,7 +42,7 @@
 string attribute) so they switch locale -- same gap and fix as the
 homepage, found during the Language Content Completion pass. --}}
 <x-layout :title="__('Project Archive | Surya Andika')"
-    :meta-description="__('The full project archive: graphic design, UI/UX, and web & app development work by Surya Andika.')"
+    :meta-description="__('The full project archive: graphic design, UI/UX, web systems, and AI & data work by Surya Andika.')"
     :archive-chapters="$topbarChapters">
 
     {{-- Editorial Contact Sheet with chapter navigation integrated into the
@@ -71,7 +59,7 @@ homepage, found during the Language Content Completion pass. --}}
         </h1>
     </header>
 
-    <main class="max-w-[1600px] mx-auto px-8 lg:px-20 pb-24 lg:pb-32">
+    <div class="max-w-[1600px] mx-auto px-8 lg:px-20 pb-24 lg:pb-32">
 
         @if ($chapters->isEmpty() && $otherGroups->isEmpty())
             <div class="py-20 text-center">
@@ -200,8 +188,8 @@ homepage, found during the Language Content Completion pass. --}}
                                 </div>
                             @else
                                 <x-browser-chrome accent="it" :label="Str::slug($project->title) . '.app'"
-                                    class="!rounded-[var(--radius-md)]">
-                                    <div class="aspect-[16/10] overflow-hidden bg-canvas">
+                                    class="archive-browser-cover !rounded-[var(--radius-md)]">
+                                    <div class="min-h-0 flex-1 overflow-hidden bg-canvas">
                                         <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy"
                                             decoding="async"
                                             class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
@@ -223,12 +211,7 @@ homepage, found during the Language Content Completion pass. --}}
             </section>
         @endif
 
-        {{-- Section 4: AI & Data. Output-driven -- same raw/browser-chrome
-        per-project mechanism as Web & Systems above (see $rawCovers), but
-        this chapter's projects lean toward showing their model/data output
-        directly (Vision AI, WebGIS) rather than an application shell
-        (Speech Emotion is the one exception here and stays browser-framed,
-        same as before the split). --}}
+        {{-- AI & Data uses authentic, full-bleed output with no browser frame. --}}
         @if ($grouped->get('ai-data', collect())->isNotEmpty())
             @php $aiData = $grouped->get('ai-data'); @endphp
             <section id="ai-data" data-chapter-section class="reveal mb-16 scroll-mt-28">
@@ -244,30 +227,16 @@ homepage, found during the Language Content Completion pass. --}}
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-10">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8 lg:gap-10">
                     @foreach ($aiData as $i => $project)
                         <a href="{{ route('portfolio.show', $project->id) }}" style="--reveal-delay: {{ $loop->index * 80 }}ms"
                             class="reveal group block outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-[var(--radius-md)]">
-                            @if (isset($rawCovers[$project->id]))
-                                {{-- Raw/full-bleed treatment: the real screenshot is the
-                                     composition, no device chrome around it. --}}
-                                <div class="aspect-[16/10] rounded-[var(--radius-md)] overflow-hidden bg-canvas">
-                                    <img src="{{ asset('storage/' . $rawCovers[$project->id]) }}" loading="lazy"
-                                        decoding="async"
-                                        class="lazy-fade w-full h-full object-cover object-center transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
-                                        alt="{{ __(':title preview', ['title' => $project->title]) }}">
-                                </div>
-                            @else
-                                <x-browser-chrome accent="it" :label="Str::slug($project->title) . '.app'"
-                                    class="!rounded-[var(--radius-md)]">
-                                    <div class="aspect-[16/10] overflow-hidden bg-canvas">
-                                        <img src="{{ asset('storage/' . $project->coverImagePath()) }}" loading="lazy"
-                                            decoding="async"
-                                            class="lazy-fade w-full h-full object-cover object-top transform group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)] ease-[var(--ease-interactive)]"
-                                            alt="{{ __(':title preview', ['title' => $project->title]) }}">
-                                    </div>
-                                </x-browser-chrome>
-                            @endif
+                            <div data-cover-treatment="raw" class="aspect-[16/10] rounded-[var(--radius-md)] overflow-hidden bg-canvas">
+                                <img src="{{ asset('storage/' . ($rawCovers[$project->id] ?? $project->coverImagePath())) }}"
+                                    loading="lazy" decoding="async"
+                                    class="lazy-fade w-full h-full object-cover object-center group-hover:scale-[1.015] group-focus-visible:scale-[1.015] motion-reduce:scale-100 transition-transform duration-[var(--motion-interactive)]"
+                                    alt="{{ __(':title preview', ['title' => $project->title]) }}">
+                            </div>
                             <div class="flex items-baseline gap-2 mt-4">
                                 <span
                                     class="text-meta font-bold text-primary-fg/60 tabular-nums">{{ sprintf('%02d', $i + 1) }}</span>
@@ -282,7 +251,7 @@ homepage, found during the Language Content Completion pass. --}}
             </section>
         @endif
 
-        {{-- Any category outside the 3 core disciplines (e.g. Fotografi,
+        {{-- Any category outside the 4 core disciplines (e.g. Fotografi,
         Modeling): same artwork-first poster treatment as Graphic
         Design, neutral accent, no topbar chapter link (not part of
         $topbarChapters above). --}}
@@ -315,7 +284,7 @@ homepage, found during the Language Content Completion pass. --}}
                 </div>
             </section>
         @endforeach
-    </main>
+    </div>
 
     @push('scripts')
         @vite('resources/js/archive-nav.js')
